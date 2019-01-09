@@ -10,7 +10,7 @@
 #include "Runtime/Core/Public/Async/Future.h"
 
 
-#include "SSGSDeviceZone.h"
+#include "SSGS_DeviceZone.h"
 #include "SSGSPredefinedTactilePatterns.h"
 #include "SSGS_JsonConvertable.h"
 
