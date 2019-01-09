@@ -2,6 +2,7 @@
 
 
 #include "Types/SSGS_Enums.h"
+#include "Types/SSGS_EventData.h"
 #include "SSGS_Payload.generated.h"
 
 

@@ -10,9 +10,9 @@ struct STEELSERIESGAMESENSE_API FSSGS_TactileEffectSimple : public FSSGS_JsonCon
     GENERATED_BODY()
 
     FSSGS_TactileEffectSimple() {}
-    FSSGS_TactileEffectSimple( const FPredefinedTactilePattern& type, int32 delay_ms = 0 ) : type( type ), delay_ms( delay_ms ) {}
+    FSSGS_TactileEffectSimple( const FSSGS_PredefinedTactilePattern& type, int32 delay_ms = 0 ) : type( type ), delay_ms( delay_ms ) {}
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FPredefinedTactilePattern type;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_PredefinedTactilePattern type;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 delay_ms;
 
     TSharedPtr< FJsonValue > Convert() const;

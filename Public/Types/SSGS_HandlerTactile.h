@@ -11,11 +11,11 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerTactile : public FSSGS_JsonConverta
 
     FSSGS_HandlerTactile();
     FSSGS_HandlerTactile( const FSSGS_HandlerTactile& other );
-    FSSGS_HandlerTactile( const FTactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification* pattern, USSGS_RateSpecification* rate = nullptr );
+    FSSGS_HandlerTactile( const FSSGS_TactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification* pattern, USSGS_RateSpecification* rate = nullptr );
     const FSSGS_HandlerTactile& operator=( const FSSGS_HandlerTactile& rhs );
     ~FSSGS_HandlerTactile();
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FTactileDeviceZone deviceZone;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_TactileDeviceZone deviceZone;
     UPROPERTY( EditAnywhere, BlueprintReadOnly ) FString mode = TEXT( "vibrate" );
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_TactilePatternSpecification* pattern;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_RateSpecification* rate;

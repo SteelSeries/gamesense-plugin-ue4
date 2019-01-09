@@ -187,7 +187,7 @@ FSSGS_HandlerColor::FSSGS_HandlerColor( const FSSGS_HandlerColor& other ) : FSSG
     rate = other.rate;
 }
 
-FSSGS_HandlerColor::FSSGS_HandlerColor( const FIlluminationDeviceZone& dz, const SSGS_IlluminationMode& im, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec ) :
+FSSGS_HandlerColor::FSSGS_HandlerColor( const FSSGS_IlluminationDeviceZone& dz, const SSGS_IlluminationMode& im, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec ) :
     deviceZone( dz ),
     mode( im ),
     color( colorSpec ),
@@ -216,9 +216,9 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
 
     obj->SetStringField( "device-type", deviceZone.device );
 
-    if ( deviceZone.zoneType == FIlluminationDeviceZone::named )
+    if ( deviceZone.zoneType == FSSGS_IlluminationDeviceZone::named )
         obj->SetStringField( "zone", deviceZone.namedZone() );
-    else if ( deviceZone.zoneType == FIlluminationDeviceZone::custom )
+    else if ( deviceZone.zoneType == FSSGS_IlluminationDeviceZone::custom )
         obj->SetArrayField( "custom-zone-keys", _getArrayOfJsonValues( deviceZone.customZone() ) );
 
     obj->SetStringField( "mode", GetEnumString( SSGS_IlluminationMode, mode ) );
@@ -308,7 +308,7 @@ FSSGS_HandlerTactile::FSSGS_HandlerTactile( const FSSGS_HandlerTactile& other ) 
     rate = other.rate;
 }
 
-FSSGS_HandlerTactile::FSSGS_HandlerTactile( const FTactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification* pattern, USSGS_RateSpecification* rate ) :
+FSSGS_HandlerTactile::FSSGS_HandlerTactile( const FSSGS_TactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification* pattern, USSGS_RateSpecification* rate ) :
     deviceZone( deviceZone ),
     pattern( pattern ),
     rate( rate )

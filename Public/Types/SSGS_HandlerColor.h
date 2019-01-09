@@ -11,13 +11,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerColor : public FSSGS_JsonConvertabl
 
     FSSGS_HandlerColor();
     FSSGS_HandlerColor( const FSSGS_HandlerColor& other );
-    FSSGS_HandlerColor( const FIlluminationDeviceZone&, const SSGS_IlluminationMode&, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec = nullptr );
+    FSSGS_HandlerColor( const FSSGS_IlluminationDeviceZone&, const SSGS_IlluminationMode&, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec = nullptr );
     const FSSGS_HandlerColor& operator=( const FSSGS_HandlerColor& other );
     ~FSSGS_HandlerColor();
 
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite )
-    FIlluminationDeviceZone deviceZone;
+    FSSGS_IlluminationDeviceZone deviceZone;
     UPROPERTY( EditAnywhere, BlueprintReadWrite )
     SSGS_IlluminationMode mode;
     UPROPERTY( EditAnywhere, BlueprintReadWrite )
