@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "SSGSDeviceZone.generated.h"
+#include "SSGS_DeviceZone.generated.h"
 
 
 USTRUCT( BlueprintType )

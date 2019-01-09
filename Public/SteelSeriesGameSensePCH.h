@@ -11,7 +11,7 @@
 
 
 #include "SSGS_DeviceZone.h"
-#include "SSGSPredefinedTactilePatterns.h"
+#include "SSGS_PredefinedTactilePatterns.h"
 #include "SSGS_JsonConvertable.h"
 
 #include "Types/SSGS_Enums.h"
