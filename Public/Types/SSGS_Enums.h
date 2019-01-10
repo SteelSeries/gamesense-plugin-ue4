@@ -41,6 +41,13 @@ enum class SSGS_EventIconId : uint8 {
     Item = 17       // Item/Backpack
 };
 
+UENUM( BlueprintType )
+enum class SSGS_ColorEffect : uint8 {
+    Static = 0,
+    Gradient,
+    Ranges
+};
+
 enum SSGS_HandlerType {
     HandlerType_Color = 0,
     HandlerType_Tactile

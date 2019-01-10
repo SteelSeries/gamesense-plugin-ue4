@@ -27,3 +27,11 @@ struct F_server_props_ {
     UPROPERTY()
     FString address;
 };
+
+template <typename T>
+T* _createUObj()
+{
+    T* p = NewObject< T >();
+    p->AddToRoot();
+    return p;
+}

@@ -41,4 +41,32 @@ void USSGS_ClientBBLibrary::RemoveGame( const FSSGS_Game& v )
     ssgs::Client::Instance()->RemoveGame( v );
 }
 
+USSGS_RateSpecification* USSGS_ClientBBLibrary::MakeRateSpecification()
+{
+    return _createUObj< USSGS_RateSpecification >();
+}
 
+USSGS_HandlerCollection* USSGS_ClientBBLibrary::MakeHandlerCollection()
+{
+    return _createUObj< USSGS_HandlerCollection >();
+}
+
+USSGS_ColorEffectSpecificationStatic* USSGS_ClientBBLibrary::MakeColorEffectSpecificationStatic()
+{
+    return _createUObj< USSGS_ColorEffectSpecificationStatic >();
+}
+
+USSGS_ColorEffectSpecificationGradient* USSGS_ClientBBLibrary::MakeColorEffectSpecificationGradient()
+{
+    return _createUObj< USSGS_ColorEffectSpecificationGradient >();
+}
+
+USSGS_ColorEffectSpecificationRanges* USSGS_ClientBBLibrary::MakeColorEffectSpecificationRanges()
+{
+    return _createUObj< USSGS_ColorEffectSpecificationRanges >();
+}
+
+USSGS_TactilePatternSpecification* USSGS_ClientBBLibrary::MakeTactilePatternSpecification()
+{
+    return _createUObj< USSGS_TactilePatternSpecification >();
+}
