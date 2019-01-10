@@ -42,3 +42,4 @@
 
 #include "SSGS_Payload.h"
 #include "SSGSClient.h"
+#include "SSGS_ClientBPLibrary.h"

@@ -14,6 +14,8 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationGradient : public U
 
 public:
 
+    ~USSGS_ColorEffectSpecificationGradient();
+
     UFUNCTION( BlueprintCallable, Category = SSGS_CATEGORY )
     void SetGradientWithColors( const FSSGS_RGB& zero, const FSSGS_RGB& hundred );
 

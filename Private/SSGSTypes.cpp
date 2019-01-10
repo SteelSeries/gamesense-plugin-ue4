@@ -140,6 +140,11 @@ TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationStatic::Convert() const
 }
 
 // ****** USSGS_ColorEffectSpecificationGradient ******
+USSGS_ColorEffectSpecificationGradient::~USSGS_ColorEffectSpecificationGradient()
+{
+    UE_LOG( LogTemp, Warning, TEXT( "***** ~USSGS_ColorEffectSpecificationGradient() *****" ) );
+}
+
 void USSGS_ColorEffectSpecificationGradient::SetGradientWithColors( const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
 {
     gradient = FSSGS_ColorGradient{ FSSGS_Gradient{ zero, hundred } };
@@ -206,7 +211,10 @@ const FSSGS_HandlerColor& FSSGS_HandlerColor::operator=( const FSSGS_HandlerColo
     return *this;
 }
 
-FSSGS_HandlerColor::~FSSGS_HandlerColor() {}
+FSSGS_HandlerColor::~FSSGS_HandlerColor()
+{
+    UE_LOG( LogTemp, Warning, TEXT("***** ~FSSGS_HandlerColor() *****") );
+}
 
 TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
 {
@@ -326,7 +334,10 @@ const FSSGS_HandlerTactile& FSSGS_HandlerTactile::operator=( const FSSGS_Handler
     return *this;
 }
 
-FSSGS_HandlerTactile::~FSSGS_HandlerTactile() {}
+FSSGS_HandlerTactile::~FSSGS_HandlerTactile()
+{
+    UE_LOG( LogTemp, Warning, TEXT( "***** ~FSSGS_HandlerTactile() *****" ) );
+}
 
 TSharedPtr< FJsonValue > FSSGS_HandlerTactile::Convert() const
 {
@@ -354,6 +365,7 @@ USSGS_HandlerCollection::USSGS_HandlerCollection()
 
 USSGS_HandlerCollection::~USSGS_HandlerCollection()
 {
+    UE_LOG( LogTemp, Warning, TEXT( "***** ~USSGS_HandlerCollection() *****" ) );
     _colorHandlers.Empty();
     _tactileHandlers.Empty();
 }

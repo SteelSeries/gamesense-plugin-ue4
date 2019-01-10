@@ -386,23 +386,23 @@ Client::Client() :
     _mShouldRun( true ),
     _mClientState( Probing ),
     _mGameName(),
-    _mGameDisplayName(),
-    _mIconColor(),
     _gsWorkerReturnStatus()
 {}
 
 Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 {
-    // ensure http module is loaded
-    FHttpModule::Get();
     FString serverPort;
+    _queue_msg_wrapper_ pendingMsg;
     const float msgCheckInterval = 0.1f;   // 10 ms
     const float serverProbeInterval = 5.0f;   // 5s
     const double maxIdleTimeBeforeHeartbeat = 5.0;   // 5 seconds
     double tLastMsg = FPlatformTime::Seconds();
     double tNow = FPlatformTime::Seconds();
     _mClientState = Probing;
-    _queue_msg_wrapper_ pendingMsg( _msg_register_game_( FSSGS_GameInfo( _mGameName, _mGameDisplayName, _mIconColor ) ) );
+
+
+    // ensure http module is loaded
+    FHttpModule::Get();
     _msg_queue.Empty();
 
     while (_mShouldRun) {
@@ -423,7 +423,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
                     FPlatformProcess::Sleep( msgCheckInterval );
                     tNow = FPlatformTime::Seconds();
-                    if ( tNow - tLastMsg > maxIdleTimeBeforeHeartbeat ) {
+                    if ( tNow - tLastMsg > maxIdleTimeBeforeHeartbeat && !_mGameName.IsEmpty() ) {
                         msg.set( _msg_heartbeat_( FSSGS_Game( _mGameName ) ) );
                         break;
                     }
@@ -496,7 +496,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
             break;
 
         }
-    };
+    }
 
     _msg_queue.Empty();
     LOG( Display, TEXT("GameSense worker exiting") );
@@ -509,22 +509,21 @@ Client* Client::Instance()
     return _mpInstance;
 }
 
-void Client::Initialize( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor )
+bool Client::Initialize()
 {
-    check( !_mpInstance );
+    //check( !_mpInstance );
 
     if ( !_mpInstance ) {
         _mpInstance = new ( std::nothrow ) Client();
     } else {
         // TODO should not have been called!
+        return true;
     }
-
-    _mpInstance->_mGameName = gameName;
-    _mpInstance->_mGameDisplayName = gameDisplayName;
-    _mpInstance->_mIconColor = iconColor;
 
     TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
     _mpInstance->_gsWorkerReturnStatus = AsyncThread( fn ).Share();
+
+    return _mpInstance != nullptr;
 }
 
 void Client::Release()

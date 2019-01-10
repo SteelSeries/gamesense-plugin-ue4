@@ -1,12 +1,10 @@
 #pragma once
 
 
+#include "SSGS_JsonConvertable.h"
 #include "Types/SSGS_Enums.h"
 #include "Types/SSGS_EventData.h"
 #include "SSGS_Payload.generated.h"
-
-
-#define SSGS_CATEGORY "GameSense"
 
 
 // ***** root payload structures *****

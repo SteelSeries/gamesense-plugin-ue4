@@ -30,7 +30,7 @@ public:
 
     static Client* Instance();
     // will set defaults to run RegisterGame msg
-    static void Initialize( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor );
+    static bool Initialize();
     static void Release();
 
     void RegisterGame( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor ) {
@@ -77,8 +77,6 @@ private:
     bool _mShouldRun;
     _state_ _mClientState;
     FString _mGameName;
-    FString _mGameDisplayName;
-    SSGS_IconColor _mIconColor;
     TSharedFuture< _gsWorkerReturnType_ > _gsWorkerReturnStatus;
 
 };
