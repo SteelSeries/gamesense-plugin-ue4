@@ -27,7 +27,7 @@ public:
     static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId );
     
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers );
+    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, UPARAM( DisplayName = "Handler Collection" ) USSGS_HandlerCollection* handlers );
     
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
     static void SendEvent( const FString& gameName, const FString& eventName, int32 value );
