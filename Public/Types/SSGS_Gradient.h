@@ -4,7 +4,7 @@
 #include "SSGS_Gradient.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_Gradient {
 
     GENERATED_BODY()

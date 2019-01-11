@@ -4,7 +4,7 @@
 #include "SSGS_HandlerColor.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_HandlerColor : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -16,13 +16,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerColor : public FSSGS_JsonConvertabl
     ~FSSGS_HandlerColor();
 
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
     FSSGS_IlluminationDeviceZone deviceZone;
     UPROPERTY( EditAnywhere, BlueprintReadWrite )
     SSGS_IlluminationMode mode;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Color Specification" ) )
     USSGS_ColorEffectSpecification* color;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ) )
     USSGS_RateSpecification* rate;
 
     TSharedPtr< FJsonValue > Convert() const;

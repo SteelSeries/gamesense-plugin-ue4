@@ -7,7 +7,7 @@
 #include "SSGS_ColorEffectSpecificationGradient.generated.h"
 
 
-UCLASS( BlueprintType )
+UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationGradient : public USSGS_ColorEffectSpecification {
 
     GENERATED_BODY()
@@ -16,10 +16,10 @@ public:
 
     ~USSGS_ColorEffectSpecificationGradient();
 
-    UFUNCTION( BlueprintCallable, Category = SSGS_CATEGORY )
+    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
     void SetGradientWithColors( const FSSGS_RGB& zero, const FSSGS_RGB& hundred );
 
-    UFUNCTION( BlueprintCallable, Category = SSGS_CATEGORY )
+    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
     void SetGradient( const FSSGS_Gradient& gradient );
 
     TSharedPtr< FJsonValue > Convert() const;

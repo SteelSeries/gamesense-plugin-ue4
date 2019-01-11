@@ -4,7 +4,7 @@
 #include "SSGS_RateStatic.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_RateStatic {
 
     GENERATED_BODY()

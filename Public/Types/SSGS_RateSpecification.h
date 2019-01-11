@@ -6,7 +6,7 @@
 #include "SSGS_RateSpecification.generated.h"
 
 
-UCLASS( BlueprintType )
+UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_RateSpecification : public UObject, public FSSGS_JsonConvertable {
 
     GENERATED_BODY()

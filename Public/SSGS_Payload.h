@@ -8,7 +8,7 @@
 
 
 // ***** root payload structures *****
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_GameInfo: public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -24,7 +24,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_GameInfo: public FSSGS_JsonConvertable {
 
 };
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_EventInfo: public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -42,7 +42,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventInfo: public FSSGS_JsonConvertable {
 
 };
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_EventBinding : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -63,7 +63,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventBinding : public FSSGS_JsonConvertabl
 
 };
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_EventUpdate: public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -79,7 +79,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventUpdate: public FSSGS_JsonConvertable 
 
 };
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_Event: public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -94,7 +94,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_Event: public FSSGS_JsonConvertable {
 
 };
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_Game: public FSSGS_JsonConvertable {
 
     GENERATED_BODY()

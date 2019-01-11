@@ -4,7 +4,7 @@
 #include "SSGS_HandlerTactile.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_HandlerTactile : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -15,10 +15,14 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerTactile : public FSSGS_JsonConverta
     const FSSGS_HandlerTactile& operator=( const FSSGS_HandlerTactile& rhs );
     ~FSSGS_HandlerTactile();
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_TactileDeviceZone deviceZone;
-    UPROPERTY( EditAnywhere, BlueprintReadOnly ) FString mode = TEXT( "vibrate" );
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_TactilePatternSpecification* pattern;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_RateSpecification* rate;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
+    FSSGS_TactileDeviceZone deviceZone;
+    UPROPERTY( EditAnywhere, BlueprintReadOnly )
+    FString mode = TEXT( "vibrate" );
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Pattern Specification" ) )
+    USSGS_TactilePatternSpecification* pattern;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ) )
+    USSGS_RateSpecification* rate;
 
     TSharedPtr< FJsonValue > Convert() const;
 

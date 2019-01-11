@@ -4,7 +4,7 @@
 #include "SSGS_TactileEffectCustom.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_TactileEffectCustom : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()

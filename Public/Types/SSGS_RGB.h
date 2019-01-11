@@ -4,7 +4,7 @@
 #include "SSGS_RGB.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_RGB {
 
     GENERATED_BODY()

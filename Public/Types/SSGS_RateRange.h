@@ -7,7 +7,7 @@
 #include "SSGS_RateRange.generated.h"
 
 
-USTRUCT( BlueprintType )
+USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_RateRange {
 
     GENERATED_BODY()

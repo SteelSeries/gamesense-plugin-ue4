@@ -4,7 +4,7 @@
 #include "SSGS_ColorEffectSpecification.generated.h"
 
 
-UCLASS( BlueprintType, Abstract )
+UCLASS( BlueprintType, Abstract, meta = ( DisplayName = "AbstractColorEffectSpecification" ) )
 class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecification : public UObject, public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
