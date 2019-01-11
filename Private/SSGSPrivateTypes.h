@@ -4,6 +4,14 @@
 #include "SSGSPrivateTypes.generated.h"
 
 
+USTRUCT()
+struct F_server_props_ {
+    GENERATED_BODY();
+
+    UPROPERTY()
+        FString address;
+};
+
 template <typename T>
 FString _getEnumString( const FString& name, T value )
 {
@@ -19,14 +27,6 @@ FString _getEnumString( const FString& name, T value )
 }
 
 #define GetEnumString(TYPE,VALUE) _getEnumString( #TYPE, VALUE )
-
-USTRUCT()
-struct F_server_props_ {
-    GENERATED_BODY();
-
-    UPROPERTY()
-    FString address;
-};
 
 template <typename T>
 T* _createUObj()

@@ -41,5 +41,4 @@
 #include "Types/SSGS_EventData.h"
 
 #include "SSGS_Payload.h"
-#include "SSGSClient.h"
 #include "SSGS_ClientBPLibrary.h"

@@ -21,22 +21,22 @@ public:
     static void Stop();
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void RegisterGame( const FSSGS_GameInfo& v );
+    static void RegisterGame( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor );
     
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void RegisterEvent( const FSSGS_EventInfo& v );
+    static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId );
     
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void BindEvent( const FSSGS_EventBinding& v );
+    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers );
     
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void SendEvent( const FSSGS_EventUpdate& v );
+    static void SendEvent( const FString& gameName, const FString& eventName, int32 value );
    
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void RemoveEvent( const FSSGS_Event& v );
+    static void RemoveEvent( const FString& gameName, const FString& eventName );
     
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void RemoveGame( const FSSGS_Game& v );
+    static void RemoveGame( const FString& gameName );
 
 
     // convenience functions

@@ -1,44 +1,61 @@
 #include "SSGSPrivatePCH.h"
 
 
+using namespace ssgs;
+
+
 bool USSGS_ClientBBLibrary::Start()
 {
-    return ssgs::Client::Initialize();
+    return Client::Initialize();
 }
 
 void USSGS_ClientBBLibrary::Stop()
 {
-    ssgs::Client::Release();
+    Client::Release();
 }
 
-void USSGS_ClientBBLibrary::RegisterGame( const FSSGS_GameInfo& v )
+void USSGS_ClientBBLibrary::RegisterGame( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor )
 {
-    ssgs::Client::Instance()->RegisterGame( v );
+    Client::Instance()->RegisterGame( FSSGS_GameInfo( gameName,
+                                                      gameDisplayName,
+                                                      iconColor ) );
 }
 
-void USSGS_ClientBBLibrary::RegisterEvent( const FSSGS_EventInfo& v )
+void USSGS_ClientBBLibrary::RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId )
 {
-    ssgs::Client::Instance()->RegisterEvent( v );
+    Client::Instance()->RegisterEvent( FSSGS_EventInfo( gameName,
+                                                        eventName,
+                                                        minValue,
+                                                        maxValue,
+                                                        iconId ) );
 }
 
-void USSGS_ClientBBLibrary::BindEvent( const FSSGS_EventBinding& v )
+void USSGS_ClientBBLibrary::BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers )
 {
-    ssgs::Client::Instance()->BindEvent( v );
+    Client::Instance()->BindEvent(
+        FSSGS_EventBinding( gameName,
+                            eventName,
+                            minValue,
+                            maxValue,
+                            iconId,
+                            handlers ) );
 }
 
-void USSGS_ClientBBLibrary::SendEvent( const FSSGS_EventUpdate& v )
+void USSGS_ClientBBLibrary::SendEvent( const FString& gameName, const FString& eventName, int32 value )
 {
-    ssgs::Client::Instance()->SendEvent( v );
+    Client::Instance()->SendEvent( FSSGS_EventUpdate( gameName,
+                                                      eventName,
+                                                      FSSGS_EventData{ value } ) );
 }
 
-void USSGS_ClientBBLibrary::RemoveEvent( const FSSGS_Event& v )
+void USSGS_ClientBBLibrary::RemoveEvent( const FString& gameName, const FString& eventName )
 {
-    ssgs::Client::Instance()->RemoveEvent( v );
+    Client::Instance()->RemoveEvent( FSSGS_Event{ gameName, eventName } );
 }
 
-void USSGS_ClientBBLibrary::RemoveGame( const FSSGS_Game& v )
+void USSGS_ClientBBLibrary::RemoveGame( const FString& gameName )
 {
-    ssgs::Client::Instance()->RemoveGame( v );
+    Client::Instance()->RemoveGame( FSSGS_Game{ gameName } );
 }
 
 USSGS_RateSpecification* USSGS_ClientBBLibrary::MakeRateSpecification()

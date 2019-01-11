@@ -18,7 +18,9 @@ DEFINE_LOG_CATEGORY( SSGS_Client );
 
 namespace ssgs {
 
+
 FString _dummy;
+
 
 struct _i_queue_msg_ {
     //_i_queue_msg_() {};
@@ -511,17 +513,16 @@ Client* Client::Instance()
 
 bool Client::Initialize()
 {
-    //check( !_mpInstance );
-
     if ( !_mpInstance ) {
-        _mpInstance = new ( std::nothrow ) Client();
+        _mpInstance = new ( std::nothrow ) Client;
+        if ( _mpInstance ) {
+            TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
+            _mpInstance->_gsWorkerReturnStatus = AsyncThread( fn ).Share();
+        }
     } else {
-        // TODO should not have been called!
+        // TODO should not get here
         return true;
     }
-
-    TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
-    _mpInstance->_gsWorkerReturnStatus = AsyncThread( fn ).Share();
 
     return _mpInstance != nullptr;
 }
