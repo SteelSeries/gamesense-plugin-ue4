@@ -13,8 +13,6 @@ class STEELSERIESGAMESENSE_API USSGS_TactilePatternSpecification : public UObjec
 
 public:
 
-    USSGS_TactilePatternSpecification();
-
     UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )
     void SetSimplePattern( const TArray< FSSGS_TactileEffectSimple >& v );
 

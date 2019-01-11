@@ -1,9 +1,6 @@
 #include "SSGSPrivatePCH.h"
 
 
-#define DELETE(X) if ( X ) { delete X; X = nullptr; }
-
-
 typedef TArray< TSharedPtr < FJsonValue > > TJsonValues;
 
 template < typename CustomUStructType >
@@ -140,11 +137,6 @@ TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationStatic::Convert() const
 }
 
 // ****** USSGS_ColorEffectSpecificationGradient ******
-USSGS_ColorEffectSpecificationGradient::~USSGS_ColorEffectSpecificationGradient()
-{
-    UE_LOG( LogTemp, Warning, TEXT( "***** ~USSGS_ColorEffectSpecificationGradient() *****" ) );
-}
-
 void USSGS_ColorEffectSpecificationGradient::SetGradientWithColors( const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
 {
     gradient = FSSGS_ColorGradient{ FSSGS_Gradient{ zero, hundred } };
@@ -220,8 +212,6 @@ FSSGS_HandlerColor::~FSSGS_HandlerColor()
 
 TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
 {
-    check( color != nullptr );
-
     TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetStringField( "device-type", deviceZone.device );
@@ -268,12 +258,7 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectCustom::Convert() const
 }
 
 
-// ****** UTactilePatternRange ******
-USSGS_TactilePatternSpecification::USSGS_TactilePatternSpecification()
-{
-    SetSimplePattern( TArray< FSSGS_TactileEffectSimple >() );
-}
-
+// ****** USSGS_TactilePatternSpecification ******
 void USSGS_TactilePatternSpecification::SetSimplePattern( const TArray< FSSGS_TactileEffectSimple >& v )
 {
     _type = TactilePatternType_Simple;
@@ -301,7 +286,6 @@ TSharedPtr< FJsonValue > USSGS_TactilePatternSpecification::Convert() const
     }
 
     }
-    
 
     return std::move( TSharedPtr< FJsonValue >( nullptr ) );
 }
@@ -345,8 +329,6 @@ FSSGS_HandlerTactile::~FSSGS_HandlerTactile()
 
 TSharedPtr< FJsonValue > FSSGS_HandlerTactile::Convert() const
 {
-    check( pattern != nullptr );
-
     TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetStringField( "device-type", deviceZone.device );
@@ -369,7 +351,6 @@ USSGS_HandlerCollection::USSGS_HandlerCollection()
 
 USSGS_HandlerCollection::~USSGS_HandlerCollection()
 {
-    UE_LOG( LogTemp, Warning, TEXT( "***** ~USSGS_HandlerCollection() *****" ) );
     _colorHandlers.Empty();
     _tactileHandlers.Empty();
 }
@@ -469,12 +450,14 @@ TSharedPtr< FJsonValue > FSSGS_EventBinding::Convert() const
     obj->SetNumberField( "max_value", maxValue );
     obj->SetNumberField( "icon_id", ( uint32 )iconId );
 
-    auto handlersJsonArray = handlers->Convert();
-    const TArray < TSharedPtr < FJsonValue > >* pHandlers;
-    // TODO what if null or empty?
-    if ( handlersJsonArray->TryGetArray( pHandlers ) ) {
-        obj->SetArrayField( "handlers", *pHandlers );
-    } 
+    if ( handlers ) {
+        auto handlersJsonArray = handlers->Convert();
+        const TJsonValues* pHandlers;
+
+        if ( handlersJsonArray->TryGetArray( pHandlers ) ) {
+            obj->SetArrayField( "handlers", *pHandlers );
+        }
+    }
 
     return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
 }
