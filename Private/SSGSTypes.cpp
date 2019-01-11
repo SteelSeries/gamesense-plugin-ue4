@@ -13,7 +13,7 @@ TJsonValues _getArrayOfJsonValuesFromUStructs( const TArray< CustomUStructType >
 
     for ( const CustomUStructType& obj : arr ) {
         TSharedPtr< FJsonObject > jsonObj = FJsonObjectConverter::UStructToJsonObject< CustomUStructType >( obj );
-        TSharedPtr< FJsonValue > v( new FJsonValueObject( jsonObj ) );
+        TSharedPtr< FJsonValue > v( new ( std::nothrow ) FJsonValueObject( jsonObj ) );
         ret.Add( v );
     }
 
@@ -213,14 +213,16 @@ const FSSGS_HandlerColor& FSSGS_HandlerColor::operator=( const FSSGS_HandlerColo
 
 FSSGS_HandlerColor::~FSSGS_HandlerColor()
 {
-    UE_LOG( LogTemp, Warning, TEXT("***** ~FSSGS_HandlerColor() *****") );
+    // let the GC work
+    color = nullptr;
+    rate = nullptr;
 }
 
 TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
 {
     check( color != nullptr );
 
-    TSharedPtr< FJsonObject > obj( new FJsonObject );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetStringField( "device-type", deviceZone.device );
 
@@ -244,7 +246,7 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
 // ****** FSSGS_TactileEffectSimple ******
 TSharedPtr< FJsonValue > FSSGS_TactileEffectSimple::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetStringField( "type", type.name );
     obj->SetNumberField( "delay-ms", delay_ms );
@@ -256,7 +258,7 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectSimple::Convert() const
 // ****** FSSGS_TactileEffectCustom ******
 TSharedPtr< FJsonValue > FSSGS_TactileEffectCustom::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetStringField( "type", type );
     obj->SetNumberField( "length-ms", length_ms );
@@ -336,14 +338,16 @@ const FSSGS_HandlerTactile& FSSGS_HandlerTactile::operator=( const FSSGS_Handler
 
 FSSGS_HandlerTactile::~FSSGS_HandlerTactile()
 {
-    UE_LOG( LogTemp, Warning, TEXT( "***** ~FSSGS_HandlerTactile() *****" ) );
+    // let the GC work
+    pattern = nullptr;
+    rate = nullptr;
 }
 
 TSharedPtr< FJsonValue > FSSGS_HandlerTactile::Convert() const
 {
     check( pattern != nullptr );
 
-    TSharedPtr< FJsonObject > obj( new FJsonObject );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetStringField( "device-type", deviceZone.device );
     obj->SetStringField( "zone", deviceZone.zone );
@@ -400,7 +404,7 @@ FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName,
 
 TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject() );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "game_display_name", gameDisplayName );
@@ -423,7 +427,7 @@ FSSGS_EventInfo::FSSGS_EventInfo( const FString& gameName, const FString& eventN
 
 TSharedPtr< FJsonValue > FSSGS_EventInfo::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject() );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
@@ -449,9 +453,15 @@ FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& 
     handlers( handlers )
 {}
 
+FSSGS_EventBinding::~FSSGS_EventBinding()
+{
+    // let the GC work
+    handlers = nullptr;
+}
+
 TSharedPtr< FJsonValue > FSSGS_EventBinding::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject() );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
@@ -480,7 +490,7 @@ FSSGS_EventUpdate::FSSGS_EventUpdate( const FString& game, const FString& eventN
 
 TSharedPtr< FJsonValue > FSSGS_EventUpdate::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject() );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
@@ -499,7 +509,7 @@ FSSGS_Event::FSSGS_Event( const FString& game, const FString& eventName ) :
 
 TSharedPtr< FJsonValue > FSSGS_Event::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject() );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
@@ -516,7 +526,7 @@ FSSGS_Game::FSSGS_Game( const FString& game ) :
 
 TSharedPtr< FJsonValue > FSSGS_Game::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new FJsonObject() );
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
 
     obj->SetStringField( "game", game );
 

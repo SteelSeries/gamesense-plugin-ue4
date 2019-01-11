@@ -49,6 +49,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventBinding : public FSSGS_JsonConvertabl
 
     FSSGS_EventBinding();
     FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers );
+    ~FSSGS_EventBinding();
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString game;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString eventName;
