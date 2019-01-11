@@ -55,7 +55,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventBinding : public FSSGS_JsonConvertabl
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 minValue;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 maxValue;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) SSGS_EventIconId iconId;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_HandlerCollection* handlers;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta=( DisplayName = "Handler Collection" ) )
+    USSGS_HandlerCollection* handlers;
 
     TSharedPtr< FJsonValue > Convert() const;
 

@@ -3,7 +3,7 @@
 
 #include "SSGS_DeviceZone.generated.h"
 
-
+// TODO hide make & break in blueprints
 USTRUCT( BlueprintType )
 struct FSSGS_IlluminationDeviceZone {
 
