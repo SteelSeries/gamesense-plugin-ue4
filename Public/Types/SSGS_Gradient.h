@@ -9,7 +9,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_Gradient {
 
     GENERATED_BODY()
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_RGB zero;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_RGB hundred;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, DisplayName = "Start Color" ) FSSGS_RGB zero;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, DisplayName = "End Color" ) FSSGS_RGB hundred;
 
 };

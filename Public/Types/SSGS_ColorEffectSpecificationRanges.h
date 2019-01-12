@@ -20,7 +20,7 @@ public:
     void AddStatic( uint8 low, uint8 high, const FSSGS_RGB& color );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    void AddGradient( uint8 low, uint8 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred );
+    void AddGradient( uint8 low, uint8 high, UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
     TSharedPtr< FJsonValue > Convert() const;
 

@@ -16,11 +16,19 @@ public:
     USSGS_HandlerCollection();
     ~USSGS_HandlerCollection();
 
-    UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
     void AddColorHandler( const FSSGS_HandlerColor& handler );
+    void AddTactileHandler( const FSSGS_HandlerTactile& handler );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
-    void AddTactileHandler( const FSSGS_HandlerTactile& handler );
+    void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )        const FSSGS_IlluminationDeviceZone& deviceZone,
+                          UPARAM( DisplayName = "Illumination Mode" )  const SSGS_IlluminationMode mode,
+                          UPARAM( DisplayName = "ColorSpecification" ) USSGS_ColorEffectSpecification* colorSpec,
+                          UPARAM( DisplayName = "RateSpecification" )  USSGS_RateSpecification* rateSpec = nullptr );
+
+    UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
+    void AddTactileHandler( UPARAM( DisplayName = "Device-Zone" )         const FSSGS_TactileDeviceZone& deviceZone,
+                            UPARAM( DisplayName = "PatternSpecification" ) USSGS_TactilePatternSpecification* pattern,
+                            UPARAM( DisplayName = "RateSpecification" )    USSGS_RateSpecification* rate = nullptr );
 
     TSharedPtr< FJsonValue > Convert() const;
 

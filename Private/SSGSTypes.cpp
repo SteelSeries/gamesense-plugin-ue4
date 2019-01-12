@@ -85,6 +85,12 @@ void USSGS_RateSpecification::SetStaticRate( const FSSGS_RateStatic& v )
     _rate.SetSubtype< FSSGS_RateStatic >( v );
 }
 
+void USSGS_RateSpecification::SetStaticRate( int32 frequency, int32 repeat_limit )
+{
+    _mode = RateMode_Static;
+    _rate.SetSubtype< FSSGS_RateStatic >( FSSGS_RateStatic{ frequency, repeat_limit } );
+}
+
 void USSGS_RateSpecification::SetRangedRate( const FSSGS_RateRange& v )
 {
     _mode = RateMode_Range;
@@ -374,9 +380,24 @@ void USSGS_HandlerCollection::AddColorHandler( const FSSGS_HandlerColor& handler
     _colorHandlers.Add( handler );
 }
 
+void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, const SSGS_IlluminationMode mode, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec )
+{
+    _colorHandlers.Add( FSSGS_HandlerColor( deviceZone,
+                                            mode,
+                                            colorSpec,
+                                            rateSpec ) );
+}
+
 void USSGS_HandlerCollection::AddTactileHandler( const FSSGS_HandlerTactile& handler )
 {
     _tactileHandlers.Add( handler );
+}
+
+void USSGS_HandlerCollection::AddTactileHandler( const FSSGS_TactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification* pattern, USSGS_RateSpecification* rate )
+{
+    _tactileHandlers.Add( FSSGS_HandlerTactile( deviceZone,
+                                                pattern,
+                                                rate ) );
 }
 
 TSharedPtr< FJsonValue > USSGS_HandlerCollection::Convert() const
