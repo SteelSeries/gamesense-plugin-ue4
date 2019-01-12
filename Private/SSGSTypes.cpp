@@ -159,9 +159,23 @@ void USSGS_ColorEffectSpecificationRanges::AddStatic( const FSSGS_ColorRangeStat
     staticRanges.Add( v );
 }
 
+void USSGS_ColorEffectSpecificationRanges::AddStatic( uint8 low, uint8 high, const FSSGS_RGB& color )
+{
+    staticRanges.Add( FSSGS_ColorRangeStatic( low,
+                                              high,
+                                              color ) );
+}
+
 void USSGS_ColorEffectSpecificationRanges::AddGradient( const FSSGS_ColorRangeGradient& v )
 {
     gradientRanges.Add( v );
+}
+
+void USSGS_ColorEffectSpecificationRanges::AddGradient( uint8 low, uint8 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
+{
+    gradientRanges.Add( FSSGS_ColorRangeGradient( low,
+                                                  high,
+                                                  FSSGS_ColorGradient{ { zero, hundred } } ) );
 }
 
 TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationRanges::Convert() const

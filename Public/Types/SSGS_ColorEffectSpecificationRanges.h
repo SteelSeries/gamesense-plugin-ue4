@@ -13,11 +13,14 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationRanges : public USS
 
 public:
 
-    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
     void AddStatic( const FSSGS_ColorRangeStatic& v );
+    void AddGradient( const FSSGS_ColorRangeGradient& v );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    void AddGradient( const FSSGS_ColorRangeGradient& v );
+    void AddStatic( uint8 low, uint8 high, const FSSGS_RGB& color );
+
+    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
+    void AddGradient( uint8 low, uint8 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred );
 
     TSharedPtr< FJsonValue > Convert() const;
 
