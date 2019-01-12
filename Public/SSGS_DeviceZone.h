@@ -40,7 +40,7 @@ struct FSSGS_TactileDeviceZone {
 
 };
 
-UCLASS( BlueprintType, meta = ( DisplayName = "IlluminationDeviceZoneFactory", Category = "GameSense|Device-Zone" ) )
+UCLASS()
 class USSGS_IlluminationDeviceZoneFactory: public UObject {
 
     GENERATED_BODY()
@@ -149,7 +149,7 @@ public:
     }
 };
 
-UCLASS( BlueprintType, meta = ( DisplayName = "TactileDeviceZoneFactory", Category = "GameSense|Device-Zone" ) )
+UCLASS()
 class USSGS_TactileDeviceZoneFactory: public UObject {
 
     GENERATED_BODY()

@@ -11,7 +11,7 @@ struct FSSGS_PredefinedTactilePattern
     UPROPERTY( BlueprintReadOnly ) FString name;
 };
 
-UCLASS( BlueprintType )
+UCLASS()
 class USSGS_PredefinedTactilePatternFactory : public UObject
 {
 
