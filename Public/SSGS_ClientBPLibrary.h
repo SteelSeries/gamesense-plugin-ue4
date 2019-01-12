@@ -12,7 +12,7 @@
 * Main GameSense Client interface for UE4 Blueprint.
 */
 UCLASS()
-class STEELSERIESGAMESENSE_API USSGS_ClientBBLibrary : public UBlueprintFunctionLibrary
+class STEELSERIESGAMESENSE_API USSGS_ClientBPLibrary : public UBlueprintFunctionLibrary
 {
     GENERATED_BODY()
 
