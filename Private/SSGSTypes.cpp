@@ -386,7 +386,7 @@ void USSGS_HandlerCollection::AddColorHandler( const FSSGS_HandlerColor& handler
     _colorHandlers.Add( handler );
 }
 
-void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, const SSGS_IlluminationMode mode, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec )
+void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, const SSGS_IlluminationMode mode, USSGS_ColorEffectSpecification*& colorSpec, USSGS_RateSpecification* rateSpec )
 {
     _colorHandlers.Add( FSSGS_HandlerColor( deviceZone,
                                             mode,
@@ -399,7 +399,7 @@ void USSGS_HandlerCollection::AddTactileHandler( const FSSGS_HandlerTactile& han
     _tactileHandlers.Add( handler );
 }
 
-void USSGS_HandlerCollection::AddTactileHandler( const FSSGS_TactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification* pattern, USSGS_RateSpecification* rate )
+void USSGS_HandlerCollection::AddTactileHandler( const FSSGS_TactileDeviceZone& deviceZone, USSGS_TactilePatternSpecification*& pattern, USSGS_RateSpecification* rate )
 {
     _tactileHandlers.Add( FSSGS_HandlerTactile( deviceZone,
                                                 pattern,

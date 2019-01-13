@@ -30,7 +30,7 @@ void USSGS_ClientBPLibrary::RegisterEvent( const FString& gameName, const FStrin
                                                         iconId ) );
 }
 
-void USSGS_ClientBPLibrary::BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers )
+void USSGS_ClientBPLibrary::BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection*& handlers )
 {
     Client::Instance()->BindEvent(
         FSSGS_EventBinding( gameName,

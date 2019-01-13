@@ -20,15 +20,15 @@ public:
     void AddTactileHandler( const FSSGS_HandlerTactile& handler );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
-    void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )        const FSSGS_IlluminationDeviceZone& deviceZone,
-                          UPARAM( DisplayName = "Illumination Mode" )  SSGS_IlluminationMode mode,
-                          UPARAM( DisplayName = "ColorSpecification" ) USSGS_ColorEffectSpecification* colorSpec,
-                          UPARAM( DisplayName = "RateSpecification" )  USSGS_RateSpecification* rateSpec = nullptr );
+    void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )             const FSSGS_IlluminationDeviceZone& deviceZone,
+                          UPARAM( DisplayName = "Illumination Mode" )       SSGS_IlluminationMode mode,
+                          UPARAM( DisplayName = "ColorSpecification", ref ) USSGS_ColorEffectSpecification*& colorSpec,
+                          UPARAM( DisplayName = "RateSpecification" )       USSGS_RateSpecification* rateSpec = nullptr );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
-    void AddTactileHandler( UPARAM( DisplayName = "Device-Zone" )         const FSSGS_TactileDeviceZone& deviceZone,
-                            UPARAM( DisplayName = "PatternSpecification" ) USSGS_TactilePatternSpecification* pattern,
-                            UPARAM( DisplayName = "RateSpecification" )    USSGS_RateSpecification* rate = nullptr );
+    void AddTactileHandler( UPARAM( DisplayName = "Device-Zone" )               const FSSGS_TactileDeviceZone& deviceZone,
+                            UPARAM( DisplayName = "PatternSpecification", ref ) USSGS_TactilePatternSpecification*& pattern,
+                            UPARAM( DisplayName = "RateSpecification" )         USSGS_RateSpecification* rate = nullptr );
 
     TSharedPtr< FJsonValue > Convert() const;
 

@@ -65,7 +65,7 @@ public:
     * @param	handlers The collection of handlers to bind to the event.
     */
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, UPARAM( DisplayName = "Handler Collection" ) USSGS_HandlerCollection* handlers );
+    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, UPARAM( ref, DisplayName = "Handler Collection" ) USSGS_HandlerCollection*& handlers );
     
     /**
     * Sends event update to the GameSense server.
