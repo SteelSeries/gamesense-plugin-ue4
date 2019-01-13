@@ -24,7 +24,7 @@ USSGS_HandlerCollection* MakeHandlerCollection();
 USSGS_ColorEffectSpecificationStatic* MakeColorEffectSpecificationStatic();
 USSGS_ColorEffectSpecificationGradient* MakeColorEffectSpecificationGradient();
 USSGS_ColorEffectSpecificationRanges* MakeColorEffectSpecificationRanges();
-USSGS_TactilePatternSpecification* MakeTactilePatternSpecification();
+USSGS_TactilePatternSpecificationStatic* MakeTactilePatternSpecificationStatic();
 
 
 };

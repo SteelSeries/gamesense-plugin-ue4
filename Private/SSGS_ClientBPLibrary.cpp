@@ -83,7 +83,7 @@ USSGS_ColorEffectSpecificationRanges* USSGS_ClientBPLibrary::MakeColorEffectSpec
     return _createUObj< USSGS_ColorEffectSpecificationRanges >();
 }
 
-USSGS_TactilePatternSpecification* USSGS_ClientBPLibrary::MakeTactilePatternSpecification()
+USSGS_TactilePatternSpecificationStatic* USSGS_ClientBPLibrary::MakeTactilePatternSpecificationStatic()
 {
-    return _createUObj< USSGS_TactilePatternSpecification >();
+    return _createUObj< USSGS_TactilePatternSpecificationStatic >();
 }

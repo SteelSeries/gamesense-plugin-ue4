@@ -59,6 +59,11 @@ enum ESSGS_RateMode {
     RateMode_Range
 };
 
+enum ESSGS_TactilePatternStaticType {
+    TactilePatternStatic_Predefined,
+    TactilePatternStatic_Custom
+};
+
 enum ESSGS_TactilePatternType {
     TactilePatternType_Simple = 0,
     TactilePatternType_Custom

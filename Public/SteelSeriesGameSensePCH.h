@@ -33,6 +33,7 @@
 #include "Types/SSGS_TactileEffectPredefined.h"
 #include "Types/SSGS_TactileEffectCustom.h"
 #include "Types/SSGS_TactilePatternSpecification.h"
+#include "Types/SSGS_TactilePatternSpecificationStatic.h"
 
 #include "Types/SSGS_HandlerColor.h"
 #include "Types/SSGS_HandlerTactile.h"

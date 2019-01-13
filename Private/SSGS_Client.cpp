@@ -69,9 +69,9 @@ USSGS_ColorEffectSpecificationRanges* MakeColorEffectSpecificationRanges()
     return _createUObj< USSGS_ColorEffectSpecificationRanges >();
 }
 
-USSGS_TactilePatternSpecification* MakeTactilePatternSpecification()
+USSGS_TactilePatternSpecificationStatic* MakeTactilePatternSpecificationStatic()
 {
-    return _createUObj< USSGS_TactilePatternSpecification >();
+    return _createUObj< USSGS_TactilePatternSpecificationStatic >();
 }
 
 

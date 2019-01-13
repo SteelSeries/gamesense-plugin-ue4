@@ -114,6 +114,6 @@ public:
     static USSGS_ColorEffectSpecificationRanges* MakeColorEffectSpecificationRanges();
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_TactilePatternSpecification* MakeTactilePatternSpecification();
+    static USSGS_TactilePatternSpecificationStatic* MakeTactilePatternSpecificationStatic();
 
 };
