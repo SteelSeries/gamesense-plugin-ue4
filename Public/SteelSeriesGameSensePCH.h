@@ -30,7 +30,7 @@
 #include "Types/SSGS_ColorEffectSpecificationStatic.h"
 #include "Types/SSGS_ColorEffectSpecificationGradient.h"
 #include "Types/SSGS_ColorEffectSpecificationRanges.h"
-#include "Types/SSGS_TactileEffectSimple.h"
+#include "Types/SSGS_TactileEffectPredefined.h"
 #include "Types/SSGS_TactileEffectCustom.h"
 #include "Types/SSGS_TactilePatternSpecification.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "SSGS_TactileEffectSimple.h"
+#include "SSGS_TactileEffectPredefined.h"
 #include "SSGS_TactileEffectCustom.h"
 #include "SSGS_TactilePatternSpecification.generated.h"
 
@@ -14,7 +14,7 @@ class STEELSERIESGAMESENSE_API USSGS_TactilePatternSpecification : public UObjec
 public:
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )
-    void SetSimplePattern( const TArray< FSSGS_TactileEffectSimple >& v );
+    void SetSimplePattern( const TArray< FSSGS_TactileEffectPredefined >& v );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )
     void SetCustomPattern( const TArray< FSSGS_TactileEffectCustom >& v );
@@ -24,6 +24,6 @@ public:
 private:
 
     ESSGS_TactilePatternType _type;
-    TUnion< TArray< FSSGS_TactileEffectSimple >, TArray< FSSGS_TactileEffectCustom > > _pattern;
+    TUnion< TArray< FSSGS_TactileEffectPredefined >, TArray< FSSGS_TactileEffectCustom > > _pattern;
 
 };

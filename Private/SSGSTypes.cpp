@@ -259,8 +259,8 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
 }
 
 
-// ****** FSSGS_TactileEffectSimple ******
-TSharedPtr< FJsonValue > FSSGS_TactileEffectSimple::Convert() const
+// ****** FSSGS_TactileEffectPredefined ******
+TSharedPtr< FJsonValue > FSSGS_TactileEffectPredefined::Convert() const
 {
     TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
@@ -285,10 +285,10 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectCustom::Convert() const
 
 
 // ****** USSGS_TactilePatternSpecification ******
-void USSGS_TactilePatternSpecification::SetSimplePattern( const TArray< FSSGS_TactileEffectSimple >& v )
+void USSGS_TactilePatternSpecification::SetSimplePattern( const TArray< FSSGS_TactileEffectPredefined >& v )
 {
     _type = TactilePatternType_Simple;
-    _pattern.SetSubtype< TArray< FSSGS_TactileEffectSimple > >( v );
+    _pattern.SetSubtype< TArray< FSSGS_TactileEffectPredefined > >( v );
 }
 
 void USSGS_TactilePatternSpecification::SetCustomPattern( const TArray< FSSGS_TactileEffectCustom >& v )
@@ -302,7 +302,7 @@ TSharedPtr< FJsonValue > USSGS_TactilePatternSpecification::Convert() const
     switch ( _type ) {
     
     case TactilePatternType_Simple: {
-        TJsonValues arr( _getArrayOfJsonValues( _pattern.GetSubtype< TArray< FSSGS_TactileEffectSimple > >() ) );
+        TJsonValues arr( _getArrayOfJsonValues( _pattern.GetSubtype< TArray< FSSGS_TactileEffectPredefined > >() ) );
         return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) ) );
     }
 
