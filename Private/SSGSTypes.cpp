@@ -386,7 +386,7 @@ void USSGS_HandlerCollection::AddColorHandler( const FSSGS_HandlerColor& handler
     _colorHandlers.Add( handler );
 }
 
-void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, const ESSGS_IlluminationMode mode, USSGS_ColorEffectSpecification*& colorSpec, USSGS_RateSpecification* rateSpec )
+void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, ESSGS_IlluminationMode mode, USSGS_ColorEffectSpecification*& colorSpec, USSGS_RateSpecification* rateSpec )
 {
     _colorHandlers.Add( FSSGS_HandlerColor( deviceZone,
                                             mode,

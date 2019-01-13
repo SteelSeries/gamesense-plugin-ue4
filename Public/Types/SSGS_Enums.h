@@ -22,23 +22,23 @@ enum class ESSGS_IconColor : uint8 {
 
 UENUM( BlueprintType )
 enum class ESSGS_EventIconId : uint8 {
-    Default = 0,    // Blank display, no icon
-    Health = 1,     // Health
-    Armor = 2,      // Armor
-    Ammo = 3,       // Ammo/Ammunition
-    Money = 4,      // Money
-    Flashbang = 5,  // Flash/Flashbang/Explosion
-    Kills = 6,      // Kills
-    Headshot = 7,   // Headshot
-    Helmet = 8,     // Helmet
-    Hunger = 10,    // Hunger
-    Air = 11,       // Air/Breath
-    Compass = 12,   // Compass
-    Tool = 13,      // Tool/Pickaxe
-    Mana = 14,      // Mana/Potion
-    Clock = 15,     // Clock
-    Lightning = 16, // Lightning
-    Item = 17       // Item/Backpack
+    Default = 0,
+    Health = 1,
+    Armor = 2,
+    Ammo = 3,
+    Money = 4,
+    Flashbang = 5,
+    Kills = 6,
+    Headshot = 7,
+    Helmet = 8,
+    Hunger = 10,
+    Air = 11,
+    Compass = 12,
+    Tool = 13,
+    Mana = 14,
+    Clock = 15,
+    Lightning = 16,
+    Item = 17
 };
 
 UENUM( BlueprintType )
