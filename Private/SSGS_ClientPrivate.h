@@ -33,15 +33,15 @@ public:
     static bool Initialize();
     static void Release();
 
-    void RegisterGame( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor ) {
+    void RegisterGame( const FString& gameName, const FString& gameDisplayName, ESSGS_IconColor iconColor ) {
         RegisterGame( FSSGS_GameInfo( gameName, gameDisplayName, iconColor ) );
     }
 
-    void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId ) {
+    void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId ) {
         RegisterEvent( FSSGS_EventInfo{ gameName, eventName, minValue, maxValue, iconId } );
     }
 
-    void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) {
+    void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) {
         BindEvent( FSSGS_EventBinding( gameName, eventName, minValue, maxValue, iconId, handlers ) );
     }
 

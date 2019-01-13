@@ -26,7 +26,7 @@ public:
 
 private:
 
-    SSGS_RateMode _mode;
+    ESSGS_RateMode _mode;
     TUnion< FSSGS_RateStatic, FSSGS_RateRange > _rate;
 
 };

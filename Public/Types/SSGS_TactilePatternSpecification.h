@@ -23,7 +23,7 @@ public:
 
 private:
 
-    SSGS_TactilePatternType _type;
+    ESSGS_TactilePatternType _type;
     TUnion< TArray< FSSGS_TactileEffectSimple >, TArray< FSSGS_TactileEffectCustom > > _pattern;
 
 };

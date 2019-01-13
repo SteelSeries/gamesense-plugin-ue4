@@ -40,7 +40,7 @@ public:
     * @param	iconColor The ID value of a color associated with the game. Used by SSE3.
     */
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void RegisterGame( const FString& gameName, const FString& gameDisplayName, SSGS_IconColor iconColor );
+    static void RegisterGame( const FString& gameName, const FString& gameDisplayName, ESSGS_IconColor iconColor );
     
     /**
     * Registers a game event with the GameSense server.
@@ -52,7 +52,7 @@ public:
     * @param	iconId The ID value of an icon associated with the game. Used by SSE3.
     */
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId );
+    static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId );
     
     /**
     * Registers a game event with the GameSense server and binds specified handlers to the event.
@@ -65,7 +65,7 @@ public:
     * @param	handlers The collection of handlers to bind to the event.
     */
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, UPARAM( ref, DisplayName = "Handler Collection" ) USSGS_HandlerCollection*& handlers );
+    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, UPARAM( ref, DisplayName = "Handler Collection" ) USSGS_HandlerCollection*& handlers );
     
     /**
     * Sends event update to the GameSense server.

@@ -5,7 +5,7 @@
 
 
 UENUM( BlueprintType )
-enum class SSGS_IconColor : uint8 {
+enum class ESSGS_IconColor : uint8 {
     Orange = 0,
     Gold = 1,
     Yellow = 2,
@@ -21,7 +21,7 @@ enum class SSGS_IconColor : uint8 {
 };
 
 UENUM( BlueprintType )
-enum class SSGS_EventIconId : uint8 {
+enum class ESSGS_EventIconId : uint8 {
     Default = 0,    // Blank display, no icon
     Health = 1,     // Health
     Armor = 2,      // Armor
@@ -42,36 +42,36 @@ enum class SSGS_EventIconId : uint8 {
 };
 
 UENUM( BlueprintType )
-enum class SSGS_ColorEffect : uint8 {
+enum class ESSGS_ColorEffect : uint8 {
     Static = 0,
     Gradient,
     Ranges
 };
 
-enum SSGS_HandlerType {
+enum ESSGS_HandlerType {
     HandlerType_Color = 0,
     HandlerType_Tactile
 };
 
-enum SSGS_RateMode {
+enum ESSGS_RateMode {
     RateMode_None = 0,
     RateMode_Static,
     RateMode_Range
 };
 
-enum SSGS_TactilePatternType {
+enum ESSGS_TactilePatternType {
     TactilePatternType_Simple = 0,
     TactilePatternType_Custom
     // TODO TactilePatternType_Range
 };
 
-enum SSGS_RangeColorEffect {
+enum ESSGS_RangeColorEffect {
     RangeColorEffect_Static = 0,
     RangeColorEffect_Gradient
 };
 
 UENUM( BlueprintType )
-enum class SSGS_IlluminationMode : uint8 {
+enum class ESSGS_IlluminationMode : uint8 {
     Color = 0 UMETA( DisplayName = "color" ),
     Percent UMETA( DisplayName = "percent" ),
     Count UMETA( DisplayName = "count" )

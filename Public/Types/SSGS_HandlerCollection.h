@@ -21,7 +21,7 @@ public:
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
     void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )             const FSSGS_IlluminationDeviceZone& deviceZone,
-                          UPARAM( DisplayName = "Illumination Mode" )       SSGS_IlluminationMode mode,
+                          UPARAM( DisplayName = "Illumination Mode" )       ESSGS_IlluminationMode mode,
                           UPARAM( DisplayName = "ColorSpecification", ref ) USSGS_ColorEffectSpecification*& colorSpec,
                           UPARAM( DisplayName = "RateSpecification" )       USSGS_RateSpecification* rateSpec = nullptr );
 

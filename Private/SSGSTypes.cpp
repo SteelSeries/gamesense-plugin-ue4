@@ -210,7 +210,7 @@ FSSGS_HandlerColor::FSSGS_HandlerColor( const FSSGS_HandlerColor& other ) : FSSG
     rate = other.rate;
 }
 
-FSSGS_HandlerColor::FSSGS_HandlerColor( const FSSGS_IlluminationDeviceZone& dz, SSGS_IlluminationMode im, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec ) :
+FSSGS_HandlerColor::FSSGS_HandlerColor( const FSSGS_IlluminationDeviceZone& dz, ESSGS_IlluminationMode im, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec ) :
     deviceZone( dz ),
     mode( im ),
     color( colorSpec ),
@@ -247,7 +247,7 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
     else if ( deviceZone.zoneType == FSSGS_IlluminationDeviceZone::custom )
         obj->SetArrayField( "custom-zone-keys", _getArrayOfJsonValues( deviceZone.customZone() ) );
 
-    obj->SetStringField( "mode", GetEnumString( SSGS_IlluminationMode, mode ) );
+    obj->SetStringField( "mode", GetEnumString( ESSGS_IlluminationMode, mode ) );
     
     if ( color )
         obj->SetField( "color", color->Convert() );
@@ -386,7 +386,7 @@ void USSGS_HandlerCollection::AddColorHandler( const FSSGS_HandlerColor& handler
     _colorHandlers.Add( handler );
 }
 
-void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, const SSGS_IlluminationMode mode, USSGS_ColorEffectSpecification*& colorSpec, USSGS_RateSpecification* rateSpec )
+void USSGS_HandlerCollection::AddColorHandler( const FSSGS_IlluminationDeviceZone& deviceZone, const ESSGS_IlluminationMode mode, USSGS_ColorEffectSpecification*& colorSpec, USSGS_RateSpecification* rateSpec )
 {
     _colorHandlers.Add( FSSGS_HandlerColor( deviceZone,
                                             mode,
@@ -418,7 +418,7 @@ TSharedPtr< FJsonValue > USSGS_HandlerCollection::Convert() const
 // ****** FSSGS_GameInfo ******
 FSSGS_GameInfo::FSSGS_GameInfo() {};
 
-FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName, SSGS_IconColor iconColorId ) :
+FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName, ESSGS_IconColor iconColorId ) :
     game( game ),
     gameDisplayName( displayName ),
     iconColorId( iconColorId )
@@ -439,7 +439,7 @@ TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
 // ****** FSSGS_EventInfo ******
 FSSGS_EventInfo::FSSGS_EventInfo() {}
 
-FSSGS_EventInfo::FSSGS_EventInfo( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId ) :
+FSSGS_EventInfo::FSSGS_EventInfo( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId ) :
     game( gameName ),
     eventName( eventName ),
     minValue( minValue ),
@@ -466,7 +466,7 @@ FSSGS_EventBinding::FSSGS_EventBinding()
     handlers = NewObject< USSGS_HandlerCollection >();
 }
 
-FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) :
+FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) :
     game( gameName ),
     eventName( eventName ),
     minValue( minValue ),

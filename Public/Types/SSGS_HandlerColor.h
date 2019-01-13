@@ -11,7 +11,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerColor : public FSSGS_JsonConvertabl
 
     FSSGS_HandlerColor();
     FSSGS_HandlerColor( const FSSGS_HandlerColor& other );
-    FSSGS_HandlerColor( const FSSGS_IlluminationDeviceZone& deviceZone, SSGS_IlluminationMode mode, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec = nullptr );
+    FSSGS_HandlerColor( const FSSGS_IlluminationDeviceZone& deviceZone, ESSGS_IlluminationMode mode, USSGS_ColorEffectSpecification* colorSpec, USSGS_RateSpecification* rateSpec = nullptr );
     const FSSGS_HandlerColor& operator=( const FSSGS_HandlerColor& other );
     ~FSSGS_HandlerColor();
 
@@ -19,7 +19,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerColor : public FSSGS_JsonConvertabl
     UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
     FSSGS_IlluminationDeviceZone deviceZone;
     UPROPERTY( EditAnywhere, BlueprintReadWrite )
-    SSGS_IlluminationMode mode;
+    ESSGS_IlluminationMode mode;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Color Specification" ) )
     USSGS_ColorEffectSpecification* color;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ) )

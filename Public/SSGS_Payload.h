@@ -14,11 +14,11 @@ struct STEELSERIESGAMESENSE_API FSSGS_GameInfo: public FSSGS_JsonConvertable {
     GENERATED_BODY()
 
     FSSGS_GameInfo();
-    FSSGS_GameInfo( const FString& game, const FString& displayName, SSGS_IconColor iconColorId );
+    FSSGS_GameInfo( const FString& game, const FString& displayName, ESSGS_IconColor iconColorId );
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString game;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString gameDisplayName;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) SSGS_IconColor iconColorId;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) ESSGS_IconColor iconColorId;
 
     TSharedPtr< FJsonValue > Convert() const;
 
@@ -30,13 +30,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventInfo: public FSSGS_JsonConvertable {
     GENERATED_BODY()
 
     FSSGS_EventInfo();
-    FSSGS_EventInfo( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId );
+    FSSGS_EventInfo( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId );
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString game;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString eventName;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 minValue;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 maxValue;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) SSGS_EventIconId iconId;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) ESSGS_EventIconId iconId;
 
     TSharedPtr< FJsonValue > Convert() const;
 
@@ -48,14 +48,14 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventBinding : public FSSGS_JsonConvertabl
     GENERATED_BODY()
 
     FSSGS_EventBinding();
-    FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, SSGS_EventIconId iconId, USSGS_HandlerCollection* handlers );
+    FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers );
     ~FSSGS_EventBinding();
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString game;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString eventName;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 minValue;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 maxValue;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) SSGS_EventIconId iconId;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) ESSGS_EventIconId iconId;
     UPROPERTY( EditAnywhere, BlueprintReadWrite, meta=( DisplayName = "Handler Collection" ) )
     USSGS_HandlerCollection* handlers;
 
