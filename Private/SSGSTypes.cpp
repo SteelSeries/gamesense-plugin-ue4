@@ -97,6 +97,12 @@ void USSGS_RateSpecification::SetRangedRate( const FSSGS_RateRange& v )
     _rate.SetSubtype< FSSGS_RateRange >( v );
 }
 
+void USSGS_RateSpecification::SetRangedRate( const TArray< FSSGS_FrequencyRepeatLimitPair >& v )
+{
+    _mode = RateMode_Range;
+    _rate.SetSubtype< FSSGS_RateRange >( FSSGS_RateRange( v ) );
+}
+
 TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
 {
     switch ( _mode ) {

@@ -106,7 +106,7 @@ public:
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|Device-Zone" ) )
         static const FSSGS_IlluminationDeviceZone make_rgbperkeyzones_nav_cluster() { return{ "rgb-per-key-zones", "nav-cluster" }; }
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|Device-Zone" ) )
-        static const FSSGS_IlluminationDeviceZone make_rgbperkeyzones_kwypad_nums() { return{ "rgb-per-key-zones", "keypad-nums" }; }
+        static const FSSGS_IlluminationDeviceZone make_rgbperkeyzones_keypad_nums() { return{ "rgb-per-key-zones", "keypad-nums" }; }
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|Device-Zone" ) )
         static const FSSGS_IlluminationDeviceZone make_rgbperkeyzones_arrows() { return{ "rgb-per-key-zones", "arrows" }; }
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|Device-Zone" ) )
