@@ -283,75 +283,90 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectCustom::Convert() const
     return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
 }
 
+// ****** FSSGS_TactilePatternStatic ******
+FSSGS_TactilePatternStatic::FSSGS_TactilePatternStatic( const FSSGS_TactileEffectPredefined& v ) :
+    _type( TactilePatternStatic_Predefined ),
+    _pattern( v )
+{}
+
+FSSGS_TactilePatternStatic::FSSGS_TactilePatternStatic( const FSSGS_TactileEffectCustom& v ) :
+    _type( TactilePatternStatic_Custom ),
+    _pattern( v )
+{}
+
+TSharedPtr< FJsonValue > FSSGS_TactilePatternStatic::Convert() const
+{
+    switch ( _type ) {
+
+    case TactilePatternStatic_Predefined:
+        return _pattern.GetSubtype< FSSGS_TactileEffectPredefined >().Convert();
+        break;
+
+    case TactilePatternStatic_Custom:
+        return _pattern.GetSubtype< FSSGS_TactileEffectCustom >().Convert();
+        break;
+
+    default:
+        return TSharedPtr< FJsonValue >( nullptr );
+        break;
+
+    }
+}
+
+// ****** FSSGS_TactilePatternRange ******
+FSSGS_TactilePatternRange::FSSGS_TactilePatternRange( uint8 low, uint8 high, const TArray< FSSGS_TactilePatternStatic >& v ) :
+    low( low ),
+    high( high ),
+    pattern( v )
+{}
+
+TSharedPtr< FJsonValue > FSSGS_TactilePatternRange::Convert() const
+{
+    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
+
+    obj->SetNumberField( "low", low );
+    obj->SetNumberField( "low", high );
+    obj->SetArrayField( "pattern", _getArrayOfJsonValues( pattern ) );
+
+    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+}
+
 
 // ****** USSGS_TactilePatternSpecificationStatic ******
-void USSGS_TactilePatternSpecificationStatic::AddPredefinedEffect( const FSSGS_TactileEffectPredefined& v )
+FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWithPredefinedEffect( const FSSGS_PredefinedTactilePattern& type, int32 delay_ms )
 {
-    _staticPattern p;
-
-    p.type = ESSGS_TactilePatternStaticType::TactilePatternStatic_Predefined;
-    p.pattern.SetSubtype< FSSGS_TactileEffectPredefined >( v );
-
-    _pattern.Add( p );
+    return FSSGS_TactilePatternStatic( FSSGS_TactileEffectPredefined( type,
+                                                                      delay_ms ) );
 }
 
-void USSGS_TactilePatternSpecificationStatic::AddCustomEffect( const FSSGS_TactileEffectCustom& v )
+FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWithCustomEffect( int32 length_ms, int32 delay_ms )
 {
-    _staticPattern p;
-
-    p.type = ESSGS_TactilePatternStaticType::TactilePatternStatic_Custom;
-    p.pattern.SetSubtype< FSSGS_TactileEffectCustom >( v );
-
-    _pattern.Add( p );
+    return FSSGS_TactilePatternStatic( FSSGS_TactileEffectCustom( length_ms,
+                                                                  delay_ms ) );
 }
 
-void USSGS_TactilePatternSpecificationStatic::AddPredefinedEffect( const FSSGS_PredefinedTactilePattern& pattern, int32 delay_ms )
+void USSGS_TactilePatternSpecificationStatic::SetPattern( const TArray< FSSGS_TactilePatternStatic >& pattern )
 {
-    _staticPattern p;
-
-    p.type = ESSGS_TactilePatternStaticType::TactilePatternStatic_Predefined;
-    p.pattern.SetSubtype< FSSGS_TactileEffectPredefined >( { pattern, delay_ms } );
-
-    _pattern.Add( p );
-}
-
-void USSGS_TactilePatternSpecificationStatic::AddCustomEffect( int32 length_ms, int32 delay_ms )
-{
-    _staticPattern p;
-
-    p.type = ESSGS_TactilePatternStaticType::TactilePatternStatic_Custom;
-    p.pattern.SetSubtype< FSSGS_TactileEffectCustom >( { length_ms, delay_ms } );
-
-    _pattern.Add( p );
+    _pattern = pattern;
 }
 
 TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationStatic::Convert() const
 {
-    TJsonValues arr;
-
-    for ( const auto& sp : _pattern ) {
-
-        switch ( sp.type ) {
-
-        case TactilePatternStatic_Predefined:
-            arr.Add( sp.pattern.GetSubtype< FSSGS_TactileEffectPredefined >().Convert() );
-            break;
-
-        case TactilePatternStatic_Custom:
-            arr.Add( sp.pattern.GetSubtype< FSSGS_TactileEffectCustom >().Convert() );
-            break;
-
-        default:
-            arr.Add( TSharedPtr< FJsonValue >( nullptr ) );
-            break;
-
-        }
-
-    }
-
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) ) );
+    return std::move( TSharedPtr< FJsonValue >(
+        new ( std::nothrow ) FJsonValueArray( _getArrayOfJsonValues( _pattern ) ) ) );
 }
 
+// ****** USSGS_TactilePatternSpecificationRanges ******
+void USSGS_TactilePatternSpecificationRanges::SetRanges( const TArray< FSSGS_TactilePatternRange >& ranges )
+{
+    _pattern = ranges;
+}
+
+TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationRanges::Convert() const
+{
+    return std::move( TSharedPtr< FJsonValue >( 
+        new ( std::nothrow ) FJsonValueArray( _getArrayOfJsonValues( _pattern ) ) ) );
+}
 
 // ****** FSSGS_HandlerTactile ******
 FSSGS_HandlerTactile::FSSGS_HandlerTactile() : pattern( nullptr ), rate( nullptr ) {}

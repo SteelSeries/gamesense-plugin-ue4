@@ -87,3 +87,8 @@ USSGS_TactilePatternSpecificationStatic* USSGS_ClientBPLibrary::MakeTactilePatte
 {
     return _createUObj< USSGS_TactilePatternSpecificationStatic >();
 }
+
+USSGS_TactilePatternSpecificationRanges* USSGS_ClientBPLibrary::MakeTactilePatternSpecificationRanges()
+{
+    return _createUObj< USSGS_TactilePatternSpecificationRanges >();
+}

@@ -116,4 +116,7 @@ public:
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
     static USSGS_TactilePatternSpecificationStatic* MakeTactilePatternSpecificationStatic();
 
+    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    static USSGS_TactilePatternSpecificationRanges* MakeTactilePatternSpecificationRanges();
+
 };
