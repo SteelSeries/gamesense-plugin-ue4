@@ -336,6 +336,7 @@ _send_msg_err_ _sendMsg( const FString& uri, const FString& data ) {
                     err = smerr_serverdown;
                     break;
 
+                case EHttpResponseCodes::BadRequest:
                 case EHttpResponseCodes::ServerError:
                     err = smerr_msgillformed;
                     break;
