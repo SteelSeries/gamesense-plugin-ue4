@@ -9,7 +9,7 @@ struct FSSGS_IlluminationDeviceZone {
 
     GENERATED_BODY();
 
-    FSSGS_IlluminationDeviceZone() {}
+    FSSGS_IlluminationDeviceZone() : zoneType( named ), device( TEXT( "*** BAD VALUE ***" ) ), _namedZone( TEXT( "*** BAD VALUE ***" ) ) {}
     FSSGS_IlluminationDeviceZone( const FString& device, const FString& zone ) : zoneType( named ), device( device ), _namedZone( zone ) {}
 
     FSSGS_IlluminationDeviceZone( const FString& device, const TArray< uint8 >& zone ) : zoneType( custom ), device( device ), _customZone( zone ) {}
@@ -35,7 +35,7 @@ struct FSSGS_TactileDeviceZone {
 
     GENERATED_BODY();
 
-    FSSGS_TactileDeviceZone() {}
+    FSSGS_TactileDeviceZone() : device( TEXT( "*** BAD VALUE ***" ) ), zone( TEXT( "*** BAD VALUE ***" ) ) {}
     FSSGS_TactileDeviceZone( const FString& device, const FString& zone ) : device( device ), zone( zone ) {}
 
     FString device;
