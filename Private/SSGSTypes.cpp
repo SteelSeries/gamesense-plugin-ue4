@@ -425,7 +425,7 @@ TSharedPtr< FJsonValue > FSSGS_TactilePatternRange::Convert() const
     TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject );
 
     obj->SetNumberField( "low", low );
-    obj->SetNumberField( "low", high );
+    obj->SetNumberField( "high", high );
     obj->SetArrayField( "pattern", _getArrayOfJsonValues( pattern ) );
 
     return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
@@ -464,7 +464,7 @@ TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationStatic::Convert() cons
 }
 
 // ****** USSGS_TactilePatternSpecificationRanges ******
-USSGS_TactilePatternSpecificationRanges* USSGS_TactilePatternSpecificationRanges::MakeTactilePatternSpecificationRanges( const TArray< FSSGS_TactilePatternRange >& ranges )
+USSGS_TactilePatternSpecificationRanges* USSGS_TactilePatternSpecificationRanges::MakeRangedTactilePattern( const TArray< FSSGS_TactilePatternRange >& ranges )
 {
     USSGS_TactilePatternSpecificationRanges* p = _createUObj< USSGS_TactilePatternSpecificationRanges >();
     p->SetRanges( ranges );
