@@ -95,28 +95,4 @@ public:
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
     static void RemoveGame( const FString& gameName );
 
-
-    // convenience functions
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_RateSpecification* MakeRateSpecification();
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_HandlerCollection* MakeHandlerCollection();
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_ColorEffectSpecificationStatic* MakeColorEffectSpecificationStatic();
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_ColorEffectSpecificationGradient* MakeColorEffectSpecificationGradient();
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_ColorEffectSpecificationRanges* MakeColorEffectSpecificationRanges();
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_TactilePatternSpecificationStatic* MakeTactilePatternSpecificationStatic();
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static USSGS_TactilePatternSpecificationRanges* MakeTactilePatternSpecificationRanges();
-
 };

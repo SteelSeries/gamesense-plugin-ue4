@@ -11,6 +11,7 @@ class STEELSERIESGAMESENSE_API USSGS_TactilePatternSpecification : public UObjec
 
 public:
 
+    virtual ~USSGS_TactilePatternSpecification() {};
     TSharedPtr< FJsonValue > Convert() const { return TSharedPtr< FJsonValue >( nullptr ); }
 
 protected:

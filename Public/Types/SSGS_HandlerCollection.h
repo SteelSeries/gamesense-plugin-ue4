@@ -20,6 +20,9 @@ public:
     void AddTactileHandler( const FSSGS_HandlerTactile& handler );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
+    static USSGS_HandlerCollection* MakeHandlerCollection();
+
+    UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
     void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )             const FSSGS_IlluminationDeviceZone& deviceZone,
                           UPARAM( DisplayName = "Illumination Mode" )       ESSGS_IlluminationMode mode,
                           UPARAM( DisplayName = "ColorSpecification", ref ) USSGS_ColorEffectSpecification*& colorSpec,

@@ -13,6 +13,9 @@ class STEELSERIESGAMESENSE_API USSGS_TactilePatternSpecificationRanges : public 
 public:
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )
+    static USSGS_TactilePatternSpecificationRanges* MakeTactilePatternSpecificationRanges( const TArray< FSSGS_TactilePatternRange >& ranges );
+
+    UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )
     void SetRanges( const TArray< FSSGS_TactilePatternRange >& ranges );
 
 

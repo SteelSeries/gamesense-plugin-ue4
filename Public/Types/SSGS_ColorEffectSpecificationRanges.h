@@ -17,6 +17,9 @@ public:
     void AddGradient( const FSSGS_ColorRangeGradient& v );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
+    static USSGS_ColorEffectSpecificationRanges* MakeRangeColorEffect();
+
+    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
     void AddStatic( uint8 low, uint8 high, const FSSGS_RGB& color );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )

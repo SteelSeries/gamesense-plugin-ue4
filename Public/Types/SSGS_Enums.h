@@ -60,6 +60,7 @@ enum ESSGS_RateMode {
 };
 
 enum ESSGS_TactilePatternStaticType {
+    TactilePatternStatic_Invalid,
     TactilePatternStatic_Predefined,
     TactilePatternStatic_Custom
 };

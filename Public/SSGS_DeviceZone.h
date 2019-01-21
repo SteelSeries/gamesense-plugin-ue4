@@ -35,6 +35,9 @@ struct FSSGS_TactileDeviceZone {
 
     GENERATED_BODY();
 
+    FSSGS_TactileDeviceZone() {}
+    FSSGS_TactileDeviceZone( const FString& device, const FString& zone ) : device( device ), zone( zone ) {}
+
     FString device;
     FString zone;
 

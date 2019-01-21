@@ -12,6 +12,9 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationStatic : public USS
 
 public:
 
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    static USSGS_ColorEffectSpecificationStatic* MakeStaticColorEffect( const FSSGS_RGB& color );
+
     UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
     void SetColor( const FSSGS_RGB& color );
 

@@ -8,6 +8,10 @@ USTRUCT( BlueprintType )
 struct FSSGS_PredefinedTactilePattern
 {
     GENERATED_BODY();
+
+    FSSGS_PredefinedTactilePattern() {}
+    FSSGS_PredefinedTactilePattern( const FString& name ) : name( name ) {}
+
     UPROPERTY( BlueprintReadOnly ) FString name;
 };
 

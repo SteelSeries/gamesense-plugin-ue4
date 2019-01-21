@@ -13,10 +13,13 @@ class STEELSERIESGAMESENSE_API USSGS_TactilePatternSpecificationStatic : public 
 
 public:
 
-    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|TactilePatternSpecification" ) )
-    static FSSGS_TactilePatternStatic MakeStaticWithPredefinedEffect( const FSSGS_PredefinedTactilePattern& type, int32 delay_ms = 0 );
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|TactilePatternSpecification" )
+    static USSGS_TactilePatternSpecificationStatic* MakeStaticTactilePattern( const TArray< FSSGS_TactilePatternStatic >& pattern );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|TactilePatternSpecification" ) )
+    static FSSGS_TactilePatternStatic MakeStaticWithPredefinedEffect( const FSSGS_PredefinedTactilePattern type, int32 delay_ms = 0 );
+
+    UFUNCTION( BlueprintCallable, meta = ( NativeMakeFunc, Category = "GameSense|TactilePatternSpecification" ) )
     static FSSGS_TactilePatternStatic MakeStaticWithCustomEffect( int32 length_ms, int32 delay_ms = 0 );
 
     UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )

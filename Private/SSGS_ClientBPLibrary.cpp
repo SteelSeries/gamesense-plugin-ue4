@@ -57,38 +57,3 @@ void USSGS_ClientBPLibrary::RemoveGame( const FString& gameName )
 {
     Client::Instance()->RemoveGame( FSSGS_Game{ gameName } );
 }
-
-USSGS_RateSpecification* USSGS_ClientBPLibrary::MakeRateSpecification()
-{
-    return _createUObj< USSGS_RateSpecification >();
-}
-
-USSGS_HandlerCollection* USSGS_ClientBPLibrary::MakeHandlerCollection()
-{
-    return _createUObj< USSGS_HandlerCollection >();
-}
-
-USSGS_ColorEffectSpecificationStatic* USSGS_ClientBPLibrary::MakeColorEffectSpecificationStatic()
-{
-    return _createUObj< USSGS_ColorEffectSpecificationStatic >();
-}
-
-USSGS_ColorEffectSpecificationGradient* USSGS_ClientBPLibrary::MakeColorEffectSpecificationGradient()
-{
-    return _createUObj< USSGS_ColorEffectSpecificationGradient >();
-}
-
-USSGS_ColorEffectSpecificationRanges* USSGS_ClientBPLibrary::MakeColorEffectSpecificationRanges()
-{
-    return _createUObj< USSGS_ColorEffectSpecificationRanges >();
-}
-
-USSGS_TactilePatternSpecificationStatic* USSGS_ClientBPLibrary::MakeTactilePatternSpecificationStatic()
-{
-    return _createUObj< USSGS_TactilePatternSpecificationStatic >();
-}
-
-USSGS_TactilePatternSpecificationRanges* USSGS_ClientBPLibrary::MakeTactilePatternSpecificationRanges()
-{
-    return _createUObj< USSGS_TactilePatternSpecificationRanges >();
-}

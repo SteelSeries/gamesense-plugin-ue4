@@ -11,6 +11,7 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecification : public UObject, 
 
 public:
 
+    virtual ~USSGS_ColorEffectSpecification() {}
     virtual TSharedPtr< FJsonValue > Convert() const { return TSharedPtr< FJsonValue >( nullptr ); }
 
 protected:
