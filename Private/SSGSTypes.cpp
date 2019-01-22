@@ -440,7 +440,7 @@ USSGS_TactilePatternSpecificationStatic* USSGS_TactilePatternSpecificationStatic
     return p;
 }
 
-FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWithPredefinedEffect( const FSSGS_PredefinedTactilePattern type, int32 delay_ms )
+FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWithPredefinedEffect( const FSSGS_PredefinedTactilePattern& type, int32 delay_ms )
 {
     return FSSGS_TactilePatternStatic( FSSGS_TactileEffectPredefined( type,
                                                                       delay_ms ) );
