@@ -108,6 +108,11 @@ private:
             _typeIdx = 2;
         } else if ( std::is_same< T, Type3 >::value ) {
             _typeIdx = 3;
+        } else {
+            static_assert( std::is_same< T, Type1 >::value ||
+                           std::is_same< T, Type2 >::value ||
+                           std::is_same< T, Type3 >::value,
+                           "No such subtype" );
         }
 
         new ( &_values ) T( v );
