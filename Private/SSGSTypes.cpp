@@ -339,91 +339,25 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectCustom::Convert() const
 
 // ****** FSSGS_TactilePatternStatic ******
 FSSGS_TactilePatternStatic::FSSGS_TactilePatternStatic( const FSSGS_TactileEffectPredefined& v ) :
-    _type( TactilePatternStatic_Predefined )
-{
-    new ( &_pattern.predefined ) FSSGS_TactileEffectPredefined( v );
-}
+    _type( TactilePatternStatic_Predefined ),
+    _pattern( v )
+{}
 
 FSSGS_TactilePatternStatic::FSSGS_TactilePatternStatic( const FSSGS_TactileEffectCustom& v ) :
-    _type( TactilePatternStatic_Custom )
-{
-    new ( &_pattern.custom ) FSSGS_TactileEffectCustom( v );
-}
-
-FSSGS_TactilePatternStatic::FSSGS_TactilePatternStatic( const FSSGS_TactilePatternStatic& other ) :
-    _type( other._type )
-{
-    switch ( other._type ) {
-
-    case TactilePatternStatic_Predefined:
-        new ( &_pattern.predefined ) FSSGS_TactileEffectPredefined( other._pattern.predefined );
-        break;
-
-    case TactilePatternStatic_Custom:
-        new ( &_pattern.custom ) FSSGS_TactileEffectCustom( other._pattern.custom );
-        break;
-
-    default:
-        break;
-
-    }
-}
-
-FSSGS_TactilePatternStatic& FSSGS_TactilePatternStatic::operator=( const FSSGS_TactilePatternStatic& rhs )
-{
-    if ( this != &rhs ) {
-
-        switch ( _type ) {
-
-        case TactilePatternStatic_Predefined:
-            _pattern.predefined.~FSSGS_TactileEffectPredefined();
-            break;
-
-        case TactilePatternStatic_Custom:
-            _pattern.custom.~FSSGS_TactileEffectCustom();
-            break;
-
-        }
-
-        _type = rhs._type;
-
-        switch ( rhs._type ) {
-
-        case TactilePatternStatic_Predefined:
-            new ( &_pattern.predefined ) FSSGS_TactileEffectPredefined( rhs._pattern.predefined );
-            break;
-
-        case TactilePatternStatic_Custom:
-            new ( &_pattern.custom ) FSSGS_TactileEffectCustom( rhs._pattern.custom );
-            break;
-
-        default:
-            break;
-
-        }
-    }
-
-    return *this;
-}
+    _type( TactilePatternStatic_Custom ),
+    _pattern( v )
+{}
 
 TSharedPtr< FJsonValue > FSSGS_TactilePatternStatic::Convert() const
 {
     switch ( _type ) {
-    // TODO remove
-    //case TactilePatternStatic_Predefined:
-    //    return _pattern.GetSubtype< FSSGS_TactileEffectPredefined >().Convert();
-    //    break;
-
-    //case TactilePatternStatic_Custom:
-    //    return _pattern.GetSubtype< FSSGS_TactileEffectCustom >().Convert();
-    //    break;
 
     case TactilePatternStatic_Predefined:
-        return _pattern.predefined.Convert();
+        return _pattern.Get< FSSGS_TactileEffectPredefined >().Convert();
         break;
 
     case TactilePatternStatic_Custom:
-        return _pattern.custom.Convert();
+        return _pattern.Get< FSSGS_TactileEffectCustom >().Convert();
         break;
 
     default:

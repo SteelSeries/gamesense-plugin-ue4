@@ -13,9 +13,9 @@ class Union
 public:
 
     Union() : _typeIdx( 0 ) {}
-    Union( const Type1& v ) { set( v ); }
-    Union( const Type2& v ) { set( v ); }
-    Union( const Type3& v ) { set( v ); }
+    Union( const Type1& v ) : _typeIdx( 0 ) { set( v ); }
+    Union( const Type2& v ) : _typeIdx( 0 ) { set( v ); }
+    Union( const Type3& v ) : _typeIdx( 0 ) { set( v ); }
     Union( const Union& other ) {
 
         switch ( other._typeIdx )
@@ -72,7 +72,6 @@ public:
                            std::is_same< T, Type2 >::value ||
                            std::is_same< T, Type3 >::value,
                            "No such subtype" );
-            return T();
         }
         
         return *pValue;
@@ -122,6 +121,7 @@ private:
 #pragma warning(disable:4582)
 #pragma warning(disable:4583)
         __values() {}
+        ~__values() {}
 
 
         NullUnionMember _invalid;
