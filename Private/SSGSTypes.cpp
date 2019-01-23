@@ -144,11 +144,40 @@ FSSGS_ColorRangeStatic::FSSGS_ColorRangeStatic( uint8 l, uint8 h, const FSSGS_RG
 {}
 
 // ****** FSSGS_ColorRangeGradient ******
-FSSGS_ColorRangeGradient::FSSGS_ColorRangeGradient( uint8 l, uint8 h, const FSSGS_ColorGradient& c ) :
+FSSGS_ColorRangeGradient::FSSGS_ColorRangeGradient( uint8 l, uint8 h, const FSSGS_RGB& zero, const FSSGS_RGB& hundred ) :
     low( l ),
     high( h ),
-    color( c )
+    color( { zero, hundred } )
 {}
+
+// ****** FSSGS_ColorRange ******
+FSSGS_ColorRange::FSSGS_ColorRange( const FSSGS_ColorRangeStatic& v ) :
+    _type( RangeColorEffect_Static ),
+    _color( v )
+{}
+
+FSSGS_ColorRange::FSSGS_ColorRange( const FSSGS_ColorRangeGradient& v ) :
+    _type( RangeColorEffect_Gradient ),
+    _color( v )
+{}
+
+TSharedPtr< FJsonValue > FSSGS_ColorRange::Convert() const
+{
+    TSharedPtr< FJsonObject > obj;
+
+    switch ( _type ) {
+    case RangeColorEffect_Static:
+        obj = FJsonObjectConverter::UStructToJsonObject( _color.Get< FSSGS_ColorRangeStatic >() );
+        break;
+    case RangeColorEffect_Gradient:
+        obj = FJsonObjectConverter::UStructToJsonObject( _color.Get< FSSGS_ColorRangeGradient >() );
+        break;
+    default:
+        break;
+    }
+
+    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+}
 
 // ****** USSGS_ColorEffectSpecificationStatic ******
 USSGS_ColorEffectSpecificationStatic* USSGS_ColorEffectSpecificationStatic::MakeStaticColorEffect( const FSSGS_RGB& color )
@@ -194,40 +223,31 @@ TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationGradient::Convert() const
 }
 
 // ****** USSGS_ColorEffectSpecificationRanges ******
-USSGS_ColorEffectSpecificationRanges* USSGS_ColorEffectSpecificationRanges::MakeRangeColorEffect()
+USSGS_ColorEffectSpecificationRanges* USSGS_ColorEffectSpecificationRanges::MakeRangeColorEffect( const TArray< FSSGS_ColorRange >& v )
 {
     USSGS_ColorEffectSpecificationRanges* p = _createUObj< USSGS_ColorEffectSpecificationRanges >();
+    p->ranges = v;
     return p;
 }
 
-void USSGS_ColorEffectSpecificationRanges::AddStatic( const FSSGS_ColorRangeStatic& v )
+FSSGS_ColorRange USSGS_ColorEffectSpecificationRanges::MakeStaticColorRange( uint8 low, uint8 high, const FSSGS_RGB& color )
 {
-    staticRanges.Add( v );
+    return FSSGS_ColorRange( FSSGS_ColorRangeStatic( low,
+                                                     high,
+                                                     color ) );
 }
 
-void USSGS_ColorEffectSpecificationRanges::AddStatic( uint8 low, uint8 high, const FSSGS_RGB& color )
+FSSGS_ColorRange USSGS_ColorEffectSpecificationRanges::MakeGradientColorRange( uint8 low, uint8 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
 {
-    staticRanges.Add( FSSGS_ColorRangeStatic( low,
-                                              high,
-                                              color ) );
-}
-
-void USSGS_ColorEffectSpecificationRanges::AddGradient( const FSSGS_ColorRangeGradient& v )
-{
-    gradientRanges.Add( v );
-}
-
-void USSGS_ColorEffectSpecificationRanges::AddGradient( uint8 low, uint8 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
-{
-    gradientRanges.Add( FSSGS_ColorRangeGradient( low,
-                                                  high,
-                                                  FSSGS_ColorGradient{ { zero, hundred } } ) );
+    return FSSGS_ColorRange( FSSGS_ColorRangeGradient( low,
+                                                       high,
+                                                       zero,
+                                                       hundred ) );
 }
 
 TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationRanges::Convert() const
 {
-    TJsonValues arr( _getArrayOfJsonValuesFromUStructs( staticRanges ) );
-    arr.Append( _getArrayOfJsonValuesFromUStructs( gradientRanges ) );
+    TJsonValues arr( _getArrayOfJsonValues( ranges ) );
 
     return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) ) );
 }

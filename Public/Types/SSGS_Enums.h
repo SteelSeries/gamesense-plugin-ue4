@@ -72,7 +72,8 @@ enum ESSGS_TactilePatternType {
 };
 
 enum ESSGS_RangeColorEffect {
-    RangeColorEffect_Static = 0,
+    RangeColorEffect_Invalid = 0,
+    RangeColorEffect_Static,
     RangeColorEffect_Gradient
 };
 

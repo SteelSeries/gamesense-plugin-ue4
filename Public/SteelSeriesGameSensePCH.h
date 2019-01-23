@@ -26,6 +26,7 @@
 #include "Types/SSGS_ColorGradient.h"
 #include "Types/SSGS_ColorRangeStatic.h"
 #include "Types/SSGS_ColorRangeGradient.h"
+#include "Types/SSGS_ColorRange.h"
 #include "Types/SSGS_ColorEffectSpecification.h"
 #include "Types/SSGS_ColorEffectSpecificationStatic.h"
 #include "Types/SSGS_ColorEffectSpecificationGradient.h"

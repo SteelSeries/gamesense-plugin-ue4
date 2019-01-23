@@ -1,8 +1,7 @@
 #pragma once
 
 
-#include "SSGS_ColorRangeStatic.h"
-#include "SSGS_ColorRangeGradient.h"
+#include "SSGS_ColorRange.h"
 #include "SSGS_ColorEffectSpecificationRanges.generated.h"
 
 
@@ -13,21 +12,17 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationRanges : public USS
 
 public:
 
-    void AddStatic( const FSSGS_ColorRangeStatic& v );
-    void AddGradient( const FSSGS_ColorRangeGradient& v );
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    static USSGS_ColorEffectSpecificationRanges* MakeRangeColorEffect( const TArray< FSSGS_ColorRange >& v );
 
-    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    static USSGS_ColorEffectSpecificationRanges* MakeRangeColorEffect();
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    static FSSGS_ColorRange MakeStaticColorRange( uint8 low, uint8 high, const FSSGS_RGB& color );
 
-    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    void AddStatic( uint8 low, uint8 high, const FSSGS_RGB& color );
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    void AddGradient( uint8 low, uint8 high, UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    static FSSGS_ColorRange MakeGradientColorRange( uint8 low, uint8 high, UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY() TArray< FSSGS_ColorRangeStatic > staticRanges;
-    UPROPERTY() TArray< FSSGS_ColorRangeGradient > gradientRanges;
+    UPROPERTY() TArray< FSSGS_ColorRange > ranges;
 
 };
