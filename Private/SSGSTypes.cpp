@@ -96,25 +96,25 @@ USSGS_RateSpecification* USSGS_RateSpecification::MakeRangedRate( const TArray< 
 void USSGS_RateSpecification::SetStaticRate( const FSSGS_RateStatic& v )
 {
     _mode = RateMode_Static;
-    _rate.SetSubtype< FSSGS_RateStatic >( v );
+    _rate.Set< FSSGS_RateStatic >( v );
 }
 
 void USSGS_RateSpecification::SetStaticRate( int32 frequency, int32 repeat_limit )
 {
     _mode = RateMode_Static;
-    _rate.SetSubtype< FSSGS_RateStatic >( FSSGS_RateStatic{ frequency, repeat_limit } );
+    _rate.Set< FSSGS_RateStatic >( FSSGS_RateStatic{ frequency, repeat_limit } );
 }
 
 void USSGS_RateSpecification::SetRangedRate( const FSSGS_RateRange& v )
 {
     _mode = RateMode_Range;
-    _rate.SetSubtype< FSSGS_RateRange >( v );
+    _rate.Set< FSSGS_RateRange >( v );
 }
 
 void USSGS_RateSpecification::SetRangedRate( const TArray< FSSGS_FrequencyRepeatLimitPair >& v )
 {
     _mode = RateMode_Range;
-    _rate.SetSubtype< FSSGS_RateRange >( FSSGS_RateRange( v ) );
+    _rate.Set< FSSGS_RateRange >( FSSGS_RateRange( v ) );
 }
 
 TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
@@ -122,12 +122,12 @@ TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
     switch ( _mode ) {
     
     case RateMode_Static: {
-        TSharedPtr< FJsonObject > obj = FJsonObjectConverter::UStructToJsonObject( _rate.GetSubtype< FSSGS_RateStatic >() );
+        TSharedPtr< FJsonObject > obj = FJsonObjectConverter::UStructToJsonObject( _rate.Get< FSSGS_RateStatic >() );
         return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
     }
 
     case RateMode_Range: {
-        TSharedPtr< FJsonObject > obj = FJsonObjectConverter::UStructToJsonObject( _rate.GetSubtype< FSSGS_RateRange >() );
+        TSharedPtr< FJsonObject > obj = FJsonObjectConverter::UStructToJsonObject( _rate.Get< FSSGS_RateRange >() );
         return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
     }
     

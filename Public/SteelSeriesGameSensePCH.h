@@ -13,6 +13,8 @@
 #include "SSGS_DeviceZone.h"
 #include "SSGS_PredefinedTactilePatterns.h"
 #include "SSGS_JsonConvertable.h"
+#include "SSGS_Union.h"
+
 
 #include "Types/SSGS_Enums.h"
 #include "Types/SSGS_Frequency.h"

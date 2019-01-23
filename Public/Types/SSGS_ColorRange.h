@@ -1,7 +1,6 @@
 #pragma once
 
 
-#include "SSGS_Union.h"
 #include "SSGS_ColorRange.generated.h"
 
 

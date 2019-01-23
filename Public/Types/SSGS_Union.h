@@ -78,7 +78,7 @@ public:
     }
 
     template < typename T >
-    void Set( const T& v ) {
+    inline void Set( const T& v ) {
         set( v );
     }
 
