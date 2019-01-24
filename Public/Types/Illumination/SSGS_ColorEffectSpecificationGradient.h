@@ -17,12 +17,6 @@ public:
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
     static USSGS_ColorEffectSpecificationGradient* MakeGradientColorEffect( UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
-    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    void SetGradientWithColors( UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|ColorEffectSpecification" )
-    void SetGradient( const FSSGS_Gradient& gradient );
-
     TSharedPtr< FJsonValue > Convert() const;
 
     UPROPERTY() FSSGS_ColorGradient gradient;

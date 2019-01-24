@@ -22,9 +22,6 @@ public:
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|TactilePatternSpecification" ) )
     static FSSGS_TactilePatternStatic MakeStaticWithCustomEffect( int32 length_ms, int32 delay_ms = 0 );
 
-    UFUNCTION( BlueprintCallable, Category = "GameSense|TactilePatternSpecification" )
-    void SetPattern( const TArray< FSSGS_TactilePatternStatic >& pattern );
-
     TSharedPtr< FJsonValue > Convert() const;
 
 private:

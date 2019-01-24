@@ -13,19 +13,11 @@ class STEELSERIESGAMESENSE_API USSGS_RateSpecification : public UObject, public 
 
 public:
 
-    void SetStaticRate( const FSSGS_RateStatic& v );
-    void SetRangedRate( const FSSGS_RateRange& v );
-
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|RateSpecification" )
     static USSGS_RateSpecification* MakeStaticRate( int32 frequency, int32 repeat_limit );
+
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|RateSpecification" )
     static USSGS_RateSpecification* MakeRangedRate( UPARAM( DisplayName = "Frequency - RepeatLimit Pairs" ) const TArray< FSSGS_FrequencyRepeatLimitPair >& v );
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|RateSpecification" )
-    void SetStaticRate( int32 frequency, int32 repeat_limit );
-
-    UFUNCTION( BlueprintCallable, Category = "GameSense|RateSpecification" )
-    void SetRangedRate( UPARAM( DisplayName = "Frequency - RepeatLimit Pairs" ) const TArray< FSSGS_FrequencyRepeatLimitPair >& v );
 
     TSharedPtr< FJsonValue > Convert() const;
 

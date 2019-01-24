@@ -107,39 +107,17 @@ FSSGS_RateRange::FSSGS_RateRange( const TArray< FSSGS_FrequencyRepeatLimitPair >
 USSGS_RateSpecification* USSGS_RateSpecification::MakeStaticRate( int32 frequency, int32 repeat_limit )
 {
     USSGS_RateSpecification* p = _createUObj< USSGS_RateSpecification >();
-    p->SetStaticRate( frequency, repeat_limit );
+    p->_mode = RateMode_Static;
+    p->_rate.Set< FSSGS_RateStatic >( FSSGS_RateStatic{ frequency, repeat_limit } );
     return p;
 }
 
 USSGS_RateSpecification* USSGS_RateSpecification::MakeRangedRate( const TArray< FSSGS_FrequencyRepeatLimitPair >& v )
 {
     USSGS_RateSpecification* p = _createUObj< USSGS_RateSpecification >();
-    p->SetRangedRate( v );
+    p->_mode = RateMode_Range;
+    p->_rate.Set< FSSGS_RateRange >( FSSGS_RateRange( v ) );
     return p;
-}
-
-void USSGS_RateSpecification::SetStaticRate( const FSSGS_RateStatic& v )
-{
-    _mode = RateMode_Static;
-    _rate.Set< FSSGS_RateStatic >( v );
-}
-
-void USSGS_RateSpecification::SetStaticRate( int32 frequency, int32 repeat_limit )
-{
-    _mode = RateMode_Static;
-    _rate.Set< FSSGS_RateStatic >( FSSGS_RateStatic{ frequency, repeat_limit } );
-}
-
-void USSGS_RateSpecification::SetRangedRate( const FSSGS_RateRange& v )
-{
-    _mode = RateMode_Range;
-    _rate.Set< FSSGS_RateRange >( v );
-}
-
-void USSGS_RateSpecification::SetRangedRate( const TArray< FSSGS_FrequencyRepeatLimitPair >& v )
-{
-    _mode = RateMode_Range;
-    _rate.Set< FSSGS_RateRange >( FSSGS_RateRange( v ) );
 }
 
 TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
@@ -208,13 +186,8 @@ TSharedPtr< FJsonValue > FSSGS_ColorRange::Convert() const
 USSGS_ColorEffectSpecificationStatic* USSGS_ColorEffectSpecificationStatic::MakeStaticColorEffect( const FSSGS_RGB& color )
 {
     USSGS_ColorEffectSpecificationStatic* p = _createUObj< USSGS_ColorEffectSpecificationStatic >();
-    p->SetColor( color );
+    p->color = color;
     return p;
-}
-
-void USSGS_ColorEffectSpecificationStatic::SetColor( const FSSGS_RGB& v )
-{
-    color = v;
 }
 
 TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationStatic::Convert() const
@@ -227,18 +200,8 @@ TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationStatic::Convert() const
 USSGS_ColorEffectSpecificationGradient* USSGS_ColorEffectSpecificationGradient::MakeGradientColorEffect( const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
 {
     USSGS_ColorEffectSpecificationGradient* p = _createUObj< USSGS_ColorEffectSpecificationGradient >();
-    p->SetGradientWithColors( zero, hundred );
+    p->gradient = FSSGS_ColorGradient{ FSSGS_Gradient{ zero, hundred } };
     return p;
-}
-
-void USSGS_ColorEffectSpecificationGradient::SetGradientWithColors( const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
-{
-    gradient = FSSGS_ColorGradient{ FSSGS_Gradient{ zero, hundred } };
-}
-
-void USSGS_ColorEffectSpecificationGradient::SetGradient( const FSSGS_Gradient& v )
-{
-    gradient = FSSGS_ColorGradient{ v };
 }
 
 TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationGradient::Convert() const
@@ -415,7 +378,7 @@ TSharedPtr< FJsonValue > FSSGS_TactilePatternRange::Convert() const
 USSGS_TactilePatternSpecificationStatic* USSGS_TactilePatternSpecificationStatic::MakeStaticTactilePattern( const TArray< FSSGS_TactilePatternStatic >& pattern )
 {
     USSGS_TactilePatternSpecificationStatic* p = _createUObj< USSGS_TactilePatternSpecificationStatic >();
-    p->SetPattern( pattern );
+    p->_pattern = pattern;
     return p;
 }
 
@@ -431,11 +394,6 @@ FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWi
                                                                   delay_ms ) );
 }
 
-void USSGS_TactilePatternSpecificationStatic::SetPattern( const TArray< FSSGS_TactilePatternStatic >& pattern )
-{
-    _pattern = pattern;
-}
-
 TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationStatic::Convert() const
 {
     return std::move( TSharedPtr< FJsonValue >(
@@ -446,13 +404,8 @@ TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationStatic::Convert() cons
 USSGS_TactilePatternSpecificationRanges* USSGS_TactilePatternSpecificationRanges::MakeRangedTactilePattern( const TArray< FSSGS_TactilePatternRange >& ranges )
 {
     USSGS_TactilePatternSpecificationRanges* p = _createUObj< USSGS_TactilePatternSpecificationRanges >();
-    p->SetRanges( ranges );
+    p->_pattern = ranges;
     return p;
-}
-
-void USSGS_TactilePatternSpecificationRanges::SetRanges( const TArray< FSSGS_TactilePatternRange >& ranges )
-{
-    _pattern = ranges;
 }
 
 TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationRanges::Convert() const
