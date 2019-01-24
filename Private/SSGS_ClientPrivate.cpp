@@ -1,4 +1,5 @@
-#include "SSGSPrivatePCH.h"
+#include "SSGS_PrivatePCH.h"
+#include "SSGS_Misc.h"
 
 #include <future>
 
@@ -266,7 +267,7 @@ FString _readProps() {
 FString _getServerPort() {
     FString propsJson = _readProps();
     FString port;
-    F_server_props_ props;
+    FServerProps props;
 
     bool success = FJsonObjectConverter::JsonObjectStringToUStruct( propsJson, &props, 0, 0 );
 

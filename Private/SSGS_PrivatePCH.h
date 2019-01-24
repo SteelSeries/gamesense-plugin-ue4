@@ -2,7 +2,6 @@
 
 
 #include "../Public/SteelSeriesGameSensePCH.h"
-#include "SSGSPrivateTypes.h"
 #include "SSGS_ClientPrivate.h"
 
 

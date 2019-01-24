@@ -62,7 +62,7 @@ private:
     Client();
     Client( const Client& other ) = delete;
     Client( const Client&& other ) = delete;
-    Client& operator=( const Client& rhs );
+    Client& operator=( const Client& rhs ) = delete;
     bool _isActive() { return _mClientState == Active; }
     bool _isDisabled() { return _mClientState == Disabled; }
 

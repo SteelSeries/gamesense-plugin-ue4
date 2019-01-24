@@ -2,7 +2,7 @@
 
 
 #include "SteelSeriesGameSensePCH.h"
-#include "SSGS_Payload.h"
+#include "Types/SSGS_Enums.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SSGS_ClientBPLibrary.generated.h"
 
@@ -19,7 +19,7 @@ class STEELSERIESGAMESENSE_API USSGS_ClientBPLibrary : public UBlueprintFunction
 public:
 
     /**
-    * Initializes client's resources. Must call it before invoking eny other function.
+    * Initializes client's resources. Must call it before invoking any other function.
     *
     * @return true if successful, false otherwise.
     */

@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "Types/SSGS_DeviceZone.h"
 #include "SSGS_HandlerColor.generated.h"
 
 

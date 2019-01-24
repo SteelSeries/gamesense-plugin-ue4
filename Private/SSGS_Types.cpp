@@ -1,5 +1,29 @@
-#include "SSGSPrivatePCH.h"
+#include "SSGS_PrivatePCH.h"
 
+
+template <typename T>
+FString _getEnumString( const FString& name, T value )
+{
+    static const UEnum* pEnum;
+    if ( !pEnum ) {
+        pEnum = FindObject< UEnum >( ( UObject* )ANY_PACKAGE, *name, true );
+        if ( !pEnum ) {
+            return FString( TEXT( "Enum class \"" ) ) + name + FString( TEXT( "\" not found" ) );
+        }
+    }
+
+    return pEnum->GetDisplayNameTextByValue( ( int64 )value ).ToString();
+}
+
+#define GetEnumString(TYPE,VALUE) _getEnumString( #TYPE, VALUE )
+
+template <typename T>
+T* _createUObj()
+{
+    T* p = NewObject< T >();
+    p->AddToRoot();
+    return p;
+}
 
 typedef TArray< TSharedPtr < FJsonValue > > TJsonValues;
 
@@ -29,7 +53,7 @@ TJsonValues _getArrayOfJsonValues( const TArray< T >& arr )
     return std::move( ret );
 }
 
-TJsonValues _getArrayOfJsonValues( const TArray< uint8 >& arr)
+TJsonValues _getArrayOfJsonValues( const TArray< uint8 >& arr )
 {
     TJsonValues ret;
 
@@ -51,6 +75,7 @@ TJsonValues _getArrayOfJsonValues( const TArray< T* >& arr )
 
     return std::move( ret );
 }
+
 
 TSharedPtr< FJsonValue > FSSGS_JsonConvertable::Convert() const 
 {
