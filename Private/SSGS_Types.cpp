@@ -76,13 +76,6 @@ TJsonValues _getArrayOfJsonValues( const TArray< T* >& arr )
     return std::move( ret );
 }
 
-
-TSharedPtr< FJsonValue > FSSGS_JsonConvertable::Convert() const 
-{
-    // TODO Log message  "reimplement this"
-    return std::move( TSharedPtr< FJsonValue >( nullptr ) );
-};
-
 // ****** FSSGS_RateRange ******
 FSSGS_RateRange::FSSGS_RateRange() {}
 
