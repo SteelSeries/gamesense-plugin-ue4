@@ -1,6 +1,11 @@
 #pragma once
 
 
+#include "Common/SSGS_JsonConvertable.h"
+#include "Common/SSGS_Union.h"
+#include "Types/SSGS_Enums.h"
+#include "SSGS_TactileEffectPredefined.h"
+#include "SSGS_TactileEffectCustom.h"
 #include "SSGS_TactilePatternStatic.generated.h"
 
 

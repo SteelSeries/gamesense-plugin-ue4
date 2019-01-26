@@ -1,6 +1,10 @@
 #pragma once
 
 
+#include "Common/SSGS_JsonConvertable.h"
+#include "Common/SSGS_Union.h"
+#include "Types/SSGS_Enums.h"
+#include "SSGS_FrequencyRepeatLimitPair.h"
 #include "SSGS_RateStatic.h"
 #include "SSGS_RateRange.h"
 #include "SSGS_RateSpecification.generated.h"

@@ -1,6 +1,11 @@
 #pragma once
 
 
+#include "Types/Illumination/SSGS_ColorEffectSpecificationStatic.h"
+#include "Types/Illumination/SSGS_ColorEffectSpecificationGradient.h"
+#include "Types/Illumination/SSGS_ColorEffectSpecificationRanges.h"
+#include "Types/Haptics/SSGS_TactilePatternSpecificationStatic.h"
+#include "Types/Haptics/SSGS_TactilePatternSpecificationRanges.h"
 #include "SSGS_HandlerColor.h"
 #include "SSGS_HandlerTactile.h"
 #include "SSGS_HandlerCollection.generated.h"

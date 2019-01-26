@@ -1,4 +1,5 @@
-#include "SSGS_PrivatePCH.h"
+#include "Types/SSGS_Payload.h"
+#include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
 
 template <typename T>

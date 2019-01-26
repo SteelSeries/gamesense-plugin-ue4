@@ -1,4 +1,4 @@
-#include "SSGS_PrivatePCH.h"
+#include "SSGS_ClientPrivate.h"
 #include "SSGS_Misc.h"
 
 #include <future>

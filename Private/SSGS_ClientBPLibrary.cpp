@@ -1,5 +1,5 @@
-#include "SSGS_PrivatePCH.h"
 #include "SSGS_ClientBPLibrary.h"
+#include "SSGS_ClientPrivate.h"
 
 
 using namespace ssgs;

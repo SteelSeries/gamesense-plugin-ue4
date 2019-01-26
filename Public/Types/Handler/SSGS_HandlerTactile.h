@@ -1,6 +1,10 @@
 #pragma once
 
 
+#include "Common/SSGS_JsonConvertable.h"
+#include "Types/SSGS_DeviceZone.h"
+#include "Types/Haptics/SSGS_TactilePatternSpecification.h"
+#include "Types/Rate/SSGS_RateSpecification.h"
 #include "SSGS_HandlerTactile.generated.h"
 
 

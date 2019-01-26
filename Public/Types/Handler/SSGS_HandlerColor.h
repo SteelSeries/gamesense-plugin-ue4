@@ -1,7 +1,11 @@
 #pragma once
 
 
+#include "Common/SSGS_JsonConvertable.h"
 #include "Types/SSGS_DeviceZone.h"
+#include "Types/SSGS_Enums.h"
+#include "Types/Illumination/SSGS_ColorEffectSpecification.h"
+#include "Types/Rate/SSGS_RateSpecification.h"
 #include "SSGS_HandlerColor.generated.h"
 
 

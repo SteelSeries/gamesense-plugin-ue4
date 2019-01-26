@@ -1,6 +1,11 @@
 #pragma once
 
 
+#include "Common/SSGS_JsonConvertable.h"
+#include "Common/SSGS_Union.h"
+#include "Types/SSGS_Enums.h"
+#include "SSGS_ColorRangeStatic.h"
+#include "SSGS_ColorRangeGradient.h"
 #include "SSGS_ColorRange.generated.h"
 
 

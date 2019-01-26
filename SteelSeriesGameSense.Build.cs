@@ -6,6 +6,9 @@ namespace UnrealBuildTool.Rules
     {
         public SteelSeriesGameSense(ReadOnlyTargetRules Target) : base(Target)
         {
+            bEnforceIWYU = false;
+            PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+
             PublicIncludePaths.AddRange(
                 new string[] {
                     "SteelSeriesGameSense/Public"

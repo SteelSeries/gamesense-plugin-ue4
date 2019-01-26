@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "SSGS_ColorEffectSpecification.h"
 #include "SSGS_ColorRange.h"
 #include "SSGS_ColorEffectSpecificationRanges.generated.h"
 

@@ -1,8 +1,8 @@
 #pragma once
 
 
+#include "SSGS_ColorEffectSpecification.h"
 #include "SSGS_RGB.h"
-#include "SSGS_Gradient.h"
 #include "SSGS_ColorGradient.h"
 #include "SSGS_ColorEffectSpecificationGradient.generated.h"
 

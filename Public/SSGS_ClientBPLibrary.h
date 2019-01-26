@@ -1,8 +1,7 @@
 #pragma once
 
 
-#include "SteelSeriesGameSensePCH.h"
-#include "Types/SSGS_Enums.h"
+#include "Types/SSGS_Payload.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SSGS_ClientBPLibrary.generated.h"
 

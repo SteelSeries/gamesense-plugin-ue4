@@ -1,7 +1,8 @@
 // Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
 
-#include "SSGS_PrivatePCH.h"
-#include "../Public/ISteelSeriesGameSense.h"
+#include "SSGS_Client.h"
+#include "SSGS_ClientBPLibrary.h"
+#include "ISteelSeriesGameSense.h"
 
 
 class FSteelSeriesGameSense : public ISteelSeriesGameSense

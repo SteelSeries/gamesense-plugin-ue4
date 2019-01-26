@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "SSGS_TactilePatternSpecification.h"
 #include "SSGS_TactilePatternRange.h"
 #include "SSGS_TactilePatternSpecificationRanges.generated.h"
 

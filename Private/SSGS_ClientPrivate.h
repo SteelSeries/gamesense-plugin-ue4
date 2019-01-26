@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "Types/SSGS_Payload.h"
 DECLARE_LOG_CATEGORY_EXTERN( SSGS_Client, Log, All );
 
 

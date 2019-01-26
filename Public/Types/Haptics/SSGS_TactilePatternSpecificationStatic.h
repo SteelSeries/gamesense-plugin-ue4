@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "SSGS_TactileEffectPredefined.h"
-#include "SSGS_TactileEffectCustom.h"
+#include "SSGS_TactilePatternSpecification.h"
+#include "SSGS_TactilePatternStatic.h"
 #include "SSGS_TactilePatternSpecificationStatic.generated.h"
 
 

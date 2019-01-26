@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "SSGS_RGB.h"
 #include "SSGS_Gradient.generated.h"
 
 
