@@ -2,12 +2,14 @@
 
 
 #include "Types/SSGS_Payload.h"
+
+
 DECLARE_LOG_CATEGORY_EXTERN( SSGS_Client, Log, All );
 
 
 namespace ssgs {
 
-// TODO STEELSERIESGAMESENSE_API
+
 class STEELSERIESGAMESENSE_API Client {
 
     typedef uint32 _gsWorkerReturnType_;

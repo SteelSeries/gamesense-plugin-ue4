@@ -237,6 +237,8 @@ public:
 };
 
 TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
+TPromise< bool > _req_completion;
+FHttpRequestPtr _request;
 
 
 FString _serverPropsPath() {
@@ -280,7 +282,7 @@ FString _getServerPort() {
     return port;
 }
 
-void _configureRequest( TSharedRef< IHttpRequest >& pRequest, const FString& uri, const FString& data ) {
+void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, const FString& data ) {
 
     pRequest->SetVerb( TEXT( "POST" ) );
     pRequest->SetHeader( TEXT( "Content-Type" ), TEXT( "application/json" ) );
@@ -297,30 +299,57 @@ enum _send_msg_err_ {
     smerr_unknown
 };
 
-_send_msg_err_ _sendMsg( const FString& uri, const FString& data ) {
-    _send_msg_err_ err = smerr_unknown;
-    FHttpModule& http = FHttpModule::Get();
-    TSharedRef< IHttpRequest > pRequest = http.CreateRequest();
-    FHttpResponsePtr response;
+TFuture< bool > _sendMsg( const FHttpRequestPtr& pReusableRequest, const FString& uri, const FString& data ) {
+    // reset
+    _req_completion = TPromise< bool >();
+    TFuture< bool > result = _req_completion.GetFuture();
 
-    _configureRequest( pRequest, uri, data );
+    _configureRequest( pReusableRequest, uri, data );
+
+    if ( !pReusableRequest->ProcessRequest() ) {
+        _req_completion.SetValue( false );
+    }
+
+    return result;
      
-    if ( pRequest->ProcessRequest() ) {
+    //if ( pReusableRequest->ProcessRequest() ) {
+    //    bool needsTicking = true;
 
-        // tick http manager until our request has been processed
-        double tLastTick = FPlatformTime::Seconds();
-        while ( pRequest->GetStatus() == EHttpRequestStatus::Processing ) {
-            double tNow = FPlatformTime::Seconds();
-            FHttpModule::Get().GetHttpManager().Tick( static_cast< float >( tNow - tLastTick ) );
-            tLastTick = tNow;
-        }
+    //    // tick http manager until our request has been processed
+    //    double tLastTick = FPlatformTime::Seconds();
+    //    while ( pReusableRequest->GetStatus() == EHttpRequestStatus::Processing && needsTicking ) {
+    //        double tNow = FPlatformTime::Seconds();
+    //        needsTicking = FHttpModule::Get().GetHttpManager().Tick( static_cast< float >( tNow - tLastTick ) );
+    //        tLastTick = tNow;
+    //    }
 
+    //}
+    //
+    //return err;
+}
 
-        switch ( pRequest->GetStatus() ) {
+_send_msg_err_ _submitMsg( const FHttpRequestPtr& request, _queue_msg_wrapper_& msg ) {
+
+    _send_msg_err_ err = smerr_unknown;
+    _i_queue_msg_* pMsg = msg.get();
+    FString data = pMsg->GetJsonString();
+    if ( data.IsEmpty() ) {
+        return smerr_msgillformed;
+    }
+
+    // TODO log only in debug
+    LOG( Display, TEXT( "%s" ), *data );
+
+    TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
+
+    // wait for the request to complete
+    bool success = result.Get();
+    if ( success ) {
+        switch ( _request->GetStatus() ) {
 
         case EHttpRequestStatus::Failed:
         case EHttpRequestStatus::Succeeded: {
-            response = pRequest->GetResponse();
+            FHttpResponsePtr response = request->GetResponse();
             if ( response.IsValid() ) {
                 int32 code = response->GetResponseCode();
 
@@ -356,28 +385,18 @@ _send_msg_err_ _sendMsg( const FString& uri, const FString& data ) {
             break;
 
         default:
+            err = smerr_unknown;
             break;
 
         }
-
     }
-    
+
     return err;
 }
 
-_send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
-
-    _i_queue_msg_* pMsg = msg.get();
-    FString data = pMsg->GetJsonString();
-    if ( data.IsEmpty() ) {
-        return smerr_msgillformed;
-    }
-
-    // TODO log only in debug
-    LOG( Display, TEXT( "%s" ), *data );
-
-    return _sendMsg( pMsg->GetUri(), data );
-
+void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
+{
+    _req_completion.SetValue( completed );
 }
 
 
@@ -397,7 +416,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 {
     FString serverPort;
     _queue_msg_wrapper_ pendingMsg;
-    const float msgCheckInterval = 0.1f;   // 10 ms
+    const float msgCheckInterval = 0.01f;   // 10 ms
     const float serverProbeInterval = 5.0f;   // 5s
     const double maxIdleTimeBeforeHeartbeat = 5.0;   // 5 seconds
     double tLastMsg = FPlatformTime::Seconds();
@@ -407,6 +426,10 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
     // ensure http module is loaded
     FHttpModule::Get();
+    _request = FHttpModule::Get().CreateRequest();
+    _request->OnProcessRequestComplete().BindStatic( &_onRequestComplete );
+
+
     _msg_queue.Empty();
 
     while (_mShouldRun) {
@@ -437,7 +460,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
             if ( !msg.isValid() ) break;
 
-            _send_msg_err_ err = _submitMsg( msg );
+            _send_msg_err_ err = _submitMsg( _request, msg );
             if ( err == smerr_ok ) {
 
                 tLastMsg = FPlatformTime::Seconds();
@@ -502,6 +525,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
         }
     }
 
+   _request.Reset();
     _msg_queue.Empty();
     LOG( Display, TEXT("GameSense worker exiting") );
     // TODO report err
@@ -531,11 +555,18 @@ bool Client::Initialize()
 
 void Client::Release()
 {
-    // sync with thread exiting
-    _mpInstance->_mShouldRun = false;
-    _mpInstance->_gsWorkerReturnStatus.Get();
-
     if ( _mpInstance ) {
+
+        if ( _request.IsValid() ) {
+            // request might be stalling the thread
+            // cancel it
+            _request->CancelRequest();
+        }
+
+        // sync with thread exiting
+        _mpInstance->_mShouldRun = false;
+        _mpInstance->_gsWorkerReturnStatus.Get();
+
         delete _mpInstance;
         _mpInstance = nullptr;
     }
