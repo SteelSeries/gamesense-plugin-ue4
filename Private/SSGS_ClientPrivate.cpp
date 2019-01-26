@@ -236,9 +236,17 @@ public:
 
 };
 
+enum _send_msg_err_ {
+    smerr_ok = 0,
+    smerr_requesttimedout,
+    smerr_serverdown,
+    smerr_msgillformed,
+    smerr_unknown
+};
+
+
 TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
 TPromise< bool > _req_completion;
-FHttpRequestPtr _request;
 
 
 FString _serverPropsPath() {
@@ -291,44 +299,28 @@ void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, con
 
 }
 
-enum _send_msg_err_ {
-    smerr_ok = 0,
-    smerr_requesttimedout,
-    smerr_serverdown,
-    smerr_msgillformed,
-    smerr_unknown
-};
+void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
+{
+    _req_completion.SetValue( completed );
+}
 
-TFuture< bool > _sendMsg( const FHttpRequestPtr& pReusableRequest, const FString& uri, const FString& data ) {
+TFuture< bool > _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data ){
     // reset
     _req_completion = TPromise< bool >();
     TFuture< bool > result = _req_completion.GetFuture();
 
-    _configureRequest( pReusableRequest, uri, data );
+    request->OnProcessRequestComplete().BindStatic( &_onRequestComplete );
 
-    if ( !pReusableRequest->ProcessRequest() ) {
+    _configureRequest( request, uri, data );
+
+    if ( !request->ProcessRequest() ) {
         _req_completion.SetValue( false );
     }
 
     return result;
-     
-    //if ( pReusableRequest->ProcessRequest() ) {
-    //    bool needsTicking = true;
-
-    //    // tick http manager until our request has been processed
-    //    double tLastTick = FPlatformTime::Seconds();
-    //    while ( pReusableRequest->GetStatus() == EHttpRequestStatus::Processing && needsTicking ) {
-    //        double tNow = FPlatformTime::Seconds();
-    //        needsTicking = FHttpModule::Get().GetHttpManager().Tick( static_cast< float >( tNow - tLastTick ) );
-    //        tLastTick = tNow;
-    //    }
-
-    //}
-    //
-    //return err;
 }
 
-_send_msg_err_ _submitMsg( const FHttpRequestPtr& request, _queue_msg_wrapper_& msg ) {
+_send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
 
     _send_msg_err_ err = smerr_unknown;
     _i_queue_msg_* pMsg = msg.get();
@@ -336,6 +328,8 @@ _send_msg_err_ _submitMsg( const FHttpRequestPtr& request, _queue_msg_wrapper_& 
     if ( data.IsEmpty() ) {
         return smerr_msgillformed;
     }
+
+    FHttpRequestPtr request = FHttpModule::Get().CreateRequest();
 
     // TODO log only in debug
     LOG( Display, TEXT( "%s" ), *data );
@@ -345,7 +339,7 @@ _send_msg_err_ _submitMsg( const FHttpRequestPtr& request, _queue_msg_wrapper_& 
     // wait for the request to complete
     bool success = result.Get();
     if ( success ) {
-        switch ( _request->GetStatus() ) {
+        switch ( request->GetStatus() ) {
 
         case EHttpRequestStatus::Failed:
         case EHttpRequestStatus::Succeeded: {
@@ -394,12 +388,6 @@ _send_msg_err_ _submitMsg( const FHttpRequestPtr& request, _queue_msg_wrapper_& 
     return err;
 }
 
-void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
-{
-    _req_completion.SetValue( completed );
-}
-
-
 Client* Client::_mpInstance = nullptr;
 
 Client::~Client()
@@ -426,8 +414,6 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
     // ensure http module is loaded
     FHttpModule::Get();
-    _request = FHttpModule::Get().CreateRequest();
-    _request->OnProcessRequestComplete().BindStatic( &_onRequestComplete );
 
 
     _msg_queue.Empty();
@@ -460,7 +446,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
             if ( !msg.isValid() ) break;
 
-            _send_msg_err_ err = _submitMsg( _request, msg );
+            _send_msg_err_ err = _submitMsg( msg );
             if ( err == smerr_ok ) {
 
                 tLastMsg = FPlatformTime::Seconds();
@@ -525,7 +511,6 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
         }
     }
 
-   _request.Reset();
     _msg_queue.Empty();
     LOG( Display, TEXT("GameSense worker exiting") );
     // TODO report err
@@ -556,12 +541,6 @@ bool Client::Initialize()
 void Client::Release()
 {
     if ( _mpInstance ) {
-
-        if ( _request.IsValid() ) {
-            // request might be stalling the thread
-            // cancel it
-            _request->CancelRequest();
-        }
 
         // sync with thread exiting
         _mpInstance->_mShouldRun = false;
