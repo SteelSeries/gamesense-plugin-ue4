@@ -463,9 +463,6 @@ TSharedPtr< FJsonValue > FSSGS_HandlerTactile::Convert() const
 
 
 // ****** USSGS_HandlerCollection ******
-USSGS_HandlerCollection::USSGS_HandlerCollection()
-{}
-
 USSGS_HandlerCollection::~USSGS_HandlerCollection()
 {
     _colorHandlers.Empty();

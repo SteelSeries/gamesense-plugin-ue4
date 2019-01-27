@@ -18,7 +18,6 @@ class STEELSERIESGAMESENSE_API USSGS_HandlerCollection : public UObject, public 
 
 public:
 
-    USSGS_HandlerCollection();
     ~USSGS_HandlerCollection();
 
     void AddColorHandler( const FSSGS_HandlerColor& handler );
