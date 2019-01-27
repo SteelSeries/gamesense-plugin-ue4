@@ -55,12 +55,12 @@ void USSGS_ClientBPLibrary::BindEvent( const FString& gameName, const FString& e
 #endif
 }
 
-void USSGS_ClientBPLibrary::SendEvent( const FString& gameName, const FString& eventName, int32 value )
+void USSGS_ClientBPLibrary::SendEvent( const FString& gameName, const FString& eventName, const FSSGS_EventData& data )
 {
 #if STEELSERIESGAMESENSE_SUPPORTED_PLATFORMS
     Client::Instance()->SendEvent( FSSGS_EventUpdate( gameName,
                                                       eventName,
-                                                      FSSGS_EventData{ value } ) );
+                                                      data ) );
 #endif
 }
 

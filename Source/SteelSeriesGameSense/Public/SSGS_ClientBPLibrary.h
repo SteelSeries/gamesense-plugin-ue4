@@ -71,10 +71,10 @@ public:
     *
     * @param	gameName The string that the server uses to identify the game.
     * @param	eventName The string the server uses to identify an event for the game.
-    * @param	value The value for the event update. Must be between the declared min and max values.
+    * @param	data Event data object with current value for the event.
     */
     UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
-    static void SendEvent( const FString& gameName, const FString& eventName, int32 value );
+    static void SendEvent( const FString& gameName, const FString& eventName, const FSSGS_EventData& data );
    
     /**
     * Unregisters an event with the server for the specified game.
