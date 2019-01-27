@@ -12,7 +12,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_TactileEffectCustom : public FSSGS_JsonCon
 
 
     FSSGS_TactileEffectCustom() : _type( TEXT( "custom" ) ) {}
-    FSSGS_TactileEffectCustom( int32 length_ms, int32 delay_ms = 0 ) : _type( TEXT( "custom" ) ), length_ms( length_ms ), delay_ms( delay_ms ) {}
+    FSSGS_TactileEffectCustom( int32 length_ms, int32 delay_ms = 0 ) : length_ms( length_ms ), delay_ms( delay_ms ), _type( TEXT( "custom" ) ) {}
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 length_ms;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 delay_ms;

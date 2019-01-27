@@ -39,7 +39,7 @@ TJsonValues _getArrayOfJsonValuesFromUStructs( const TArray< CustomUStructType >
         ret.Add( v );
     }
 
-    return std::move( ret );
+    return ret;
 }
 
 template < typename T >
@@ -51,7 +51,7 @@ TJsonValues _getArrayOfJsonValues( const TArray< T >& arr )
         ret.Add( obj.Convert() );
     }
 
-    return std::move( ret );
+    return ret;
 }
 
 TJsonValues _getArrayOfJsonValues( const TArray< uint8 >& arr )
@@ -62,7 +62,7 @@ TJsonValues _getArrayOfJsonValues( const TArray< uint8 >& arr )
         ret.Add( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueNumber( v ) ) );
     }
 
-    return std::move( ret );
+    return ret;
 }
 
 template < typename T >
@@ -74,7 +74,7 @@ TJsonValues _getArrayOfJsonValues( const TArray< T* >& arr )
         ret.Add( obj->Convert() );
     }
 
-    return std::move( ret );
+    return ret;
 }
 
 // ****** FSSGS_RateRange ******
@@ -120,12 +120,12 @@ TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
     
     case RateMode_Static: {
         TSharedPtr< FJsonObject > obj = FJsonObjectConverter::UStructToJsonObject( _rate.Get< FSSGS_RateStatic >() );
-        return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+        return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
     }
 
     case RateMode_Range: {
         TSharedPtr< FJsonObject > obj = FJsonObjectConverter::UStructToJsonObject( _rate.Get< FSSGS_RateRange >() );
-        return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+        return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
     }
     
     }
@@ -144,7 +144,7 @@ FSSGS_ColorRangeStatic::FSSGS_ColorRangeStatic( int32 l, int32 h, const FSSGS_RG
 FSSGS_ColorRangeGradient::FSSGS_ColorRangeGradient( int32 l, int32 h, const FSSGS_RGB& zero, const FSSGS_RGB& hundred ) :
     low( l ),
     high( h ),
-    color( { zero, hundred } )
+    color( FSSGS_ColorGradient{ { zero, hundred } } )
 {}
 
 // ****** FSSGS_ColorRange ******
@@ -173,7 +173,7 @@ TSharedPtr< FJsonValue > FSSGS_ColorRange::Convert() const
         break;
     }
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** USSGS_ColorEffectSpecificationStatic ******
@@ -187,7 +187,7 @@ USSGS_ColorEffectSpecificationStatic* USSGS_ColorEffectSpecificationStatic::Make
 TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationStatic::Convert() const
 {
     auto obj = FJsonObjectConverter::UStructToJsonObject( color );
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** USSGS_ColorEffectSpecificationGradient ******
@@ -201,7 +201,7 @@ USSGS_ColorEffectSpecificationGradient* USSGS_ColorEffectSpecificationGradient::
 TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationGradient::Convert() const
 {
     auto obj = FJsonObjectConverter::UStructToJsonObject( gradient );
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** USSGS_ColorEffectSpecificationRanges ******
@@ -231,7 +231,7 @@ TSharedPtr< FJsonValue > USSGS_ColorEffectSpecificationRanges::Convert() const
 {
     TJsonValues arr( _getArrayOfJsonValues( ranges ) );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) );
 }
 
 
@@ -291,7 +291,7 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
     if ( rate )
         obj->SetField( "rate", rate->Convert() );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 
@@ -303,7 +303,7 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectPredefined::Convert() const
     obj->SetStringField( "type", type.name );
     obj->SetNumberField( "delay-ms", delay_ms );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 
@@ -316,7 +316,7 @@ TSharedPtr< FJsonValue > FSSGS_TactileEffectCustom::Convert() const
     obj->SetNumberField( "length-ms", length_ms );
     obj->SetNumberField( "delay-ms", delay_ms );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** FSSGS_TactilePatternStatic ******
@@ -364,7 +364,7 @@ TSharedPtr< FJsonValue > FSSGS_TactilePatternRange::Convert() const
     obj->SetNumberField( "high", high );
     obj->SetArrayField( "pattern", _getArrayOfJsonValues( pattern ) );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 
@@ -390,8 +390,8 @@ FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWi
 
 TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationStatic::Convert() const
 {
-    return std::move( TSharedPtr< FJsonValue >(
-        new ( std::nothrow ) FJsonValueArray( _getArrayOfJsonValues( _pattern ) ) ) );
+    return TSharedPtr< FJsonValue >(
+        new ( std::nothrow ) FJsonValueArray( _getArrayOfJsonValues( _pattern ) ) );
 }
 
 // ****** USSGS_TactilePatternSpecificationRanges ******
@@ -404,8 +404,8 @@ USSGS_TactilePatternSpecificationRanges* USSGS_TactilePatternSpecificationRanges
 
 TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationRanges::Convert() const
 {
-    return std::move( TSharedPtr< FJsonValue >( 
-        new ( std::nothrow ) FJsonValueArray( _getArrayOfJsonValues( _pattern ) ) ) );
+    return TSharedPtr< FJsonValue >( 
+        new ( std::nothrow ) FJsonValueArray( _getArrayOfJsonValues( _pattern ) ) );
 }
 
 // ****** FSSGS_HandlerTactile ******
@@ -458,7 +458,7 @@ TSharedPtr< FJsonValue > FSSGS_HandlerTactile::Convert() const
     if ( rate )
         obj->SetField( "rate", rate->Convert() );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 
@@ -504,7 +504,7 @@ TSharedPtr< FJsonValue > USSGS_HandlerCollection::Convert() const
     TJsonValues arr( _getArrayOfJsonValues( _colorHandlers ) );
     arr.Append( _getArrayOfJsonValues( _tactileHandlers ) );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) );
 }
 
 
@@ -525,7 +525,7 @@ TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
     obj->SetStringField( "game_display_name", gameDisplayName );
     obj->SetNumberField( "icon_color_id", ( uint32 )iconColorId );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 
@@ -550,7 +550,7 @@ TSharedPtr< FJsonValue > FSSGS_EventInfo::Convert() const
     obj->SetNumberField( "max_value", maxValue );
     obj->SetNumberField( "icon_id", ( uint32 )iconId );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** FSSGS_EventBinding ******
@@ -593,7 +593,7 @@ TSharedPtr< FJsonValue > FSSGS_EventBinding::Convert() const
         }
     }
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** FSSGS_EventUpdate ******
@@ -613,7 +613,7 @@ TSharedPtr< FJsonValue > FSSGS_EventUpdate::Convert() const
     obj->SetStringField( "event", eventName );
     obj->SetObjectField( "data", FJsonObjectConverter::UStructToJsonObject< FSSGS_EventData >( data ) );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** FSSGS_Event ******
@@ -631,7 +631,7 @@ TSharedPtr< FJsonValue > FSSGS_Event::Convert() const
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
 // ****** FSSGS_Game ******
@@ -647,5 +647,5 @@ TSharedPtr< FJsonValue > FSSGS_Game::Convert() const
 
     obj->SetStringField( "game", game );
 
-    return std::move( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) ) );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }

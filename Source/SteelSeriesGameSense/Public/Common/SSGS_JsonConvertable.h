@@ -12,7 +12,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_JsonConvertable
 
     virtual ~FSSGS_JsonConvertable() {};
     virtual TSharedPtr< FJsonValue > Convert() const {
-        return std::move( TSharedPtr< FJsonValue >( nullptr ) );
+        return TSharedPtr< FJsonValue >( nullptr );
     }
 
 };

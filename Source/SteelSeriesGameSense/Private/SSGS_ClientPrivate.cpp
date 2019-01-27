@@ -14,7 +14,7 @@
 
 
 DEFINE_LOG_CATEGORY( SSGS_Client );
-#define LOG( lvl, format, ... ) UE_LOG( SSGS_Client, lvl, format, __VA_ARGS__ ); 
+#define LOG( lvl, format, ... ) UE_LOG( SSGS_Client, lvl, format, ##__VA_ARGS__ )
 
 
 namespace ssgs {
@@ -98,7 +98,7 @@ struct _queue_msg_ : public _i_queue_msg_ {
 
 #define DECL_QUEUE_MSG(tag,type,endpoint,critical,name) \
     typedef _queue_msg_< tag, type, endpoint, critical > name; \
-    FString name::_uri;
+    template<> FString _queue_msg_< tag, type, endpoint, critical >::_uri("");
 
 DECL_QUEUE_MSG( qmt_invalid, FSSGS_JsonConvertable, ENDPOINT_INVALID, false, _msg_invalid_ )
 DECL_QUEUE_MSG( qmt_game_metadata, FSSGS_GameInfo, ENDPOINT_GAME_METADATA, true, _msg_register_game_ )
@@ -259,7 +259,7 @@ FString _serverPropsPath() {
 #elif PLATFORM_MAC
     return FString( "/Library/Application Support/SteelSeries Engine 3/coreProps.json" );
 #else
-#error "Define server porps path for your platform"
+    return FString();
 #endif
 }
 
@@ -558,7 +558,6 @@ void Client::RegisterGame( const FSSGS_GameInfo& v )
     if ( _isDisabled() ) return;
 
     _mGameName = v.game;
-
     _msg_queue.Enqueue( _queue_msg_wrapper_( _msg_register_game_( v ) ) );
 }
 
@@ -591,8 +590,6 @@ void Client::RemoveGame( const FSSGS_Game& v )
     if ( !_isActive() ) return;
     _msg_queue.Enqueue( _queue_msg_wrapper_( _msg_remove_game_( v ) ) );
 }
-
-
 
 
 };
