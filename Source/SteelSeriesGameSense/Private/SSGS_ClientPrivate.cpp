@@ -256,10 +256,10 @@ FString _serverPropsPath() {
     FWindowsPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA", bfr, _MAX_PATH );
     FString programData( bfr );
     return FString( bfr + FString(L"\\SteelSeries\\SteelSeries Engine 3\\coreProps.json") );
+#elif PLATFORM_MAC
+    return FString( "/Library/Application Support/SteelSeries Engine 3/coreProps.json" );
 #else
-    // TODO
 #error "Define server porps path for your platform"
-
 #endif
 }
 
