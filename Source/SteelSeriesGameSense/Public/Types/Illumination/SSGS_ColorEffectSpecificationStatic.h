@@ -13,6 +13,12 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationStatic : public USS
 
 public:
 
+    /**
+    * Properly constructs USSGS_ColorEffectSpecificationStatic object.
+    *
+    * @param    color Object specifying RGB components.
+    * @return   USSGS_ColorEffectSpecificationStatic object.
+    */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
     static USSGS_ColorEffectSpecificationStatic* MakeStaticColorEffect( const FSSGS_RGB& color );
 

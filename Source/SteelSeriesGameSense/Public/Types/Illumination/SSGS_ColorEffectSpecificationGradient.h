@@ -14,6 +14,13 @@ class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationGradient : public U
 
 public:
 
+    /**
+    * Properly constructs USSGS_ColorEffectSpecificationGradient object.
+    *
+    * @param    zero Start color for the gradient.
+    * @param    hundred End color for the gradient.
+    * @return   USSGS_ColorEffectSpecificationGradient object.
+    */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
     static USSGS_ColorEffectSpecificationGradient* MakeGradientColorEffect( UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
