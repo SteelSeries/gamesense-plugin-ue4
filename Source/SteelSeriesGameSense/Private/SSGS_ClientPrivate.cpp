@@ -1,16 +1,13 @@
 #include "SSGS_ClientPrivate.h"
 #include "SSGS_Misc.h"
 
-#include <future>
-
 #include <functional>
 
 #include "Async/Async.h"
 #include "RunnableThread.h"
 #include "FileHelper.h"
-#include "Runtime/JsonUtilities/Public/JsonUtilities.h"
-#include "Runtime/Online/HTTP/Public/Http.h"
-#include "Runtime/Online/HTTP/Public/HttpManager.h"
+#include "JsonUtilities.h"
+#include "Http.h"
 
 
 DEFINE_LOG_CATEGORY( SSGS_Client );
