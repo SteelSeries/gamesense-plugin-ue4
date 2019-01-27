@@ -11,10 +11,10 @@ struct STEELSERIESGAMESENSE_API FSSGS_ColorRangeStatic {
     GENERATED_BODY()
 
     FSSGS_ColorRangeStatic() {};
-    FSSGS_ColorRangeStatic( uint8, uint8, const FSSGS_RGB& );
+    FSSGS_ColorRangeStatic( int32 low, int32 high, const FSSGS_RGB& );
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) uint8 low;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) uint8 high;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 low;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 high;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_RGB color;
 
 };

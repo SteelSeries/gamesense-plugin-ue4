@@ -31,7 +31,7 @@ public:
     * @return   FSSGS_ColorRange object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
-    static FSSGS_ColorRange MakeStaticColorRange( uint8 low, uint8 high, const FSSGS_RGB& color );
+    static FSSGS_ColorRange MakeStaticColorRange( int32 low, int32 high, const FSSGS_RGB& color );
 
     /**
     * Constructs a color range with a gradient variant.
@@ -43,7 +43,7 @@ public:
     * @return   FSSGS_ColorRange object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
-    static FSSGS_ColorRange MakeGradientColorRange( uint8 low, uint8 high, UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
+    static FSSGS_ColorRange MakeGradientColorRange( int32 low, int32 high, UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
     TSharedPtr< FJsonValue > Convert() const;
 

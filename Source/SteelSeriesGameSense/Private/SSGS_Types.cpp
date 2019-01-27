@@ -134,14 +134,14 @@ TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
 }
 
 // ****** FSSGS_ColorRangeStatic ******
-FSSGS_ColorRangeStatic::FSSGS_ColorRangeStatic( uint8 l, uint8 h, const FSSGS_RGB& c ) :
+FSSGS_ColorRangeStatic::FSSGS_ColorRangeStatic( int32 l, int32 h, const FSSGS_RGB& c ) :
     low( l ),
     high( h ),
     color( c )
 {}
 
 // ****** FSSGS_ColorRangeGradient ******
-FSSGS_ColorRangeGradient::FSSGS_ColorRangeGradient( uint8 l, uint8 h, const FSSGS_RGB& zero, const FSSGS_RGB& hundred ) :
+FSSGS_ColorRangeGradient::FSSGS_ColorRangeGradient( int32 l, int32 h, const FSSGS_RGB& zero, const FSSGS_RGB& hundred ) :
     low( l ),
     high( h ),
     color( { zero, hundred } )
@@ -212,14 +212,14 @@ USSGS_ColorEffectSpecificationRanges* USSGS_ColorEffectSpecificationRanges::Make
     return p;
 }
 
-FSSGS_ColorRange USSGS_ColorEffectSpecificationRanges::MakeStaticColorRange( uint8 low, uint8 high, const FSSGS_RGB& color )
+FSSGS_ColorRange USSGS_ColorEffectSpecificationRanges::MakeStaticColorRange( int32 low, int32 high, const FSSGS_RGB& color )
 {
     return FSSGS_ColorRange( FSSGS_ColorRangeStatic( low,
                                                      high,
                                                      color ) );
 }
 
-FSSGS_ColorRange USSGS_ColorEffectSpecificationRanges::MakeGradientColorRange( uint8 low, uint8 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
+FSSGS_ColorRange USSGS_ColorEffectSpecificationRanges::MakeGradientColorRange( int32 low, int32 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred )
 {
     return FSSGS_ColorRange( FSSGS_ColorRangeGradient( low,
                                                        high,
@@ -350,7 +350,7 @@ TSharedPtr< FJsonValue > FSSGS_TactilePatternStatic::Convert() const
 }
 
 // ****** FSSGS_TactilePatternRange ******
-FSSGS_TactilePatternRange::FSSGS_TactilePatternRange( uint8 low, uint8 high, const TArray< FSSGS_TactilePatternStatic >& v ) :
+FSSGS_TactilePatternRange::FSSGS_TactilePatternRange( int32 low, int32 high, const TArray< FSSGS_TactilePatternStatic >& v ) :
     low( low ),
     high( high ),
     pattern( v )

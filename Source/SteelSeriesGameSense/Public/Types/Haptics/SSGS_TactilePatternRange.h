@@ -11,12 +11,12 @@ struct STEELSERIESGAMESENSE_API FSSGS_TactilePatternRange : public FSSGS_JsonCon
     GENERATED_BODY()
 
     FSSGS_TactilePatternRange() {}
-    FSSGS_TactilePatternRange( uint8 low, uint8 high, const TArray< FSSGS_TactilePatternStatic >& pattern );
+    FSSGS_TactilePatternRange( int32 low, int32 int32, const TArray< FSSGS_TactilePatternStatic >& pattern );
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) uint8 low;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) uint8 high;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 low;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 high;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) TArray< FSSGS_TactilePatternStatic > pattern;
 
 };
