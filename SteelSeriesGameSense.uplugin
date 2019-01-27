@@ -1,0 +1,26 @@
+{
+	"FileVersion" : 3,
+	"Version" : 1,
+	"VersionName" : "1.0",
+	"FriendlyName" : "SteelSeries GameSense Client",
+	"Description" : "Enables support for SteelSeries GameSense",
+	"Category" : "Other",
+	"CreatedBy" : "SteelSeries ApS",
+	"CreatedByURL" : "http://steelseries.com",
+	"DocsURL" : "https://github.com/SteelSeries/gamesense-sdk",
+	"MarketplaceURL" : "",
+	"SupportURL" : "https://support.steelseries.com/hc/en-us",
+	"EnabledByDefault" : true,
+	"CanContainContent" : true,
+	"IsBetaVersion" : false,
+	"Installed" : false,
+	"Modules" :
+	[
+		{
+			"Name" : "SteelSeriesGameSense",
+			"Type" : "Runtime",
+			"LoadingPhase" : "PreDefault",
+			"WhitelistPlatforms" : [ "Win64", "Win32", "Mac" ]
+		}
+	]
+}
