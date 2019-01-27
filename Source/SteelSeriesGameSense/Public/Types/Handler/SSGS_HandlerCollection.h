@@ -24,15 +24,34 @@ public:
     void AddColorHandler( const FSSGS_HandlerColor& handler );
     void AddTactileHandler( const FSSGS_HandlerTactile& handler );
 
+    /**
+    * Properly constructs USSGS_HandlerCollection object.
+    *
+    * @return   USSGS_HandlerCollection object.
+    */
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
     static USSGS_HandlerCollection* MakeHandlerCollection();
 
+    /**
+    * Add a color handler to the collection.
+    *
+    * @param	deviceZone Illumination device-zone structure.
+    * @param	mode The mode of illumination on the color zone.
+    * @param	colorSpec Specification of color effect (static, gradient, ranges).
+    * @param	rateSpec Specification of the flasher for the specified zone. Optional.
+    */
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
     void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )             const FSSGS_IlluminationDeviceZone& deviceZone,
                           UPARAM( DisplayName = "Illumination Mode" )       ESSGS_IlluminationMode mode,
                           UPARAM( DisplayName = "ColorSpecification", ref ) USSGS_ColorEffectSpecification*& colorSpec,
                           UPARAM( DisplayName = "RateSpecification" )       USSGS_RateSpecification* rateSpec = nullptr );
-
+    /**
+    * Add a color handler to the collection.
+    *
+    * @param	deviceZone Tactile device-zone structure.
+    * @param	pattern Specification of tactile pattern (static, ranges).
+    * @param	rateSpec Specifies frequency and repeat count for the tactile pattern. Optional.
+    */
     UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
     void AddTactileHandler( UPARAM( DisplayName = "Device-Zone" )               const FSSGS_TactileDeviceZone& deviceZone,
                             UPARAM( DisplayName = "PatternSpecification", ref ) USSGS_TactilePatternSpecification*& pattern,
