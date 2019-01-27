@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "Dom/JsonValue.h"
 #include "SSGS_JsonConvertable.generated.h"
 
 
