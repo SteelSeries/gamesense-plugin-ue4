@@ -6,6 +6,7 @@
 #include "Modules/ModuleInterface.h"
 #include "Modules/ModuleManager.h"
 
+
 #define STEELSERIESGAMESENSE_SUPPORTED_PLATFORMS (PLATFORM_MAC || (PLATFORM_WINDOWS && WINVER >= 0x0601))
 
 

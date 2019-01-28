@@ -10,6 +10,9 @@ DECLARE_LOG_CATEGORY_EXTERN( SSGS_Client, Log, All );
 namespace ssgs {
 
 
+/**
+* SteelSeries GameSense Client Implementation
+*/
 class STEELSERIESGAMESENSE_API Client {
 
     typedef uint32 _gsWorkerReturnType_;
@@ -24,6 +27,9 @@ public:
 
     ~Client();
 
+    /**
+    * API methods
+    */
     void RegisterGame( const FSSGS_GameInfo& v );
     void RegisterEvent( const FSSGS_EventInfo& v );
     void BindEvent( const FSSGS_EventBinding& v );
@@ -31,34 +37,12 @@ public:
     void RemoveEvent( const FSSGS_Event& v );
     void RemoveGame( const FSSGS_Game& v );
 
+    /**
+    * Singleton access
+    */
     static Client* Instance();
-    // will set defaults to run RegisterGame msg
     static bool Initialize();
     static void Release();
-
-    void RegisterGame( const FString& gameName, const FString& gameDisplayName, ESSGS_IconColor iconColor ) {
-        RegisterGame( FSSGS_GameInfo( gameName, gameDisplayName, iconColor ) );
-    }
-
-    void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId ) {
-        RegisterEvent( FSSGS_EventInfo{ gameName, eventName, minValue, maxValue, iconId } );
-    }
-
-    void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) {
-        BindEvent( FSSGS_EventBinding( gameName, eventName, minValue, maxValue, iconId, handlers ) );
-    }
-
-    void SendEvent( const FString& gameName, const FString& eventName, int32 value ) {
-        SendEvent( FSSGS_EventUpdate( gameName, eventName, FSSGS_EventData{ value } ) );
-    }
-
-    void RemoveEvent( const FString& gameName, const FString& eventName ) {
-        RemoveEvent( FSSGS_Event{ gameName, eventName } );
-    }
-
-    void RemoveGame( const FString& gameName ) {
-        RemoveGame( FSSGS_Game{ gameName } );
-    }
 
 private:
 
@@ -66,6 +50,8 @@ private:
     Client( const Client& other ) = delete;
     Client( const Client&& other ) = delete;
     Client& operator=( const Client& rhs ) = delete;
+    Client& operator=( const Client&& rhs ) = delete;
+
     bool _isActive() { return _mClientState == Active; }
     bool _isDisabled() { return _mClientState == Disabled; }
 

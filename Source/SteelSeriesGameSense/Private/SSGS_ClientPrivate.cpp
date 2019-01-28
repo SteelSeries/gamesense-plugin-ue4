@@ -19,7 +19,9 @@ namespace ssgs {
 
 FString _dummy;
 
-
+/**
+* Base for message classes.
+*/
 struct _i_queue_msg_ {
     //_i_queue_msg_() {};
     virtual ~_i_queue_msg_() {}
@@ -32,30 +34,33 @@ struct _i_queue_msg_ {
 
         FSSGS_JsonConvertable* pConvertable = GetConvertable();
         if ( !pConvertable ) {
-            LOG( Display, TEXT( "Could not obtain FSSGS_JsonConvertable: Invalid message type" ) );
+            LOG( Error, TEXT( "Could not obtain FSSGS_JsonConvertable: Invalid message type" ) );
             return payload;
         }
 
         TSharedPtr< FJsonValue > pJsonValue = pConvertable->Convert();
         if ( !pJsonValue.IsValid() ) {
-            LOG( Display, TEXT( "Could not convert message" ) );
+            LOG( Error, TEXT( "Could not convert message" ) );
             return payload;
         }
 
         if ( pJsonValue->Type != EJson::Object ) {
-            LOG( Display, TEXT( "Message did not convert to an object" ) );
+            LOG( Error, TEXT( "Message did not convert to an object" ) );
             return payload;
         }
 
         TSharedRef< TJsonWriter< TCHAR > > pWriter = TJsonWriterFactory< TCHAR >::Create( &payload, 0 );
         if ( !FJsonSerializer::Serialize( pJsonValue, TEXT( "" ), pWriter ) ) {
-            LOG( Display, TEXT( "Could not serialize message" ) );
+            LOG( Error, TEXT( "Could not serialize message" ) );
         }
 
         return payload;
     }
 };
 
+/**
+* Tags to quickly identify a message type.
+*/
 enum _queue_msg_tag_ {
     qmt_invalid = 0,
     qmt_game_metadata,
@@ -67,6 +72,9 @@ enum _queue_msg_tag_ {
     qmt_remove_game
 };
 
+/**
+* Enumerate endpoint names.
+*/
 FString ENDPOINT_INVALID( TEXT( "invalid" ) );
 FString ENDPOINT_GAME_METADATA( TEXT( "game_metadata" ) );
 FString ENDPOINT_REGISTER_GAME_EVENT( TEXT( "register_game_event" ) );
@@ -76,6 +84,9 @@ FString ENDPOINT_GAME_HEARTBEAT( TEXT( "game_heartbeat" ) );
 FString ENDPOINT_REMOVE_GAME_EVENT(  TEXT( "remove_game_event" ) );
 FString ENDPOINT_REMOVE_GAME( TEXT( "remove_game" ) );
 
+/**
+* Template for all the messages.
+*/
 template < _queue_msg_tag_ msgTag, typename T, const FString& endpoint, bool critical >
 struct _queue_msg_ : public _i_queue_msg_ {
     static FString _uri;
@@ -97,6 +108,9 @@ struct _queue_msg_ : public _i_queue_msg_ {
     typedef _queue_msg_< tag, type, endpoint, critical > name; \
     template<> FString _queue_msg_< tag, type, endpoint, critical >::_uri("");
 
+/**
+* Declare message types.
+*/
 DECL_QUEUE_MSG( qmt_invalid, FSSGS_JsonConvertable, ENDPOINT_INVALID, false, _msg_invalid_ )
 DECL_QUEUE_MSG( qmt_game_metadata, FSSGS_GameInfo, ENDPOINT_GAME_METADATA, true, _msg_register_game_ )
 DECL_QUEUE_MSG( qmt_register_game_event, FSSGS_EventInfo, ENDPOINT_REGISTER_GAME_EVENT, true, _msg_register_event_ )
@@ -106,7 +120,9 @@ DECL_QUEUE_MSG( qmt_game_heartbeat, FSSGS_Game, ENDPOINT_GAME_HEARTBEAT, false, 
 DECL_QUEUE_MSG( qmt_remove_game_event, FSSGS_Event, ENDPOINT_REMOVE_GAME_EVENT, false, _msg_remove_event_ )
 DECL_QUEUE_MSG( qmt_remove_game, FSSGS_Game, ENDPOINT_REMOVE_GAME, true, _msg_remove_game_ )
 
-
+/**
+* Reconfigures endpoint URLs with new base address.
+*/
 void _initializedUris( const FString& base ) {
     _msg_register_game_::setBaseUri( base );
     _msg_register_event_::setBaseUri( base );
@@ -117,6 +133,10 @@ void _initializedUris( const FString& base ) {
     _msg_remove_game_::setBaseUri( base );
 }
 
+/**
+* Provides single storage for all message types.
+* Wraps a union to cleanly and safely manage non-pod types.
+*/
 class _queue_msg_wrapper_ {
 
     _queue_msg_tag_ _activeTag = qmt_invalid;
@@ -233,6 +253,9 @@ public:
 
 };
 
+/**
+* Error indicating message sending failures.
+*/
 enum _send_msg_err_ {
     smerr_ok = 0,
     smerr_requesttimedout,
@@ -241,11 +264,16 @@ enum _send_msg_err_ {
     smerr_unknown
 };
 
-
+/**
+* Client's static resources
+*/
+Client* Client::_mpInstance = nullptr;
 TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
 TPromise< bool > _req_completion;
 
-
+/**
+* Return per platform path to server coreProps.
+*/
 FString _serverPropsPath() {
 #if PLATFORM_WINDOWS
     //"%PROGRAMDATA%/SteelSeries/SteelSeries Engine 3/coreProps.json"
@@ -260,6 +288,9 @@ FString _serverPropsPath() {
 #endif
 }
 
+/**
+* Read SSE3 coreProps.
+*/
 FString _readProps() {
     FString propsPath = _serverPropsPath();
     FString propsJson;
@@ -271,6 +302,9 @@ FString _readProps() {
     return propsJson;
 }
 
+/**
+* Obtains and parses GameSense server port.
+*/
 FString _getServerPort() {
     FString propsJson = _readProps();
     FString port;
@@ -287,6 +321,9 @@ FString _getServerPort() {
     return port;
 }
 
+/**
+* Configures the request with URL, data and common header entries
+*/
 void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, const FString& data ) {
 
     pRequest->SetVerb( TEXT( "POST" ) );
@@ -296,13 +333,21 @@ void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, con
 
 }
 
+/**
+* Request completion delegate. Sets the completion status for our waiting thread.
+*/
 void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
 {
     _req_completion.SetValue( completed );
 }
 
+/**
+* Configure the request and send it.
+*
+* @return   Future object that synchronizes with request completion.
+*/
 TFuture< bool > _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data ){
-    // reset
+    // reset the promise
     _req_completion = TPromise< bool >();
     TFuture< bool > result = _req_completion.GetFuture();
 
@@ -317,6 +362,11 @@ TFuture< bool > _sendMsg( const FHttpRequestPtr& request, const FString& uri, co
     return result;
 }
 
+/**
+* Dispatch a message and wait for it to get processed.
+*
+* @return   _send_msg_err_ indicating an error kind
+*/
 _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
 
     _send_msg_err_ err = smerr_unknown;
@@ -326,11 +376,9 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
         return smerr_msgillformed;
     }
 
+    LOG( VeryVerbose, TEXT( "%s" ), *data );
+
     FHttpRequestPtr request = FHttpModule::Get().CreateRequest();
-
-    // TODO log only in debug
-    LOG( Display, TEXT( "%s" ), *data );
-
     TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
 
     // wait for the request to complete
@@ -344,12 +392,10 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
             if ( response.IsValid() ) {
                 int32 code = response->GetResponseCode();
 
-                // TODO use debug define guard
-                LOG( Display, TEXT( "%s" ), *response->GetContentAsString() );
-
                 switch ( code ) {
 
                 case EHttpResponseCodes::Ok:
+                    LOG( Verbose, TEXT( "%s" ), *response->GetContentAsString() );
                     err = smerr_ok;
                     break;
 
@@ -359,6 +405,7 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
 
                 case EHttpResponseCodes::BadRequest:
                 case EHttpResponseCodes::ServerError:
+                    LOG( Warning, TEXT( "%s" ), *response->GetContentAsString() );
                     err = smerr_msgillformed;
                     break;
 
@@ -385,67 +432,79 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
     return err;
 }
 
-Client* Client::_mpInstance = nullptr;
-
+/**
+* Client destructor
+*/
 Client::~Client()
 {}
 
+/**
+* Client constructor
+*/
 Client::Client() :
     _mShouldRun( true ),
-    _mClientState( Probing ),
+    _mClientState( Disabled ),
     _mGameName(),
     _gsWorkerReturnStatus()
 {}
 
+/**
+* Client's worker thread.
+*
+* @return 0 on success.
+*/
 Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 {
-    FString serverPort;
     _queue_msg_wrapper_ pendingMsg;
     const float msgCheckInterval = 0.01f;   // 10 ms
     const float serverProbeInterval = 5.0f;   // 5s
     const double maxIdleTimeBeforeHeartbeat = 5.0;   // 5 seconds
     double tLastMsg = FPlatformTime::Seconds();
-    double tNow = FPlatformTime::Seconds();
+    double tNow = tLastMsg;
     _mClientState = Probing;
 
-
-    // ensure http module is loaded
+    // Ensure http module is loaded
     FHttpModule::Get();
 
-
+    // Drop any stale messages
     _msg_queue.Empty();
 
     while (_mShouldRun) {
-
-
         switch ( _mClientState ) {
+
 
         case Active: {
             _queue_msg_wrapper_ msg;
 
             if ( pendingMsg.isValid() ) {
 
+                // try to push through a pending message
                 msg = std::move( pendingMsg );
 
             } else {
 
+                // spin here waiting for messages
                 while ( !_msg_queue.Dequeue( msg ) && _mShouldRun ) {
-
                     FPlatformProcess::Sleep( msgCheckInterval );
                     tNow = FPlatformTime::Seconds();
                     if ( tNow - tLastMsg > maxIdleTimeBeforeHeartbeat && !_mGameName.IsEmpty() ) {
+                        // send a heartbeat to the server if its due
                         msg.set( _msg_heartbeat_( FSSGS_Game( _mGameName ) ) );
                         break;
                     }
                 }
-
             }
 
-            if ( !msg.isValid() ) break;
+            if ( !msg.isValid() ) {
+                // sanity check
+                // silently drop an invalid message
+                break;
+            }
 
             _send_msg_err_ err = _submitMsg( msg );
             if ( err == smerr_ok ) {
 
+                // grab current timestamp so that heartbeat is not redundant
                 tLastMsg = FPlatformTime::Seconds();
 
             } else if ( err == smerr_requesttimedout && !_mShouldRun ) {
@@ -473,35 +532,38 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
             }
 
-
             break;
         }
-        
-        case Probing:
+
+
+        case Probing: {
             
             // obtain GameSense server port
-            serverPort = _getServerPort();
+            FString serverPort = _getServerPort();
             if ( serverPort == "" ) {
                 // SSE3 not installed or coreprops.json garbled
                 // this failure is beyond anything we can do, GameSense will remain disabled
                 LOG( Error, TEXT("GameSense server port could not be obtained") );
                 _mClientState = Disabled;
             } else {
-
+                // successfully  obtained server port
                 _initializedUris( FString( TEXT( "http://127.0.0.1:" ) + serverPort ) );
                 _mClientState = Active;
 
             }
 
             break;
+        }
+
 
         case Disabled:
-            // TODO logdbg
+            LOG( Warning, TEXT( "Disabling GameSense client" ) );
             _mShouldRun = false;
             break;
-            
+
+
         default:
-            // TODO log undefined state
+            LOG( Error, TEXT( "Undefined GameSense client state tranistion" ) );
             _mClientState = Disabled;
             break;
 
@@ -524,12 +586,10 @@ bool Client::Initialize()
     if ( !_mpInstance ) {
         _mpInstance = new ( std::nothrow ) Client;
         if ( _mpInstance ) {
+            // spawn the worker thread
             TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
             _mpInstance->_gsWorkerReturnStatus = AsyncThread( fn ).Share();
         }
-    } else {
-        // TODO should not get here
-        return true;
     }
 
     return _mpInstance != nullptr;
@@ -548,8 +608,9 @@ void Client::Release()
     }
 }
 
-
-// ***** API *****
+/**
+* Client API.
+*/
 void Client::RegisterGame( const FSSGS_GameInfo& v )
 {
     if ( _isDisabled() ) return;
