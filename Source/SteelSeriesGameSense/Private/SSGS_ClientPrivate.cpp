@@ -269,7 +269,7 @@ enum _send_msg_err_ {
 */
 Client* Client::_mpInstance = nullptr;
 TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
-TPromise< bool > _req_completion;
+TSharedPtr< TPromise< bool > > _preq_completion;
 
 /**
 * Return per platform path to server coreProps.
@@ -338,7 +338,7 @@ void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, con
 */
 void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
 {
-    _req_completion.SetValue( completed );
+    _preq_completion->SetValue( completed );
 }
 
 /**
@@ -348,15 +348,15 @@ void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool comp
 */
 TFuture< bool > _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data ){
     // reset the promise
-    _req_completion = TPromise< bool >();
-    TFuture< bool > result = _req_completion.GetFuture();
+    *_preq_completion = TPromise< bool >();
+    TFuture< bool > result = _preq_completion->GetFuture();
 
     request->OnProcessRequestComplete().BindStatic( &_onRequestComplete );
 
     _configureRequest( request, uri, data );
 
     if ( !request->ProcessRequest() ) {
-        _req_completion.SetValue( false );
+        _preq_completion->SetValue( false );
     }
 
     return result;
@@ -462,12 +462,14 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
     double tLastMsg = FPlatformTime::Seconds();
     double tNow = tLastMsg;
     _mClientState = Probing;
+    _preq_completion = TSharedPtr< TPromise< bool > >( new ( std::nothrow ) TPromise< bool >() );
 
     // Ensure http module is loaded
     FHttpModule::Get();
 
     // Drop any stale messages
     _msg_queue.Empty();
+
 
     while (_mShouldRun) {
         switch ( _mClientState ) {
@@ -570,6 +572,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
         }
     }
 
+    _preq_completion.Reset();
     _msg_queue.Empty();
     LOG( Display, TEXT("GameSense worker exiting") );
     // TODO report err
