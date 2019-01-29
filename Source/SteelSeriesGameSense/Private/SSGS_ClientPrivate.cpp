@@ -382,51 +382,49 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
     TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
 
     // wait for the request to complete
-    bool success = result.Get();
-    if ( success ) {
-        switch ( request->GetStatus() ) {
+    result.Get();
+    switch ( request->GetStatus() ) {
 
-        case EHttpRequestStatus::Failed:
-        case EHttpRequestStatus::Succeeded: {
-            FHttpResponsePtr response = request->GetResponse();
-            if ( response.IsValid() ) {
-                int32 code = response->GetResponseCode();
+    case EHttpRequestStatus::Failed:
+    case EHttpRequestStatus::Succeeded: {
+        FHttpResponsePtr response = request->GetResponse();
+        if ( response.IsValid() ) {
+            int32 code = response->GetResponseCode();
 
-                switch ( code ) {
+            switch ( code ) {
 
-                case EHttpResponseCodes::Ok:
-                    LOG( Verbose, TEXT( "%s" ), *response->GetContentAsString() );
-                    err = smerr_ok;
-                    break;
+            case EHttpResponseCodes::Ok:
+                LOG( Verbose, TEXT( "%s" ), *response->GetContentAsString() );
+                err = smerr_ok;
+                break;
 
-                case EHttpResponseCodes::GatewayTimeout:
-                    err = smerr_serverdown;
-                    break;
+            case EHttpResponseCodes::GatewayTimeout:
+                err = smerr_serverdown;
+                break;
 
-                case EHttpResponseCodes::BadRequest:
-                case EHttpResponseCodes::ServerError:
-                    LOG( Warning, TEXT( "%s" ), *response->GetContentAsString() );
-                    err = smerr_msgillformed;
-                    break;
+            case EHttpResponseCodes::BadRequest:
+            case EHttpResponseCodes::ServerError:
+                LOG( Warning, TEXT( "%s" ), *response->GetContentAsString() );
+                err = smerr_msgillformed;
+                break;
 
-                default:
-                    err = smerr_unknown;
-                    break;
-                }
+            default:
+                err = smerr_unknown;
+                break;
             }
-
-            break;
         }
 
-        case EHttpRequestStatus::Failed_ConnectionError:
-            err = smerr_serverdown;
-            break;
+        break;
+    }
 
-        default:
-            err = smerr_unknown;
-            break;
+    case EHttpRequestStatus::Failed_ConnectionError:
+        err = smerr_serverdown;
+        break;
 
-        }
+    default:
+        err = smerr_unknown;
+        break;
+
     }
 
     return err;
@@ -470,6 +468,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
     // Drop any stale messages
     _msg_queue.Empty();
 
+    LOG( Display, TEXT( "GameSense worker starting" ) );
 
     while (_mShouldRun) {
         switch ( _mClientState ) {
