@@ -382,6 +382,18 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
     TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
 
     // wait for the request to complete
+    bool available = result.WaitFor( FTimespan::FromSeconds( 5.0 ) );
+    if ( !available ) {
+        // timeout occurred
+        // cancel request and fullfill the promise object
+        // so that we do not trigger a bugcheck
+        request->CancelRequest();
+        _preq_completion->SetValue( false );
+
+        LOG( Error, TEXT( "The request was not completed in a timely manner" ) );
+        return smerr_unknown;
+    }
+
     result.Get();
     switch ( request->GetStatus() ) {
 
