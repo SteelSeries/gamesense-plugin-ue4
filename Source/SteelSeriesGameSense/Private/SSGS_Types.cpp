@@ -414,6 +414,11 @@ FSSGS_TactilePatternStatic USSGS_TactilePatternSpecificationStatic::MakeStaticWi
                                                                   delay_ms ) );
 }
 
+TArray<FSSGS_TactilePatternStatic> USSGS_TactilePatternSpecificationStatic::MakeStaticEmptyPattern( )
+{
+    return TArray<FSSGS_TactilePatternStatic>();
+}
+
 TSharedPtr< FJsonValue > USSGS_TactilePatternSpecificationStatic::Convert() const
 {
     return TSharedPtr< FJsonValue >(
