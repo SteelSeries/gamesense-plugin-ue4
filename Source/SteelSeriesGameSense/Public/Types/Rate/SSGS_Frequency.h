@@ -28,7 +28,7 @@
 #include "SSGS_Frequency.generated.h"
 
 
-USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_Frequency {
 
     GENERATED_BODY()

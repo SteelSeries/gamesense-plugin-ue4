@@ -30,7 +30,7 @@
 #include "SSGS_ColorEffectSpecificationRanges.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationRanges : public USSGS_ColorEffectSpecification {
 
     GENERATED_BODY()
@@ -43,7 +43,7 @@ public:
     * @param    v Array of color range variants.
     * @return   USSGS_ColorEffectSpecificationRanges object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ColorEffectSpecification" )
     static USSGS_ColorEffectSpecificationRanges* MakeRangeColorEffect( const TArray< FSSGS_ColorRange >& v );
 
     /**
@@ -54,7 +54,7 @@ public:
     * @param    color RGB color specification for the range.
     * @return   FSSGS_ColorRange object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ColorEffectSpecification" )
     static FSSGS_ColorRange MakeStaticColorRange( int32 low, int32 high, const FSSGS_RGB& color );
 
     /**
@@ -66,7 +66,7 @@ public:
     * @param    hundred End color for the gradient.
     * @return   FSSGS_ColorRange object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ColorEffectSpecification" )
     static FSSGS_ColorRange MakeGradientColorRange( int32 low, int32 high, UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
     TSharedPtr< FJsonValue > Convert() const;

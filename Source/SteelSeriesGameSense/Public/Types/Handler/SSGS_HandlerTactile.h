@@ -32,7 +32,7 @@
 #include "SSGS_HandlerTactile.generated.h"
 
 
-USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_HandlerTactile : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()

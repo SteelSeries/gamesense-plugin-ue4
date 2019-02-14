@@ -33,7 +33,7 @@
 #include "SSGS_ColorRange.generated.h"
 
 
-USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_ColorRange : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()

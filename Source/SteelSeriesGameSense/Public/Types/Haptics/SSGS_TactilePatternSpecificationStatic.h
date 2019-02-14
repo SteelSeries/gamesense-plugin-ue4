@@ -30,7 +30,7 @@
 #include "SSGS_TactilePatternSpecificationStatic.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_TactilePatternSpecificationStatic : public USSGS_TactilePatternSpecification {
 
     GENERATED_BODY()
@@ -43,7 +43,7 @@ public:
     * @param    pattern Array of variant (predefined/custom) pattern objects.
     * @return   USSGS_TactilePatternSpecificationStatic object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|TactilePatternSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|TactilePatternSpecification" )
     static USSGS_TactilePatternSpecificationStatic* MakeStaticTactilePattern( const TArray< FSSGS_TactilePatternStatic >& pattern );
 
     /**
@@ -53,7 +53,7 @@ public:
     * @param    delay_ms Delay amount in milliseconds.
     * @return   FSSGS_TactilePatternStatic object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|TactilePatternSpecification" ) )
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|TactilePatternSpecification" ) )
     static FSSGS_TactilePatternStatic MakeStaticWithPredefinedEffect( const FSSGS_PredefinedTactilePattern& type, int32 delay_ms = 0 );
 
     /**
@@ -63,7 +63,7 @@ public:
     * @param    delay_ms Delay amount in milliseconds.
     * @return   FSSGS_TactilePatternStatic object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "GameSense|TactilePatternSpecification" ) )
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|TactilePatternSpecification" ) )
     static FSSGS_TactilePatternStatic MakeStaticWithCustomEffect( int32 length_ms, int32 delay_ms = 0 );
 
     TSharedPtr< FJsonValue > Convert() const;

@@ -46,13 +46,13 @@ public:
     *
     * @return true if successful, false otherwise.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static bool Start();
 
     /**
     * Stops the client and releases its resources. Call on exit.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void Stop();
 
     /**
@@ -62,7 +62,7 @@ public:
     * @param	gameDisplayName The string used by SSE3 to display game title.
     * @param	iconColor The ID value of a color associated with the game. Used by SSE3.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void RegisterGame( const FString& gameName, const FString& gameDisplayName, ESSGS_IconColor iconColor );
     
     /**
@@ -74,7 +74,7 @@ public:
     * @param	maxValue Maximum integer value for the event.
     * @param	iconId The ID value of an icon associated with the game. Used by SSE3.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId );
     
     /**
@@ -87,7 +87,7 @@ public:
     * @param	iconId The ID value of an icon associated with the game. Used by SSE3.
     * @param	handlers The collection of handlers to bind to the event.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, UPARAM( ref, DisplayName = "Handler Collection" ) USSGS_HandlerCollection*& handlers );
     
     /**
@@ -97,7 +97,7 @@ public:
     * @param	eventName The string the server uses to identify an event for the game.
     * @param	data Event data object with current value for the event.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void SendEvent( const FString& gameName, const FString& eventName, const FSSGS_EventData& data );
    
     /**
@@ -106,7 +106,7 @@ public:
     * @param	gameName The string that the server uses to identify the game.
     * @param	eventName The string the server uses to identify an event for the game.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void RemoveEvent( const FString& gameName, const FString& eventName );
     
     /**
@@ -115,7 +115,7 @@ public:
     * @param	gameName The string that the server uses to identify the game.
     * @param	eventName The string the server uses to identify an event for the game.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|Client" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void RemoveGame( const FString& gameName );
 
 };

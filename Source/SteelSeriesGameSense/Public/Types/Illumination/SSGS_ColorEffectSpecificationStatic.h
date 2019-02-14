@@ -30,7 +30,7 @@
 #include "SSGS_ColorEffectSpecificationStatic.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationStatic : public USSGS_ColorEffectSpecification {
 
     GENERATED_BODY()
@@ -43,7 +43,7 @@ public:
     * @param    color Object specifying RGB components.
     * @return   USSGS_ColorEffectSpecificationStatic object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ColorEffectSpecification" )
     static USSGS_ColorEffectSpecificationStatic* MakeStaticColorEffect( const FSSGS_RGB& color );
 
     TSharedPtr< FJsonValue > Convert() const;

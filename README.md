@@ -51,11 +51,11 @@ Create a new blueprint class, select **Actor** as a parent class and open the ne
 Adhering to the process described above, we proceed with the first steps.
 
 1. Open `EventGraph` and drag off the exec pin of `Event BeginPlay` to place a new node.
-2. From the list, find category `Game Sense\Client` and select `Start`.
+2. From the list, find category `Gamesense\Client` and select `Start`.
 
 ![blueprint-start](/Resources/blueprint-start.png)
 
-**NOTE** The vast majority of the nodes conerning us will be located under category `Game Sense`.
+**NOTE** The vast majority of the nodes conerning us will be located under category `Gamesense`.
 3. Drag off the exec pin of `Start` function and select `Register Game`. Enter desired values for the function arguments.
 In an influx of diligence, you may create something that looks a lot like the following.
 
@@ -67,9 +67,9 @@ In an influx of diligence, you may create something that looks a lot like the fo
 2. Since this time we want to bind an event, let's create a node for function `Bind Event`. Fill out the node with desired values. Make sure the game name matches what you specified in `Register Game`. Stop at the last argument.
 3. Drag off `Handler Collection` and select `Make Handler Collection`. Notice the power of Blueprints: in this context `Make Handler Collection` is the only meaningful item and pretty much everything else gets filtered out from the list of actions.
 4. Drag off `Return Value` pin of the newly created node and select `Add Color Handler`. The new function executes in context of the newly created handler collection (note the `Target` pin).
-5. Drag off `Device-Zone`. Note that you are given an option of using the implicit make node `Make SSGS_IlluminationDeviceZone`. Let's not use it and instead, select a device-zone action from `Game Sense` category, `Make Mouse Wheel` for instance.
+5. Drag off `Device-Zone`. Note that you are given an option of using the implicit make node `Make SSGS_IlluminationDeviceZone`. Let's not use it and instead, select a device-zone action from `Gamesense` category, `Make Mouse Wheel` for instance.
 
-**Attention** You should almost always prefer to select make nodes from under `Game Sense` category. In many cases the default-constructed structures contain invalid data. The exception to this is when there is no action available under `Game Sense`.
+**Attention** You should almost always prefer to select make nodes from under `Gamesense` category. In many cases the default-constructed structures contain invalid data. The exception to this is when there is no action available under `Gamesense`.
 
 6. Similarly for `Color Specification`, create `Make Gradient Color Effect`, and then use `Make SSGS_RGB` for each argument, `Start Color` and `End Color`.
 7. Connect the exec pins to ensure correct execution order: `Bind MyEvent -> Make Handler Collection -> Add Color Event -> Bind Event`.

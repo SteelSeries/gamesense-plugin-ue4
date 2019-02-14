@@ -31,7 +31,7 @@
 #include "SSGS_ColorEffectSpecificationGradient.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_ColorEffectSpecificationGradient : public USSGS_ColorEffectSpecification {
 
     GENERATED_BODY()
@@ -45,7 +45,7 @@ public:
     * @param    hundred End color for the gradient.
     * @return   USSGS_ColorEffectSpecificationGradient object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|ColorEffectSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ColorEffectSpecification" )
     static USSGS_ColorEffectSpecificationGradient* MakeGradientColorEffect( UPARAM( DisplayName = "Start Color" ) const FSSGS_RGB& zero, UPARAM( DisplayName = "End Color" ) const FSSGS_RGB& hundred );
 
     TSharedPtr< FJsonValue > Convert() const;

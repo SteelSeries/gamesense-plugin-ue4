@@ -34,7 +34,7 @@
 #include "SSGS_RateSpecification.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_RateSpecification : public UObject, public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -48,7 +48,7 @@ public:
     * @param    repeat_limit Repeat count for the rate object.
     * @return   USSGS_ColorEffectSpecificationRanges object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|RateSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|RateSpecification" )
     static USSGS_RateSpecification* MakeStaticRate( int32 frequency, int32 repeat_limit );
 
     /**
@@ -57,7 +57,7 @@ public:
     * @param    v Array of ranges.
     * @return   USSGS_ColorEffectSpecificationRanges object.
     */
-    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "GameSense|RateSpecification" )
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|RateSpecification" )
     static USSGS_RateSpecification* MakeRangedRate( UPARAM( DisplayName = "Frequency - RepeatLimit Pairs" ) const TArray< FSSGS_FrequencyRepeatLimitPair >& v );
 
     TSharedPtr< FJsonValue > Convert() const;

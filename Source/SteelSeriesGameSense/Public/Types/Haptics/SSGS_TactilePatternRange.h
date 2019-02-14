@@ -29,7 +29,7 @@
 #include "SSGS_TactilePatternRange.generated.h"
 
 
-USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_TactilePatternRange : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()

@@ -28,7 +28,7 @@
 #include "SSGS_EventData.generated.h"
 
 
-USTRUCT( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 struct STEELSERIESGAMESENSE_API FSSGS_EventData {
 
     GENERATED_BODY()

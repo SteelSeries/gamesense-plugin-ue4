@@ -35,7 +35,7 @@
 #include "SSGS_HandlerCollection.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "GameSense|Types" ) )
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_HandlerCollection : public UObject, public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -52,7 +52,7 @@ public:
     *
     * @return   USSGS_HandlerCollection object.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|HandlerCollection" )
     static USSGS_HandlerCollection* MakeHandlerCollection();
 
     /**
@@ -63,7 +63,7 @@ public:
     * @param	colorSpec Specification of color effect (static, gradient, ranges).
     * @param	rateSpec Specification of the flasher for the specified zone. Optional.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|HandlerCollection" )
     void AddColorHandler( UPARAM( DisplayName = "Device-Zone" )             const FSSGS_IlluminationDeviceZone& deviceZone,
                           UPARAM( DisplayName = "Illumination Mode" )       ESSGS_IlluminationMode mode,
                           UPARAM( DisplayName = "ColorSpecification", ref ) USSGS_ColorEffectSpecification*& colorSpec,
@@ -75,7 +75,7 @@ public:
     * @param	pattern Specification of tactile pattern (static, ranges).
     * @param	rateSpec Specifies frequency and repeat count for the tactile pattern. Optional.
     */
-    UFUNCTION( BlueprintCallable, Category = "GameSense|HandlerCollection" )
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|HandlerCollection" )
     void AddTactileHandler( UPARAM( DisplayName = "Device-Zone" )               const FSSGS_TactileDeviceZone& deviceZone,
                             UPARAM( DisplayName = "PatternSpecification", ref ) USSGS_TactilePatternSpecification*& pattern,
                             UPARAM( DisplayName = "RateSpecification" )         USSGS_RateSpecification* rate = nullptr );
