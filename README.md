@@ -114,7 +114,7 @@ void AGameSense::BeginPlay()
     AActor::BeginPlay();
 
     ssgs::Start();
-    ssgs::RegisterGame( { GAME_NAME, "My Fancy Game", ESSGS_IconColor::Green } );
+    ssgs::RegisterGame( { GAME_NAME, "My Fancy Game" } );
 
     USSGS_ColorEffectSpecification* pCesg =
         USSGS_ColorEffectSpecificationGradient::MakeGradientColorEffect( FSSGS_RGB{ 255, 0, 0 },

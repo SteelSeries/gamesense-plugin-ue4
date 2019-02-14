@@ -537,10 +537,9 @@ TSharedPtr< FJsonValue > USSGS_HandlerCollection::Convert() const
 // ****** FSSGS_GameInfo ******
 FSSGS_GameInfo::FSSGS_GameInfo() {};
 
-FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName, ESSGS_IconColor iconColorId ) :
+FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName ) :
     game( game ),
-    gameDisplayName( displayName ),
-    iconColorId( iconColorId )
+    gameDisplayName( displayName )
 {}
 
 TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
@@ -549,7 +548,6 @@ TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "game_display_name", gameDisplayName );
-    obj->SetNumberField( "icon_color_id", ( uint32 )iconColorId );
 
     return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }

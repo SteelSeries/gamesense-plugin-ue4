@@ -27,23 +27,6 @@
 
 #include "SSGS_Enums.generated.h"
 
-
-UENUM( BlueprintType )
-enum class ESSGS_IconColor : uint8 {
-    Orange = 0,
-    Gold = 1,
-    Yellow = 2,
-    Green = 3,
-    Teal = 4,
-    LightBlue = 5,
-    Blue = 6,
-    Purple = 7,
-    Fuschia = 8,
-    Pink = 9,
-    Red = 10,
-    Silver = 11
-};
-
 UENUM( BlueprintType )
 enum class ESSGS_EventIconId : uint8 {
     Default = 0,

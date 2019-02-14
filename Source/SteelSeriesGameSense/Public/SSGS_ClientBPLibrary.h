@@ -60,10 +60,9 @@ public:
     *
     * @param	gameName The string that the server uses to identify the game.
     * @param	gameDisplayName The string used by SSE3 to display game title.
-    * @param	iconColor The ID value of a color associated with the game. Used by SSE3.
     */
     UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
-    static void RegisterGame( const FString& gameName, const FString& gameDisplayName, ESSGS_IconColor iconColor );
+    static void RegisterGame( const FString& gameName, const FString& gameDisplayName );
     
     /**
     * Registers a game event with the GameSense server.
