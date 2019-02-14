@@ -309,7 +309,7 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
     else if ( deviceZone.zoneType == FSSGS_IlluminationDeviceZone::custom )
         obj->SetArrayField( "custom-zone-keys", _getArrayOfJsonValues( deviceZone.customZone() ) );
 
-    obj->SetStringField( "mode", GetEnumString( ESSGS_IlluminationMode, mode ) );
+    obj->SetStringField( "mode", GetEnumString( ESSGS_IlluminationMode, mode ).ToLower() );
     
     if ( color )
         obj->SetField( "color", color->Convert() );
