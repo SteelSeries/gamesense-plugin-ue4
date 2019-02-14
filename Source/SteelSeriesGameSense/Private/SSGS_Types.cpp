@@ -156,7 +156,7 @@ TSharedPtr< FJsonValue > USSGS_RateSpecification::Convert() const
     
     }
 
-    return TSharedPtr< FJsonValue >( nullptr );
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueNull );
 }
 
 // ****** FSSGS_ColorRangeStatic ******
@@ -369,7 +369,7 @@ TSharedPtr< FJsonValue > FSSGS_TactilePatternStatic::Convert() const
         break;
 
     default:
-        return TSharedPtr< FJsonValue >( nullptr );
+        return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueNull );
         break;
 
     }
