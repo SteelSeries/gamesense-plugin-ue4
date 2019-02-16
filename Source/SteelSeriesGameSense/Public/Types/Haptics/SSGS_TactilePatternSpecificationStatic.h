@@ -69,7 +69,7 @@ public:
     /**
     * Construct an empty static pattern variant (for parts of ranges where you want no effect)
     *
-    * @return USSGS_TactilePatternStatic object.
+    * @return Zero-length TArray<USSGS_TactilePatternStatic>.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|TactilePatternSpecification") )
     static TArray<FSSGS_TactilePatternStatic> MakeStaticEmptyPattern( );
