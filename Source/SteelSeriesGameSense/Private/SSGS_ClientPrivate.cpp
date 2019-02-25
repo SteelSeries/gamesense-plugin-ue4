@@ -417,7 +417,7 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
         _preq_completion->SetValue( false );
 
         LOG( Error, TEXT( "The request was not completed in a timely manner" ) );
-        return smerr_unknown;
+        return smerr_requesttimedout;
     }
 
     result.Get();
