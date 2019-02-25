@@ -45,7 +45,15 @@ enum class ESSGS_EventIconId : uint8 {
     Mana = 14,
     Clock = 15,
     Lightning = 16,
-    Item = 17
+    Item = 17,
+    AtSymbol = 18,
+    Muted = 19,
+    Talking = 20,
+    Connect = 21,
+    Disconnect = 22,
+    Music = 23,
+    Play = 24,
+    Pause = 25
 };
 
 UENUM( BlueprintType )
