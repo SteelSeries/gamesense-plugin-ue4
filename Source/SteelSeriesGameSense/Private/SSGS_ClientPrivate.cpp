@@ -609,8 +609,9 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
         }
     }
 
-    _preq_completion.Reset();
     _msg_queue.Empty();
+    _preq_completion.Reset();
+
     LOG( Display, TEXT("GameSense worker exiting") );
     // TODO report err
     return 0;
