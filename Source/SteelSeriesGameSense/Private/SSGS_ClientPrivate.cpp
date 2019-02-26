@@ -546,9 +546,12 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
                 // grab current timestamp so that heartbeat is not redundant
                 tLastMsg = FPlatformTime::Seconds();
 
-            } else if ( err == smerr_requesttimedout && !_mShouldRun ) {
-                // TODO
-                break;
+            } else if ( err == smerr_requesttimedout ) {
+
+                LOG( Error, TEXT( "GameSense request timed out" ) );
+                pendingMsg = std::move( msg );
+                _mClientState = Probing;
+
             } else if ( err == smerr_serverdown ) {
 
                 LOG( Error, TEXT( "Failed connecting to GameSense server" ) );
