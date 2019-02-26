@@ -585,7 +585,7 @@ TSharedPtr< FJsonValue > FSSGS_EventInfo::Convert() const
 // ****** FSSGS_EventBinding ******
 FSSGS_EventBinding::FSSGS_EventBinding()
 {
-    handlers = NewObject< USSGS_HandlerCollection >();
+    handlers = _createUObj< USSGS_HandlerCollection >();
 }
 
 FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) :
