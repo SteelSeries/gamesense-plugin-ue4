@@ -678,3 +678,66 @@ TSharedPtr< FJsonValue > FSSGS_Game::Convert() const
 
     return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
+
+TSharedPtr< FJsonValue > USSGS_FrameObject::Convert() const
+{
+    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueNull );
+}
+
+// ****** USSGS_FrameObject ******
+USSGS_FrameObject* USSGS_FrameObject::MakeGradientColorEffect( const TSSGS_ObjectDef& properties )
+{
+    USSGS_FrameObject* p = _createUObj< USSGS_FrameObject >();
+    p->properties = properties;
+    return p;
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyBool( const FString& n, bool v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyByte( const FString& n, uint8 v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyInt( const FString& n, int32 v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyFloat( const FString& n, float v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyString( const FString& n, const FString& v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyBoolArray( const FString& n, const TArray< bool >& v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyByteArray( const FString& n, const TArray< uint8 >& v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyIntArray( const FString& n, const TArray< int32 >& v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyFloatArray( const FString& n, const TArray< float >& v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}
+
+FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyStringArray( const FString& n, const TArray< FString >& v )
+{
+    return FSSGS_PropertyValuePair{ n, v };
+}

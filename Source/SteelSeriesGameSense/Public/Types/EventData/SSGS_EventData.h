@@ -25,6 +25,7 @@
 #pragma once
 
 
+#include "Types/EventData/SSGS_FrameObject.h"
 #include "SSGS_EventData.generated.h"
 
 
@@ -34,5 +35,6 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventData {
     GENERATED_BODY()
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 value;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_Frame* frame;
 
 };

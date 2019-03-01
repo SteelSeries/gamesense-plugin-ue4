@@ -27,7 +27,7 @@
 
 #include "Common/SSGS_JsonConvertable.h"
 #include "Types/SSGS_Enums.h"
-#include "Types/SSGS_EventData.h"
+#include "Types/EventData/SSGS_EventData.h"
 #include "Types/Handler/SSGS_HandlerCollection.h"
 #include "SSGS_Payload.generated.h"
 
