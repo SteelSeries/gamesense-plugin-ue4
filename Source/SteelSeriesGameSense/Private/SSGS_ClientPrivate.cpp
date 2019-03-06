@@ -30,8 +30,7 @@
 #include <functional>
 
 #include "Async/Async.h"
-#include "RunnableThread.h"
-#include "FileHelper.h"
+#include "Misc/FileHelper.h"
 #include "JsonUtilities.h"
 #include "Http.h"
 
