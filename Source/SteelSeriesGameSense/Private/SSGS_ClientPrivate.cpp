@@ -227,8 +227,7 @@ public:
     }
 
     template < typename msg_type >
-    _queue_msg_wrapper_( const msg_type& v ) :
-        _activeTag( msg_type::tag )
+    _queue_msg_wrapper_( const msg_type& v )
     {
         set( v );
     }
