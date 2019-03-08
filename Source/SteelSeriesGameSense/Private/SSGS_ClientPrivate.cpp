@@ -303,10 +303,8 @@ TSharedPtr< TPromise< bool > > _preq_completion;
 FString _serverPropsPath() {
 #if PLATFORM_WINDOWS
     //"%PROGRAMDATA%/SteelSeries/SteelSeries Engine 3/coreProps.json"
-    TCHAR bfr[ _MAX_PATH+1 ];
-    FWindowsPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA", bfr, _MAX_PATH );
-    FString programData( bfr );
-    return FString( bfr + FString(L"\\SteelSeries\\SteelSeries Engine 3\\coreProps.json") );
+    FString programData( FPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA" ) );
+    return FString( programData + FString(L"\\SteelSeries\\SteelSeries Engine 3\\coreProps.json") );
 #elif PLATFORM_MAC
     return FString( "/Library/Application Support/SteelSeries Engine 3/coreProps.json" );
 #else
