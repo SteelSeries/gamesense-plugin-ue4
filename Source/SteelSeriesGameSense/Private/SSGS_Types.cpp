@@ -977,56 +977,56 @@ TSharedPtr< FJsonValue > FSSGS_EventData::Convert() const
     return MakeShared< FJsonValueObject >( obj );
 }
 
-// ****** FSSGS_PropertyValuePair ******
-void FSSGS_PropertyValuePair::Decorate( TSharedPtr< FJsonObject > obj ) const
+// ****** FSSGS_KeyValuePair ******
+void FSSGS_KeyValuePair::Decorate( TSharedPtr< FJsonObject > obj ) const
 {
     switch ( _type ) {
 
-    case PropertyVariant_Bool:
+    case Bool:
         obj->SetBoolField( _name, _variant.Get< Type >().Get< bool >() );
         break;
 
-    case PropertyVariant_Uint8:
+    case Uint8:
         obj->SetNumberField( _name, _variant.Get< Type >().Get< uint8 >() );
         break;
 
-    case PropertyVariant_Int32:
+    case Int32:
         obj->SetNumberField( _name, _variant.Get< Type >().Get< int32 >() );
         break;
 
-    case PropertyVariant_Float:
+    case Float:
         obj->SetNumberField( _name, _variant.Get< Type >().Get< float >() );
         break;
 
-    case PropertyVariant_String:
+    case String:
         obj->SetStringField( _name, _variant.Get< Type >().Get< FString >() );
         break;
 
-    case PropertyVariant_BoolArray: {
+    case BoolArray: {
         auto v = _variant.Get< ArrayType >().Get< TArray< bool > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesBoolean( v ) );
         break;
     }
 
-    case PropertyVariant_Uint8Array: {
+    case Uint8Array: {
         auto v = _variant.Get< ArrayType >().Get< TArray< uint8 > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesNumbers( v ) );
         break;
     }
 
-    case PropertyVariant_Int32Array: {
+    case Int32Array: {
         auto v = _variant.Get< ArrayType >().Get< TArray< int32 > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesNumbers( v ) );
         break;
     }
 
-    case PropertyVariant_FloatArray: {
+    case FloatArray: {
         auto v = _variant.Get< ArrayType >().Get< TArray< float > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesNumbers( v ) );
         break;
     }
 
-    case PropertyVariant_StringArray: {
+    case StringArray: {
         auto v = _variant.Get< ArrayType >().Get< TArray< FString > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesString( v ) );
         break;
@@ -1043,54 +1043,54 @@ USSGS_FrameObject* USSGS_FrameObject::MakeFrameObject( const TSSGS_ObjectDef& pr
     return p;
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyBool( const FString& n, bool v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyBool( const FString& n, bool v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyByte( const FString& n, uint8 v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyByte( const FString& n, uint8 v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyInt( const FString& n, int32 v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyInt( const FString& n, int32 v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyFloat( const FString& n, float v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyFloat( const FString& n, float v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyString( const FString& n, const FString& v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyString( const FString& n, const FString& v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyBoolArray( const FString& n, const TArray< bool >& v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyBoolArray( const FString& n, const TArray< bool >& v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyByteArray( const FString& n, const TArray< uint8 >& v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyByteArray( const FString& n, const TArray< uint8 >& v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyIntArray( const FString& n, const TArray< int32 >& v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyIntArray( const FString& n, const TArray< int32 >& v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyFloatArray( const FString& n, const TArray< float >& v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyFloatArray( const FString& n, const TArray< float >& v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
-FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyStringArray( const FString& n, const TArray< FString >& v )
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyStringArray( const FString& n, const TArray< FString >& v )
 {
-    return FSSGS_PropertyValuePair{ n, v };
+    return FSSGS_KeyValuePair{ n, v };
 }
 
 TSharedPtr< FJsonValue > USSGS_FrameObject::Convert() const

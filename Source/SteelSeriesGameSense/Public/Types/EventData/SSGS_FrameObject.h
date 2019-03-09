@@ -31,42 +31,63 @@
 #include "SSGS_FrameObject.generated.h"
 
 
-enum ESSGS_PropertyVariant {
-    PropertyVariant_Invalid = 0,
-    PropertyVariant_Bool,
-    PropertyVariant_Uint8,
-    PropertyVariant_Int32,
-    PropertyVariant_Float,
-    PropertyVariant_String,
-    PropertyVariant_BoolArray,
-    PropertyVariant_Uint8Array,
-    PropertyVariant_Int32Array,
-    PropertyVariant_FloatArray,
-    PropertyVariant_StringArray
-};
-
 USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
-struct STEELSERIESGAMESENSE_API FSSGS_PropertyValuePair : public FSSGS_JsonConvertable {
+struct STEELSERIESGAMESENSE_API FSSGS_KeyValuePair : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
 
 public:
 
-    FSSGS_PropertyValuePair() : _type( PropertyVariant_Invalid ) {};
-    FSSGS_PropertyValuePair( const FString& n, bool v ) : _name( n ), _type( PropertyVariant_Bool ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, uint8 v ) : _name( n ), _type( PropertyVariant_Uint8 ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, int32 v ) : _name( n ), _type( PropertyVariant_Int32 ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, float v ) : _name( n ), _type( PropertyVariant_Float ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, const FString& v ) : _name( n ), _type( PropertyVariant_String ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, const TArray< bool >& v ) : _name( n ), _type( PropertyVariant_BoolArray ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, const TArray< uint8 >& v ) : _name( n ), _type( PropertyVariant_Uint8Array ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, const TArray< int32 >& v ) : _name( n ), _type( PropertyVariant_Int32Array ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, const TArray< float >& v ) : _name( n ), _type( PropertyVariant_FloatArray ), _variant( v ) {}
-    FSSGS_PropertyValuePair( const FString& n, const TArray< FString >& v ) : _name( n ), _type( PropertyVariant_StringArray ), _variant( v ) {}
+    FSSGS_KeyValuePair() : _type( Invalid ) {};
+
+    FSSGS_KeyValuePair( const FString& n, bool v ) :
+        _name( n ), _type( Bool ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, uint8 v ) :
+        _name( n ), _type( Uint8 ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, int32 v ) :
+        _name( n ), _type( Int32 ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, float v ) :
+        _name( n ), _type( Float ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, const FString& v ) :
+        _name( n ), _type( String ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, const TArray< bool >& v ) :
+        _name( n ), _type( BoolArray ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, const TArray< uint8 >& v ) :
+        _name( n ), _type( Uint8Array ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, const TArray< int32 >& v ) :
+        _name( n ), _type( Int32Array ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, const TArray< float >& v ) :
+        _name( n ), _type( FloatArray ), _variant( v ) {}
+
+    FSSGS_KeyValuePair( const FString& n, const TArray< FString >& v ) :
+        _name( n ), _type( StringArray ), _variant( v ) {}
+
 
     void Decorate( TSharedPtr< FJsonObject > obj ) const;
 
 private:
+
+    enum _pv_type_ {
+        Invalid = 0,
+        Bool,
+        Uint8,
+        Int32,
+        Float,
+        String,
+        BoolArray,
+        Uint8Array,
+        Int32Array,
+        FloatArray,
+        StringArray
+    };
 
     typedef ssgs::Union< bool, uint8, int32, float, FString > Type;
     typedef ssgs::Union< TArray< bool >,
@@ -75,13 +96,15 @@ private:
         TArray< float >,
         TArray< FString > > ArrayType;
 
+private:
+
     FString _name;
-    ESSGS_PropertyVariant _type;
+    _pv_type_ _type;
     ssgs::Union< Type, ArrayType > _variant;
 
 };
 
-typedef TArray< FSSGS_PropertyValuePair > TSSGS_ObjectDef;
+typedef TArray< FSSGS_KeyValuePair > TSSGS_ObjectDef;
 
 UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_FrameObject : public USSGS_Frame {
@@ -91,40 +114,42 @@ class STEELSERIESGAMESENSE_API USSGS_FrameObject : public USSGS_Frame {
 public:
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static USSGS_FrameObject* MakeFrameObject( const TArray< FSSGS_PropertyValuePair >& properties );
+    static USSGS_FrameObject* MakeFrameObject( const TArray< FSSGS_KeyValuePair >& properties );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyBool( const FString& name, bool value );
+    static FSSGS_KeyValuePair MakePropertyBool( const FString& name, bool value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyByte( const FString& name, uint8 value );
+    static FSSGS_KeyValuePair MakePropertyByte( const FString& name, uint8 value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyInt( const FString& name, int32 value );
+    static FSSGS_KeyValuePair MakePropertyInt( const FString& name, int32 value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyFloat( const FString& name, float value );
+    static FSSGS_KeyValuePair MakePropertyFloat( const FString& name, float value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyString( const FString& name, const FString& value );
+    static FSSGS_KeyValuePair MakePropertyString( const FString& name, const FString& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyBoolArray( const FString& name, const TArray< bool >& value );
+    static FSSGS_KeyValuePair MakePropertyBoolArray( const FString& name, const TArray< bool >& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyByteArray( const FString& name, const TArray< uint8 >& value );
+    static FSSGS_KeyValuePair MakePropertyByteArray( const FString& name, const TArray< uint8 >& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyIntArray( const FString& name, const TArray< int32 >& value );
+    static FSSGS_KeyValuePair MakePropertyIntArray( const FString& name, const TArray< int32 >& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyFloatArray( const FString& name, const TArray< float >& value );
+    static FSSGS_KeyValuePair MakePropertyFloatArray( const FString& name, const TArray< float >& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static FSSGS_PropertyValuePair MakePropertyStringArray( const FString& name, const TArray< FString >& value );
+    static FSSGS_KeyValuePair MakePropertyStringArray( const FString& name, const TArray< FString >& value );
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY() TArray< FSSGS_PropertyValuePair > properties;
+public:
+
+    UPROPERTY() TArray< FSSGS_KeyValuePair > properties;
 
 };
