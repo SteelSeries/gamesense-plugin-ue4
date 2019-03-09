@@ -25,19 +25,32 @@
 #pragma once
 
 
-#include "Dom/JsonValue.h"
-#include "SSGS_JsonConvertable.generated.h"
+#include "SSGS_FrameDataSingleLine.h"
+#include "SSGS_FrameDataMultiLine.h"
+#include "SSGS_FrameData.generated.h"
 
 
-USTRUCT()
-struct STEELSERIESGAMESENSE_API FSSGS_JsonConvertable
-{
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
+struct STEELSERIESGAMESENSE_API FSSGS_FrameData : public FSSGS_JsonConvertable {
+
     GENERATED_BODY()
 
-    virtual ~FSSGS_JsonConvertable() {};
-    virtual void Decorate( TSharedPtr< FJsonObject > obj ) const {}
-    virtual TSharedPtr< FJsonValue > Convert() const {
-        return TSharedPtr< FJsonValue >( nullptr );
-    }
+    FSSGS_FrameData() : FSSGS_FrameData( FSSGS_FrameDataSingleLine() ) {};
+    FSSGS_FrameData( const FSSGS_FrameDataSingleLine& v ) : _variant_type( SingleLine ), _variant( v ) {}
+    FSSGS_FrameData( const FSSGS_FrameDataMultiLine& v ) : _variant_type( MultiLine ), _variant( v ) {}
+
+    TSharedPtr< FJsonValue > Convert() const;
+
+private:
+
+    enum _type_ {
+        SingleLine = 0,
+        MultiLine
+    };
+
+private:
+
+    _type_ _variant_type;
+    ssgs::Union< FSSGS_FrameDataSingleLine, FSSGS_FrameDataMultiLine > _variant;
 
 };

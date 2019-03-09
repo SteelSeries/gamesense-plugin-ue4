@@ -68,6 +68,19 @@ struct FSSGS_TactileDeviceZone {
 
 };
 
+USTRUCT( BlueprintType )
+struct FSSGS_ScreenDeviceZone {
+
+    GENERATED_BODY();
+
+    FSSGS_ScreenDeviceZone() : device( TEXT( "*** BAD VALUE ***" ) ), zone( TEXT( "*** BAD VALUE ***" ) ) {}
+    FSSGS_ScreenDeviceZone( const FString& device, const FString& zone ) : device( device ), zone( zone ) {}
+
+    FString device;
+    FString zone;
+
+};
+
 UCLASS()
 class USSGS_IlluminationDeviceZoneFactory: public UObject {
 
@@ -188,5 +201,26 @@ public:
     static const FSSGS_TactileDeviceZone make_tactile_one() {
         return FSSGS_TactileDeviceZone{ "tactile", "one" };
     }
+
+};
+
+UCLASS()
+class USSGS_ScreenDeviceZoneFactory : public UObject {
+
+    GENERATED_BODY()
+
+public:
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_one() { return FSSGS_ScreenDeviceZone{ "screened", "one" }; }
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_128x36_one() { return FSSGS_ScreenDeviceZone{ "screened-128x36", "one" }; }
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_128x48_one() { return FSSGS_ScreenDeviceZone{ "screened-128x48", "one" }; }
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_128x52_one() { return FSSGS_ScreenDeviceZone{ "screened-128x52", "one" }; }
 
 };

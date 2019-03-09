@@ -46,7 +46,7 @@ enum ESSGS_PropertyVariant {
 };
 
 USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
-struct STEELSERIESGAMESENSE_API FSSGS_PropertyValuePair {
+struct STEELSERIESGAMESENSE_API FSSGS_PropertyValuePair : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
 
@@ -63,6 +63,8 @@ public:
     FSSGS_PropertyValuePair( const FString& n, const TArray< int32 >& v ) : _name( n ), _type( PropertyVariant_Int32Array ), _variant( v ) {}
     FSSGS_PropertyValuePair( const FString& n, const TArray< float >& v ) : _name( n ), _type( PropertyVariant_FloatArray ), _variant( v ) {}
     FSSGS_PropertyValuePair( const FString& n, const TArray< FString >& v ) : _name( n ), _type( PropertyVariant_StringArray ), _variant( v ) {}
+
+    void Decorate( TSharedPtr< FJsonObject > obj ) const;
 
 private:
 
@@ -89,7 +91,7 @@ class STEELSERIESGAMESENSE_API USSGS_FrameObject : public USSGS_Frame {
 public:
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
-    static USSGS_FrameObject* MakeGradientColorEffect( const TArray< FSSGS_PropertyValuePair >& properties );
+    static USSGS_FrameObject* MakeFrameObject( const TArray< FSSGS_PropertyValuePair >& properties );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
     static FSSGS_PropertyValuePair MakePropertyBool( const FString& name, bool value );
@@ -120,7 +122,6 @@ public:
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
     static FSSGS_PropertyValuePair MakePropertyStringArray( const FString& name, const TArray< FString >& value );
-
 
     TSharedPtr< FJsonValue > Convert() const;
 

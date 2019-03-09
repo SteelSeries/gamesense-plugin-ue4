@@ -25,19 +25,23 @@
 #pragma once
 
 
-#include "Dom/JsonValue.h"
-#include "SSGS_JsonConvertable.generated.h"
+#include "SSGS_ScreenDataSpecification.h"
+#include "SSGS_FrameDataRange.h"
+#include "SSGS_ScreenDataSpecificationRanges.generated.h"
 
 
-USTRUCT()
-struct STEELSERIESGAMESENSE_API FSSGS_JsonConvertable
-{
+UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
+class STEELSERIESGAMESENSE_API USSGS_ScreenDataSpecificationRanges : public USSGS_ScreenDataSpecification {
+
     GENERATED_BODY()
 
-    virtual ~FSSGS_JsonConvertable() {};
-    virtual void Decorate( TSharedPtr< FJsonObject > obj ) const {}
-    virtual TSharedPtr< FJsonValue > Convert() const {
-        return TSharedPtr< FJsonValue >( nullptr );
-    }
+public:
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
+    static USSGS_ScreenDataSpecificationRanges* MakeScreenDataRanges( const TArray< FSSGS_FrameDataRange >& datas );
+
+    TSharedPtr< FJsonValue > Convert() const;
+
+    UPROPERTY() TArray< FSSGS_FrameDataRange > datas;
 
 };

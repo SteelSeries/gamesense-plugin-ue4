@@ -30,9 +30,13 @@
 
 
 USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
-struct STEELSERIESGAMESENSE_API FSSGS_EventData {
+struct STEELSERIESGAMESENSE_API FSSGS_EventData : public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
+
+    FSSGS_EventData() : value( 0 ), frame( nullptr ) {}
+
+    TSharedPtr< FJsonValue > Convert() const;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 value;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_Frame* frame;

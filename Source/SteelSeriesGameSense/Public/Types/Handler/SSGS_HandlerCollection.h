@@ -30,8 +30,11 @@
 #include "Types/Illumination/SSGS_ColorEffectSpecificationRanges.h"
 #include "Types/Haptics/SSGS_TactilePatternSpecificationStatic.h"
 #include "Types/Haptics/SSGS_TactilePatternSpecificationRanges.h"
+#include "Types/Screen/SSGS_ScreenDataSpecificationStatic.h"
+#include "Types/Screen/SSGS_ScreenDataSpecificationRanges.h"
 #include "SSGS_HandlerColor.h"
 #include "SSGS_HandlerTactile.h"
+#include "SSGS_HandlerScreen.h"
 #include "SSGS_HandlerCollection.generated.h"
 
 
@@ -80,11 +83,22 @@ public:
                             UPARAM( DisplayName = "PatternSpecification", ref ) USSGS_TactilePatternSpecification*& pattern,
                             UPARAM( DisplayName = "RateSpecification" )         USSGS_RateSpecification* rate = nullptr );
 
+    /**
+    * Add a screen handler to the collection.
+    *
+    * @param	deviceZone Screen device-zone structure.
+    * @param	pattern Specification of screen data (static, ranges).
+    */
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|HandlerCollection" )
+    void AddScreenHandler( UPARAM( DisplayName = "Device-Zone" )            const FSSGS_ScreenDeviceZone& deviceZone,
+                           UPARAM( DisplayName = "DataSpecification", ref ) USSGS_ScreenDataSpecification*& pattern );
+
     TSharedPtr< FJsonValue > Convert() const;
 
 private:
 
     TArray< FSSGS_HandlerColor > _colorHandlers;
     TArray< FSSGS_HandlerTactile > _tactileHandlers;
+    TArray< FSSGS_HandlerScreen > _screenHandlers;
 
 };

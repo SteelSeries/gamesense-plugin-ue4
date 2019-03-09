@@ -73,19 +73,11 @@ TJsonValues _getArrayOfJsonValues( const TArray< T >& arr )
 {
     TJsonValues ret;
 
+    static_assert( std::is_base_of< FSSGS_JsonConvertable, T >::value,
+                   "invalid template argument" );
+
     for ( const T& obj : arr ) {
         ret.Add( obj.Convert() );
-    }
-
-    return ret;
-}
-
-TJsonValues _getArrayOfJsonValues( const TArray< uint8 >& arr )
-{
-    TJsonValues ret;
-
-    for ( const uint8 v : arr ) {
-        ret.Add( TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueNumber( v ) ) );
     }
 
     return ret;
@@ -96,8 +88,48 @@ TJsonValues _getArrayOfJsonValues( const TArray< T* >& arr )
 {
     TJsonValues ret;
 
+    static_assert( std::is_base_of< FSSGS_JsonConvertable, T >::value,
+                   "invalid template argument" );
+
     for ( const T* obj : arr ) {
         ret.Add( obj->Convert() );
+    }
+
+    return ret;
+}
+
+template < typename NumberType >
+TJsonValues _getArrayOfJsonValuesNumbers( const TArray< NumberType >& arr )
+{
+    TJsonValues ret;
+
+    static_assert( std::is_arithmetic< NumberType >::value,
+                   "invalid template argument" );
+
+    for ( const NumberType& v : arr ) {
+        ret.Add( MakeShared< FJsonValueNumber >( v ) ) ;
+    }
+
+    return ret;
+}
+
+TJsonValues _getArrayOfJsonValuesBoolean( const TArray< bool >& arr )
+{
+    TJsonValues ret;
+
+    for ( const bool& v : arr ) {
+        ret.Add( MakeShared< FJsonValueBoolean >( v ) );
+    }
+
+    return ret;
+}
+
+TJsonValues _getArrayOfJsonValuesString( const TArray< FString >& arr )
+{
+    TJsonValues ret;
+
+    for ( const FString& v : arr ) {
+        ret.Add( MakeShared< FJsonValueString >( v ) );
     }
 
     return ret;
@@ -307,7 +339,7 @@ TSharedPtr< FJsonValue > FSSGS_HandlerColor::Convert() const
     if ( deviceZone.zoneType == FSSGS_IlluminationDeviceZone::named )
         obj->SetStringField( "zone", deviceZone.namedZone() );
     else if ( deviceZone.zoneType == FSSGS_IlluminationDeviceZone::custom )
-        obj->SetArrayField( "custom-zone-keys", _getArrayOfJsonValues( deviceZone.customZone() ) );
+        obj->SetArrayField( "custom-zone-keys", _getArrayOfJsonValuesNumbers( deviceZone.customZone() ) );
 
     obj->SetStringField( "mode", GetEnumString( ESSGS_IlluminationMode, mode ).ToLower() );
     
@@ -492,6 +524,253 @@ TSharedPtr< FJsonValue > FSSGS_HandlerTactile::Convert() const
     return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
+// ****** FSSGS_LineDataAccessor ******
+void FSSGS_LineDataAccessor::Decorate( TSharedPtr< FJsonObject > obj ) const
+{
+    switch ( _type ) {
+
+    case FrameKey:
+        obj->SetStringField( "context-frame-key", _value );
+        break;
+
+    case GoLispExpr:
+        obj->SetStringField( "arg", _value );
+        break;
+
+    }
+}
+
+// ****** FSSGS_LineData ******
+TSharedPtr< FJsonValue > FSSGS_LineData::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    switch ( _variant_type ) {
+
+    case FSSGS_LineData::TxtModifiers: {
+        auto& v = _variant.Get< FSSGS_LineDataText >();
+        obj->SetBoolField( "has-text", v.has_text );
+        obj->SetStringField( "prefix", v.prefix );
+        obj->SetStringField( "suffix", v.suffix );
+        obj->SetBoolField( "bold", v.bold );
+        obj->SetNumberField( "wrap", v.wrap );
+        break;
+    }
+
+    case FSSGS_LineData::ProgressBar: {
+        auto& v = _variant.Get< FSSGS_LineDataProgressBar >();
+        obj->SetBoolField( "has-progress-bar", v.has_progress_bar );
+        break;
+    }
+
+    }
+
+    _dataAccessor.Decorate( obj );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
+// ****** FSSGS_FrameModifiers ******
+void FSSGS_FrameModifiers::Decorate( TSharedPtr< FJsonObject > obj ) const
+{
+    obj->SetNumberField( "length-millis", length_millis );
+    obj->SetNumberField( "icon-id", (uint8)icon_id );
+
+    switch ( _repeats_type ) {
+
+    case FSSGS_FrameModifiers::Boolean:
+        obj->SetBoolField( "repeats", _repeats.Get< bool >() );
+        break;
+
+    case FSSGS_FrameModifiers::Integer:
+        obj->SetNumberField( "repeats", _repeats.Get< int32 >() );
+        break;
+
+    }
+}
+
+// ****** FSSGS_FrameDataSingleLine ******
+TSharedPtr< FJsonValue > FSSGS_FrameDataSingleLine::Convert() const
+{
+    auto obj = lineData.Convert()->AsObject();
+
+    frameModifiers.Decorate( obj );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
+// ****** FSSGS_FrameDataMultiLine ******
+TSharedPtr< FJsonValue > FSSGS_FrameDataMultiLine::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    frameModifiers.Decorate( obj );
+
+    if ( lines.Num() > 0 )
+        obj->SetArrayField( "lines", _getArrayOfJsonValues( lines ) );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
+// ****** FSSGS_FrameData ******
+TSharedPtr< FJsonValue > FSSGS_FrameData::Convert() const
+{
+    switch ( _variant_type ) {
+
+    case FSSGS_FrameData::SingleLine:
+        return _variant.Get< FSSGS_FrameDataSingleLine >().Convert();
+        break;
+
+    case FSSGS_FrameData::MultiLine:
+        return _variant.Get< FSSGS_FrameDataMultiLine >().Convert();
+        break;
+
+    default:
+        return MakeShared< FJsonValueNull >();
+        break;
+
+    }
+}
+
+// ****** FSSGS_FrameDataRange ******
+TSharedPtr< FJsonValue > FSSGS_FrameDataRange::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    obj->SetNumberField( "low", low );
+    obj->SetNumberField( "high", high );
+    obj->SetArrayField( "datas", _getArrayOfJsonValues( datas ) );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
+// ****** USSGS_ScreenDataSpecification ******
+FSSGS_FrameData USSGS_ScreenDataSpecification::MakeSingleLineFrameData( const FSSGS_LineData& lineData, FSSGS_FrameModifiers frameModifiers )
+{
+    return FSSGS_FrameData( FSSGS_FrameDataSingleLine{ lineData,
+                                                       frameModifiers } );
+}
+
+FSSGS_FrameData USSGS_ScreenDataSpecification::MakeMultiLineFrameData( const TArray< FSSGS_LineData >& lines, FSSGS_FrameModifiers frameModifiers )
+{
+    return FSSGS_FrameData( FSSGS_FrameDataMultiLine{ lines,
+                                                      frameModifiers } );
+}
+
+FSSGS_LineData USSGS_ScreenDataSpecification::MakeTextLineData( const FSSGS_LineDataText& textModifiers, const FSSGS_LineDataAccessor& accessor )
+{
+    return FSSGS_LineData{ textModifiers,
+                           accessor };
+}
+
+FSSGS_LineData USSGS_ScreenDataSpecification::MakeTextLineData( const FSSGS_LineDataText& textModifiers )
+{
+    return FSSGS_LineData{ textModifiers };
+}
+
+FSSGS_LineData USSGS_ScreenDataSpecification::MakeProgressBarLineData( const FSSGS_LineDataAccessor& accessor )
+{
+    return FSSGS_LineData{ FSSGS_LineDataProgressBar(),
+                           accessor };
+}
+
+FSSGS_LineData USSGS_ScreenDataSpecification::MakeProgressBarLineData()
+{
+    return FSSGS_LineData{ FSSGS_LineDataProgressBar() };
+}
+
+FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, bool repeats )
+{
+    return FSSGS_FrameModifiers{ length_millis, icon_id, repeats };
+}
+
+FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithRepeatCount( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count )
+{
+    return FSSGS_FrameModifiers{ length_millis, icon_id, repeat_count };
+}
+
+FSSGS_LineDataAccessor USSGS_ScreenDataSpecification::MakeContextFrameKeyAccessor( const FString& key )
+{
+    return FSSGS_LineDataAccessor::ContextFrameKey( key );
+}
+
+FSSGS_LineDataAccessor USSGS_ScreenDataSpecification::MakeGoLispExpressionAccessor( const FString& expr )
+{
+    return FSSGS_LineDataAccessor::GoLispExpression( expr );
+}
+
+// ****** USSGS_ScreenDataSpecificationStatic ******
+USSGS_ScreenDataSpecificationStatic* USSGS_ScreenDataSpecificationStatic::MakeStaticScreenData( const TArray< FSSGS_FrameData >& datas )
+{
+    auto p = _createUObj< USSGS_ScreenDataSpecificationStatic >();
+    p->datas = datas;
+    return p;
+}
+
+TSharedPtr< FJsonValue > USSGS_ScreenDataSpecificationStatic::Convert() const
+{
+    return MakeShared< FJsonValueArray >( _getArrayOfJsonValues( datas ) );
+}
+
+// ****** USSGS_ScreenDataSpecificationRanges ******
+USSGS_ScreenDataSpecificationRanges* USSGS_ScreenDataSpecificationRanges::MakeScreenDataRanges( const TArray< FSSGS_FrameDataRange >& datas )
+{
+    auto p = _createUObj< USSGS_ScreenDataSpecificationRanges >();
+    p->datas = datas;
+    return p;
+}
+
+TSharedPtr< FJsonValue > USSGS_ScreenDataSpecificationRanges::Convert() const
+{
+    return MakeShared< FJsonValueArray >( _getArrayOfJsonValues( datas ) );
+}
+
+// ****** FSSGS_HandlerScreen ******
+FSSGS_HandlerScreen::FSSGS_HandlerScreen() : data( nullptr ) {}
+
+FSSGS_HandlerScreen::FSSGS_HandlerScreen( const FSSGS_HandlerScreen& other ) :
+    deviceZone( other.deviceZone ),
+    mode( other.mode ),
+    data( other.data )
+
+{}
+
+FSSGS_HandlerScreen::FSSGS_HandlerScreen( const FSSGS_ScreenDeviceZone& deviceZone, USSGS_ScreenDataSpecification* dataSpec ) :
+    deviceZone( deviceZone ),
+    data( dataSpec )
+{}
+
+const FSSGS_HandlerScreen& FSSGS_HandlerScreen::operator=( const FSSGS_HandlerScreen& rhs )
+{
+    if ( this != &rhs ) {
+        deviceZone = rhs.deviceZone;
+        mode = rhs.mode;
+        data = rhs.data;
+    }
+
+    return *this;
+}
+
+FSSGS_HandlerScreen::~FSSGS_HandlerScreen()
+{
+    // let the GC work
+    data = nullptr;
+}
+
+TSharedPtr< FJsonValue > FSSGS_HandlerScreen::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    obj->SetStringField( "device-type", deviceZone.device );
+    obj->SetStringField( "zone", deviceZone.zone );
+    obj->SetStringField( "mode", mode );
+
+    if ( data )
+        obj->SetField( "datas", data->Convert() );
+
+
+    return MakeShared< FJsonValueObject >( obj );
+}
 
 // ****** USSGS_HandlerCollection ******
 USSGS_HandlerCollection::~USSGS_HandlerCollection()
@@ -530,12 +809,19 @@ void USSGS_HandlerCollection::AddTactileHandler( const FSSGS_TactileDeviceZone& 
                                                 rate ) );
 }
 
+void USSGS_HandlerCollection::AddScreenHandler( const FSSGS_ScreenDeviceZone& deviceZone, USSGS_ScreenDataSpecification*& data )
+{
+    _screenHandlers.Add( FSSGS_HandlerScreen( deviceZone,
+                                              data ) );
+}
+
 TSharedPtr< FJsonValue > USSGS_HandlerCollection::Convert() const
 {
     TJsonValues arr( _getArrayOfJsonValues( _colorHandlers ) );
     arr.Append( _getArrayOfJsonValues( _tactileHandlers ) );
+    arr.Append( _getArrayOfJsonValues( _screenHandlers ) );
 
-    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueArray( arr ) );
+    return MakeShared< FJsonValueArray >( arr );
 }
 
 
@@ -640,7 +926,7 @@ TSharedPtr< FJsonValue > FSSGS_EventUpdate::Convert() const
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
-    obj->SetObjectField( "data", FJsonObjectConverter::UStructToJsonObject< FSSGS_EventData >( data ) );
+    obj->SetField( "data", data.Convert() );
 
     return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
@@ -679,13 +965,78 @@ TSharedPtr< FJsonValue > FSSGS_Game::Convert() const
     return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
 }
 
-TSharedPtr< FJsonValue > USSGS_FrameObject::Convert() const
+// ****** FSSGS_EventData ******
+TSharedPtr< FJsonValue > FSSGS_EventData::Convert() const
 {
-    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueNull );
+    auto obj = MakeShared< FJsonObject >();
+
+    obj->SetNumberField( "value", value );
+    if ( frame )
+        obj->SetField( "frame", frame->Convert() );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
+// ****** FSSGS_PropertyValuePair ******
+void FSSGS_PropertyValuePair::Decorate( TSharedPtr< FJsonObject > obj ) const
+{
+    switch ( _type ) {
+
+    case PropertyVariant_Bool:
+        obj->SetBoolField( _name, _variant.Get< Type >().Get< bool >() );
+        break;
+
+    case PropertyVariant_Uint8:
+        obj->SetNumberField( _name, _variant.Get< Type >().Get< uint8 >() );
+        break;
+
+    case PropertyVariant_Int32:
+        obj->SetNumberField( _name, _variant.Get< Type >().Get< int32 >() );
+        break;
+
+    case PropertyVariant_Float:
+        obj->SetNumberField( _name, _variant.Get< Type >().Get< float >() );
+        break;
+
+    case PropertyVariant_String:
+        obj->SetStringField( _name, _variant.Get< Type >().Get< FString >() );
+        break;
+
+    case PropertyVariant_BoolArray: {
+        auto v = _variant.Get< ArrayType >().Get< TArray< bool > >();
+        obj->SetArrayField( _name, _getArrayOfJsonValuesBoolean( v ) );
+        break;
+    }
+
+    case PropertyVariant_Uint8Array: {
+        auto v = _variant.Get< ArrayType >().Get< TArray< uint8 > >();
+        obj->SetArrayField( _name, _getArrayOfJsonValuesNumbers( v ) );
+        break;
+    }
+
+    case PropertyVariant_Int32Array: {
+        auto v = _variant.Get< ArrayType >().Get< TArray< int32 > >();
+        obj->SetArrayField( _name, _getArrayOfJsonValuesNumbers( v ) );
+        break;
+    }
+
+    case PropertyVariant_FloatArray: {
+        auto v = _variant.Get< ArrayType >().Get< TArray< float > >();
+        obj->SetArrayField( _name, _getArrayOfJsonValuesNumbers( v ) );
+        break;
+    }
+
+    case PropertyVariant_StringArray: {
+        auto v = _variant.Get< ArrayType >().Get< TArray< FString > >();
+        obj->SetArrayField( _name, _getArrayOfJsonValuesString( v ) );
+        break;
+    }
+
+    }
 }
 
 // ****** USSGS_FrameObject ******
-USSGS_FrameObject* USSGS_FrameObject::MakeGradientColorEffect( const TSSGS_ObjectDef& properties )
+USSGS_FrameObject* USSGS_FrameObject::MakeFrameObject( const TSSGS_ObjectDef& properties )
 {
     USSGS_FrameObject* p = _createUObj< USSGS_FrameObject >();
     p->properties = properties;
@@ -740,4 +1091,14 @@ FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyFloatArray( const FString
 FSSGS_PropertyValuePair USSGS_FrameObject::MakePropertyStringArray( const FString& n, const TArray< FString >& v )
 {
     return FSSGS_PropertyValuePair{ n, v };
+}
+
+TSharedPtr< FJsonValue > USSGS_FrameObject::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    for ( const auto& prop : properties )
+        prop.Decorate( obj );
+
+    return MakeShared< FJsonValueObject >( obj );
 }

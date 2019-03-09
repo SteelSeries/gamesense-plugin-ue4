@@ -25,19 +25,37 @@
 #pragma once
 
 
-#include "Dom/JsonValue.h"
-#include "SSGS_JsonConvertable.generated.h"
+#include "Common/SSGS_Union.h"
+#include "Types/SSGS_Enums.h"
+#include "SSGS_FrameModifiers.generated.h"
 
 
-USTRUCT()
-struct STEELSERIESGAMESENSE_API FSSGS_JsonConvertable
-{
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
+struct STEELSERIESGAMESENSE_API FSSGS_FrameModifiers : public FSSGS_JsonConvertable {
+    
     GENERATED_BODY()
 
-    virtual ~FSSGS_JsonConvertable() {};
-    virtual void Decorate( TSharedPtr< FJsonObject > obj ) const {}
-    virtual TSharedPtr< FJsonValue > Convert() const {
-        return TSharedPtr< FJsonValue >( nullptr );
-    }
+    FSSGS_FrameModifiers() : FSSGS_FrameModifiers( 0, ESSGS_EventIconId::Default, false ) {}
+    FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, bool repeats ) :
+        length_millis( length_millis ), icon_id( icon_id ), _repeats_type( Boolean ), _repeats( repeats ) {}
+    FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count ) :
+        length_millis( length_millis ), icon_id( icon_id ), _repeats_type( Integer ), _repeats( repeat_count ) {}
+
+    void Decorate( TSharedPtr<FJsonObject> obj ) const;
+
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 length_millis;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) ESSGS_EventIconId icon_id;
+
+private:
+
+    enum _type_ {
+        Boolean = 0,
+        Integer
+    };
+
+private:
+
+    _type_ _repeats_type;
+    ssgs::Union< int32, bool > _repeats;
 
 };

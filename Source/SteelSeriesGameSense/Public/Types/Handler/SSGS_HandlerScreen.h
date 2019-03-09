@@ -25,19 +25,29 @@
 #pragma once
 
 
-#include "Dom/JsonValue.h"
-#include "SSGS_JsonConvertable.generated.h"
+#include "Common/SSGS_JsonConvertable.h"
+#include "Types/Screen/SSGS_ScreenDataSpecification.h"
+#include "SSGS_HandlerScreen.generated.h"
 
 
-USTRUCT()
-struct STEELSERIESGAMESENSE_API FSSGS_JsonConvertable
-{
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
+struct STEELSERIESGAMESENSE_API FSSGS_HandlerScreen : public FSSGS_JsonConvertable {
+
     GENERATED_BODY()
 
-    virtual ~FSSGS_JsonConvertable() {};
-    virtual void Decorate( TSharedPtr< FJsonObject > obj ) const {}
-    virtual TSharedPtr< FJsonValue > Convert() const {
-        return TSharedPtr< FJsonValue >( nullptr );
-    }
+    FSSGS_HandlerScreen();
+    FSSGS_HandlerScreen( const FSSGS_HandlerScreen& other );
+    FSSGS_HandlerScreen( const FSSGS_ScreenDeviceZone& deviceZone, USSGS_ScreenDataSpecification* dataSpec );
+    const FSSGS_HandlerScreen& operator=( const FSSGS_HandlerScreen& other );
+    ~FSSGS_HandlerScreen();
+
+    TSharedPtr< FJsonValue > Convert() const;
+
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
+    FSSGS_ScreenDeviceZone deviceZone;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite )
+    FString mode = TEXT( "screen" );
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Screen Data Specification" ) )
+    USSGS_ScreenDataSpecification* data;
 
 };
