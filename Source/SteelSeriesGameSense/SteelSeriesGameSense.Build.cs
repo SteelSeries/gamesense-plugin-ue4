@@ -23,6 +23,7 @@
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System.IO;
 
 namespace UnrealBuildTool.Rules
 {
@@ -32,20 +33,6 @@ namespace UnrealBuildTool.Rules
         {
             bEnforceIWYU = false;
             PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-
-            PublicIncludePaths.AddRange(
-                new string[] {
-                    "SteelSeriesGameSense/Public"
-                    // ... add public include paths required here ...
-                }
-                );
-
-            PrivateIncludePaths.AddRange(
-                new string[] {
-                    "SteelSeriesGameSense/Private",
-                    // ... add other private include paths required here ...
-                }
-                );
 
             PublicDependencyModuleNames.AddRange(
                 new string[]
@@ -73,6 +60,11 @@ namespace UnrealBuildTool.Rules
                     // ... add any modules that your module loads dynamically here ...
                 }
                 );
+
+            // New with UE 4.20 and above
+            // https://www.unrealengine.com/en-US/marketplace-guidelines#263e
+            PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "Public"));
+            PrivateIncludePaths.Add(Path.Combine(ModuleDirectory, "Private"));
         }
     }
 }
