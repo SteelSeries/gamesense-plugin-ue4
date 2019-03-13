@@ -6,7 +6,7 @@
 	"Description" : "Enables support for SteelSeries GameSense",
 	"Category" : "Other",
 	"CreatedBy" : "SteelSeries ApS",
-	"CreatedByURL" : "http://steelseries.com",
+	"CreatedByURL" : "https://steelseries.com",
 	"DocsURL" : "https://github.com/SteelSeries/gamesense-sdk",
 	"MarketplaceURL" : "",
 	"SupportURL" : "https://support.steelseries.com/hc/en-us",
