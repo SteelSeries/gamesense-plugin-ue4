@@ -42,7 +42,7 @@ IMPLEMENT_MODULE( FSteelSeriesGameSense, SteelSeriesGameSense )
 
 void FSteelSeriesGameSense::StartupModule()
 {
-	// This code will execute after your module is loaded into memory (but after global variables are initialized, of course.)
+	// This code will execute after your module is loaded into memory (but after global variables are initialized.)
 }
 
 
