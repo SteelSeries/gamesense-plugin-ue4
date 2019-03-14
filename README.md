@@ -30,7 +30,7 @@ The GameSense™ workflow boils down to the following steps:
 
 ## Blueprints
 
-**NOTE** The client plugin ships with a sample Blueprint **Actor** to serve as an example. You can locate it in the plugin's ***Content*** directory. To view it in the content browser, follow these steps:
+**NOTE** The client plugin ships with a sample **Actor Blueprint** to serve as an example. You can locate it in the plugin's `Content` directory. To view it in the content browser, follow these steps:
 1. Make sure the plugin content is visible.
 
 ![show-plugin-content](/Resources/show-plugin-content.png)
@@ -39,7 +39,7 @@ The GameSense™ workflow boils down to the following steps:
 
 ![gamesense-plugin-content](/Resources/gamesense-plugin-content.png)
 
-3. You should now see the Blueprint Actor ***GameSense***.
+3. You should now see a Blueprint named ***GameSense***.
 
 In this guide, however, we will make an actor from scratch.
 Create a new blueprint class, select **Actor** as a parent class and open the new class in the editor.
