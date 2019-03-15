@@ -408,7 +408,12 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
     TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
 
     // wait for the request to complete
+#if !UE_BUILD_SHIPPING
+    result.Wait();
+    bool available = true;
+#else
     bool available = result.WaitFor( FTimespan::FromSeconds( 5.0 ) );
+#endif
     if ( !available ) {
         // timeout occurred
         // cancel request and fullfill the promise object

@@ -24,6 +24,7 @@
 */
 
 
+#include <algorithm>
 #include "Types/SSGS_Payload.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
@@ -612,6 +613,141 @@ TSharedPtr< FJsonValue > FSSGS_FrameDataMultiLine::Convert() const
     return MakeShared< FJsonValueObject >( obj );
 }
 
+// ****** USSGS_ImageDataTexture2D ******
+USSGS_ImageDataTexture2D* USSGS_ImageDataTexture2D::MakeImageDataFromTexture( const FSSGS_ScreenDeviceZone& dz, UTexture2D* pTex )
+{
+    USSGS_ImageDataTexture2D* p = _createUObj< USSGS_ImageDataTexture2D >();
+    p->_dz = dz;
+    p->_pTex = pTex;
+    return p;
+}
+
+TArray< uint8 > USSGS_ImageDataTexture2D::GetData()
+{
+    TArray< uint8 > data;
+
+    if ( !_pTex ) {
+        return data;
+    }
+
+    if ( _dz.w() < _pTex->GetSizeX() ) {
+        // do nothing if supplied texture is too wide
+        return data;
+    }
+
+    int targetSize = _dz.w() * _dz.h();
+    if ( targetSize == 0 )
+    {
+        return data;
+    }
+
+    int texSize = _pTex->GetSizeX() * std::min(_pTex->GetSizeY(), _dz.h());
+
+    // store original settings and convert the texture to something we can
+    // easily sample
+    TextureCompressionSettings OldCompressionSettings = _pTex->CompressionSettings;
+    TextureMipGenSettings OldMipGenSettings = _pTex->MipGenSettings;
+    bool OldSRGB = _pTex->SRGB;
+
+    _pTex->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+    _pTex->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+    _pTex->SRGB = false;
+    _pTex->UpdateResource();
+
+
+    // get pixels
+    const FColor* pData = static_cast< const FColor* >( _pTex->PlatformData->Mips[ 0 ].BulkData.LockReadOnly() );
+    if ( !pData )
+    {
+        // TODO log err
+        return data ;
+    }
+
+    TArray< uint8 > luma;
+    luma.AddZeroed( texSize );
+
+    // Crude approximation of luminance
+    // Y = ( 3R + 4G + B ) / 8
+    for ( int idx = 0; idx < texSize; ++idx ) {
+        luma[ idx ] = ( ( pData[ idx ].R << 1 ) + pData[ idx ].R +
+                        ( pData[ idx ].G << 2 ) +
+                        ( pData[ idx ].B ) ) >> 3;
+    }
+
+    _pTex->PlatformData->Mips[ 0 ].BulkData.Unlock();
+
+    // restore original settings
+    _pTex->CompressionSettings = OldCompressionSettings;
+    _pTex->MipGenSettings = OldMipGenSettings;
+    _pTex->SRGB = OldSRGB;
+    _pTex->UpdateResource();
+
+    // threshold and pack
+    int idx = 0;
+    data.AddZeroed( luma.Num() / 8 );
+    for ( uint8& v : data )
+    {
+        // apply thresholding at 50% intensity
+        v = ( ( !!( luma[ idx ] & 0x80 ) ) << 7 ) |
+            ( ( !!( luma[ idx + 1 ] & 0x80 ) ) << 6 ) |
+            ( ( !!( luma[ idx + 2 ] & 0x80 ) ) << 5 ) |
+            ( ( !!( luma[ idx + 3 ] & 0x80 ) ) << 4 ) |
+            ( ( !!( luma[ idx + 4 ] & 0x80 ) ) << 3 ) |
+            ( ( !!( luma[ idx + 5 ] & 0x80 ) ) << 2 ) |
+            ( ( !!( luma[ idx + 6 ] & 0x80 ) ) << 1 ) |
+            ( ( !!( luma[ idx + 7 ] & 0x80 ) ) );
+
+        idx += 8;
+    }
+
+    // pad with zeroes
+    data.AddZeroed( ( targetSize - texSize ) / 8 );
+
+    return data;
+}
+
+// ****** USSGS_ImageDataArray ******
+USSGS_ImageDataArray* USSGS_ImageDataArray::MakeImageDataFromArray( TArray< uint8 >&& packedBinaryImage )
+{
+    USSGS_ImageDataArray* p = _createUObj< USSGS_ImageDataArray >();
+    p->_arr = packedBinaryImage;
+    return p;
+}
+
+USSGS_ImageDataArray* USSGS_ImageDataArray::MakeImageDataFromArray( const TArray< uint8 >& packedBinaryImage )
+{
+    USSGS_ImageDataArray* p = _createUObj< USSGS_ImageDataArray >();
+    p->_arr = packedBinaryImage;
+    return p;
+}
+
+TArray< uint8 > USSGS_ImageDataArray::GetData()
+{
+    return _arr;
+}
+
+// ****** FSSGS_FrameDataImage ******
+FSSGS_FrameDataImage::FSSGS_FrameDataImage( USSGS_ImageDataSource* pSrc, const FSSGS_FrameModifiers& frameModifiers ) :
+    frameModifiers( frameModifiers )
+{
+    if ( pSrc )
+    {
+        imageData = pSrc->GetData();
+    }
+}
+
+TSharedPtr< FJsonValue > FSSGS_FrameDataImage::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    obj->SetBoolField( "has-text", false );
+    obj->SetArrayField( "image-data", _getArrayOfJsonValuesNumbers( imageData ) );
+
+    frameModifiers.Decorate( obj );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
 // ****** FSSGS_FrameData ******
 TSharedPtr< FJsonValue > FSSGS_FrameData::Convert() const
 {
@@ -624,6 +760,9 @@ TSharedPtr< FJsonValue > FSSGS_FrameData::Convert() const
     case FSSGS_FrameData::MultiLine:
         return _variant.Get< FSSGS_FrameDataMultiLine >().Convert();
         break;
+
+    case FSSGS_FrameData::Image:
+        return _variant.Get< FSSGS_FrameDataImage >().Convert();
 
     default:
         return MakeShared< FJsonValueNull >();
@@ -657,6 +796,12 @@ FSSGS_FrameData USSGS_ScreenDataSpecification::MakeMultiLineFrameData( const TAr
                                                       frameModifiers } );
 }
 
+FSSGS_FrameData USSGS_ScreenDataSpecification::MakeImageFrameData( USSGS_ImageDataSource*& pSrc, FSSGS_FrameModifiers frameModifiers )
+{
+    return FSSGS_FrameData( FSSGS_FrameDataImage{ pSrc,
+                                                  frameModifiers } );
+}
+
 FSSGS_LineData USSGS_ScreenDataSpecification::MakeTextLineData( const FSSGS_LineDataText& textModifiers, const FSSGS_LineDataAccessor& accessor )
 {
     return FSSGS_LineData{ textModifiers,
@@ -687,6 +832,11 @@ FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiers( int32 le
 FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithRepeatCount( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count )
 {
     return FSSGS_FrameModifiers{ length_millis, icon_id, repeat_count };
+}
+
+FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithNoRepeat( int32 length_millis, ESSGS_EventIconId icon_id )
+{
+    return FSSGS_FrameModifiers{ length_millis, icon_id };
 }
 
 FSSGS_LineDataAccessor USSGS_ScreenDataSpecification::MakeContextFrameKeyAccessor( const FString& key )

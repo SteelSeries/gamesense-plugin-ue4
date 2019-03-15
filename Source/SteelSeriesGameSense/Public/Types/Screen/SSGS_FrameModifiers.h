@@ -35,11 +35,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_FrameModifiers : public FSSGS_JsonConverta
     
     GENERATED_BODY()
 
-    FSSGS_FrameModifiers() : FSSGS_FrameModifiers( 0, ESSGS_EventIconId::Default, false ) {}
+    FSSGS_FrameModifiers() : FSSGS_FrameModifiers( 0, ESSGS_EventIconId::Default ) {}
     FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, bool repeats ) :
         length_millis( length_millis ), icon_id( icon_id ), _repeats_type( Boolean ), _repeats( repeats ) {}
     FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count ) :
         length_millis( length_millis ), icon_id( icon_id ), _repeats_type( Integer ), _repeats( repeat_count ) {}
+    FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id ) :
+        length_millis( length_millis ), icon_id( icon_id ), _repeats_type( None ) {}
 
     void Decorate( TSharedPtr<FJsonObject> obj ) const;
 
@@ -50,7 +52,8 @@ private:
 
     enum _type_ {
         Boolean = 0,
-        Integer
+        Integer,
+        None
     };
 
 private:

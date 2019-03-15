@@ -27,6 +27,7 @@
 
 #include "SSGS_FrameDataSingleLine.h"
 #include "SSGS_FrameDataMultiLine.h"
+#include "SSGS_FrameDataImage.h"
 #include "SSGS_FrameData.generated.h"
 
 
@@ -38,6 +39,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_FrameData : public FSSGS_JsonConvertable {
     FSSGS_FrameData() : FSSGS_FrameData( FSSGS_FrameDataSingleLine() ) {};
     FSSGS_FrameData( const FSSGS_FrameDataSingleLine& v ) : _variant_type( SingleLine ), _variant( v ) {}
     FSSGS_FrameData( const FSSGS_FrameDataMultiLine& v ) : _variant_type( MultiLine ), _variant( v ) {}
+    FSSGS_FrameData( const FSSGS_FrameDataImage& v ) : _variant_type( Image ), _variant( v ) {}
 
     TSharedPtr< FJsonValue > Convert() const;
 
@@ -45,12 +47,13 @@ private:
 
     enum _type_ {
         SingleLine = 0,
-        MultiLine
+        MultiLine,
+        Image
     };
 
 private:
 
     _type_ _variant_type;
-    ssgs::Union< FSSGS_FrameDataSingleLine, FSSGS_FrameDataMultiLine > _variant;
+    ssgs::Union< FSSGS_FrameDataSingleLine, FSSGS_FrameDataMultiLine, FSSGS_FrameDataImage > _variant;
 
 };

@@ -29,7 +29,7 @@
 #include "SSGS_ScreenDataSpecification.generated.h"
 
 
-UCLASS( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
+UCLASS( BlueprintType, Abstract, meta = ( Category = "Gamesense|Types" ) )
 class STEELSERIESGAMESENSE_API USSGS_ScreenDataSpecification : public UObject, public FSSGS_JsonConvertable {
 
     GENERATED_BODY()
@@ -45,6 +45,9 @@ public:
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
     static FSSGS_FrameData MakeMultiLineFrameData( const TArray< FSSGS_LineData >& lines, FSSGS_FrameModifiers frameModifiers );
 
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
+    static FSSGS_FrameData MakeImageFrameData( UPARAM( ref )USSGS_ImageDataSource*& source, FSSGS_FrameModifiers frameModifiers );
+
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification", meta = ( AutoCreateRefTerm = "accessor" ) )
     static FSSGS_LineData MakeTextLineData( const FSSGS_LineDataText& textModifiers, const FSSGS_LineDataAccessor& accessor );
 
@@ -58,10 +61,13 @@ public:
     static FSSGS_FrameModifiers MakeFrameModifiersWithRepeatCount( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
+    static FSSGS_FrameModifiers MakeFrameModifiersWithNoRepeat( int32 length_millis, ESSGS_EventIconId icon_id );
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
     static FSSGS_LineDataAccessor MakeContextFrameKeyAccessor( const FString& key );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_LineDataAccessor MakeGoLispExpressionAccessor( const FString& expr );
+    static FSSGS_LineDataAccessor MakeGoLispExpressionAccessor( const FString& expression );
 
     static FSSGS_LineData MakeTextLineData( const FSSGS_LineDataText& textModifiers );
     static FSSGS_LineData MakeProgressBarLineData();
