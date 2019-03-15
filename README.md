@@ -7,30 +7,30 @@ For more information about GameSense™ SDK, visit [SteelSeries Developer Portal
 
 # Installation
 
-Simply copy the contents of this directory to `PROJECT_ROOT/Plugins/Runtime/SteelSeriesGameSense`. Next, regenerate your source code project. For instance, right-click on your .uproject file and select `Generate Visual Studio project files`. Open your project and verify that the client appears among the project plugins: go to `Edit\Plugins` and look under category `Other`. Also, open your project's main module's `.Build.cs` and add `"SteelSeriesGameSense"` to the public dependency module names. Rebuild your project.
+To install from this repo, simply copy the contents of this directory to your project's `PROJECT_ROOT/Plugins/Runtime/SteelSeriesGameSense`. Next, regenerate your source code project. For instance, right-click on your `.uproject` file and select ***Generate Visual Studio project files***. Open your project and verify that the client appears among the project plugins: go to ***Edit > Plugins*** and look under category ***Other***. Also, open your project's main module's `.Build.cs` and add `"SteelSeriesGameSense"` to the public dependency module names. Rebuild your project.
 
-In the near future the client will also be published on the UE4 Marketplace.
+The client plugin will also be available soon in the Unreal Engine Marketplace.
 
 The client relies on the presence of the SteelSeries Engine 3 (aka the GameSense™ server). You can download it from [here](https://steelseries.com/engine).
 
-At this time, only Windows and OSX platforms are supported.
+At this time, only Windows and macOS platforms are supported.
 
 # Quick Start Guide
 **NOTE**: It is strongly advised you familiarize yourself with how GameSense™ works first! Please make sure to visit the SDK pages (link at the top) to learn the high-level concepts.
 
 The plugin exposes both C++ and Blueprints interfaces. Both are parallel in features and functionality and therefore it is valid to have a mixed usage of both. For better experience, we recommend you first try the Blueprint visual scripting to interface with GameSense™ due to the process being somewhat guided thanks to the context sensitive node creation.
 
-In any case, the process boils down to the following steps:
+The GameSense™ workflow boils down to the following steps:
 
-+ starting the client
-+ registering your game
-+ registering (or binding) events (with handlers)
-+ sending event updates during gameplay
-+ stopping the client when done
++ Starting the client
++ Registering your game
++ Registering (or binding) events (with handlers)
++ Sending event updates during gameplay
++ Stopping the client when gameplay is done
 
 ## Blueprints
 
-**NOTE** The plugin ships with a sample Blueprint **Actor** to serve as an example. You can locate it in the plugin's `Content` directory. To view it in the content browser, follow these steps:
+**NOTE** The client plugin ships with a sample **Actor Blueprint** to serve as an example. You can locate it in the plugin's `Content` directory. To view it in the content browser, follow these steps:
 1. Make sure the plugin content is visible.
 
 ![show-plugin-content](/Resources/show-plugin-content.png)
@@ -39,7 +39,7 @@ In any case, the process boils down to the following steps:
 
 ![gamesense-plugin-content](/Resources/gamesense-plugin-content.png)
 
-3. You should now see the Blueprint **Actor** `GameSense`.
+3. You should now see a Blueprint named ***GameSense***.
 
 In this guide, however, we will make an actor from scratch.
 Create a new blueprint class, select **Actor** as a parent class and open the new class in the editor.
@@ -50,53 +50,54 @@ Create a new blueprint class, select **Actor** as a parent class and open the ne
 
 Adhering to the process described above, we proceed with the first steps.
 
-1. Open `EventGraph` and drag off the exec pin of `Event BeginPlay` to place a new node.
-2. From the list, find category `Gamesense\Client` and select `Start`.
+1. Open ***EventGraph*** and drag off the exec pin of ***Event BeginPlay*** to place a new node.
+2. From the list, find category ***GameSense > Client*** and select ***Start***.
 
 ![blueprint-start](/Resources/blueprint-start.png)
 
-**NOTE** The vast majority of the nodes conerning us will be located under category `Gamesense`.
-3. Drag off the exec pin of `Start` function and select `Register Game`. Enter desired values for the function arguments.
+**NOTE**: The vast majority of the nodes conerning us will be located under category ***GameSense***.
+
+3. Drag off the exec pin of ***Start*** function and select ***Register Game***. Enter desired values for the function arguments.
 In an influx of diligence, you may create something that looks a lot like the following.
 
 ![blueprint-register-game](/Resources/blueprint-register-game.png)
 
 ### Binding Events ###
 
-1. Create a new function, name it `bindMyEvent` and open it in the editor.
-2. Since this time we want to bind an event, let's create a node for function `Bind Event`. Fill out the node with desired values. Make sure the game name matches what you specified in `Register Game`. Stop at the last argument.
-3. Drag off `Handler Collection` and select `Make Handler Collection`. Notice the power of Blueprints: in this context `Make Handler Collection` is the only meaningful item and pretty much everything else gets filtered out from the list of actions.
-4. Drag off `Return Value` pin of the newly created node and select `Add Color Handler`. The new function executes in context of the newly created handler collection (note the `Target` pin).
-5. Drag off `Device-Zone`. Note that you are given an option of using the implicit make node `Make SSGS_IlluminationDeviceZone`. Let's not use it and instead, select a device-zone action from `Gamesense` category, `Make Mouse Wheel` for instance.
+1. Create a new function, name it ***bindMyEvent*** and open it in the editor.
+2. Since this time we want to bind an event, let's create a node for function ***Bind Event***. Fill out the node with desired values. Make sure the game name matches what you specified in ***Register Game***. Stop at the last argument.
+3. Drag off ***Handler Collection*** and select ***Make Handler Collection***. Notice the power of Blueprints: in this context ***Make Handler Collection*** is the only meaningful item and pretty much everything else gets filtered out from the list of actions.
+4. Drag off ***Return Value*** pin of the newly created node and select ***Add Color Handler***. The new function executes in context of the newly created handler collection (note the ***Target*** pin).
+5. Drag off ***Device-Zone***. Note that you are given an option of using the implicit make node ***Make SSGS_IlluminationDeviceZone***. Let's not use it and instead, select a device-zone action from ***GameSense*** category, ***Make Mouse Wheel*** for instance.
 
-**Attention** You should almost always prefer to select make nodes from under `Gamesense` category. In many cases the default-constructed structures contain invalid data. The exception to this is when there is no action available under `Gamesense`.
+**Attention**: You should almost always prefer to select make nodes from under ***GameSense*** category. In many cases the default-constructed structures contain invalid data. The exception to this is when there is no action available under ***GameSense***.
 
-6. Similarly for `Color Specification`, create `Make Gradient Color Effect`, and then use `Make SSGS_RGB` for each argument, `Start Color` and `End Color`.
-7. Connect the exec pins to ensure correct execution order: `Bind MyEvent -> Make Handler Collection -> Add Color Event -> Bind Event`.
-8. Drag off the exec pin of `Bind Event`, create `Send Event`, specify appropriate values for `Game Name` and `Event Name`. Also, make structure for `Data` and specify a value of *100*. This will initialize the event on the zone on the device.
+6. Similarly for ***Color Specification***, create ***Make Gradient Color Effect***, and then use ***Make SSGS_RGB*** for each argument, ***Start Color*** and ***End Color***.
+7. Connect the exec pins to ensure correct execution order: ***Bind MyEvent -> Make Handler Collection -> Add Color Event -> Bind Event***.
+8. Drag off the exec pin of ***Bind Event***, create ***Send Event***, specify appropriate values for ***Game Name*** and ***Event Name***. Also, make structure for ***Data*** and specify a value of *100*. This will initialize the event on the zone on the device.
 
 Your graph should at this point resemble the below.
 
 ![blueprint-complete-event](/Resources/blueprint-complete-event.png)
 
-Be sure to invoke `bindMyEvent` following `Register Game` as illustrated below.
+Be sure to invoke ***bindMyEvent*** following ***Register Game*** as illustrated below.
 
 ![blueprint-bind-event](/Resources/blueprint-bind-event.png)
 
-9. Compile and save the blueprint then close the blueprint editor.
+9. Compile and save the blueprint, then close the blueprint editor.
 10. Drag the blueprint asset to the world outliner and click on **Play**. Your mouse wheel should be illuminated with green color.
 
 ### Sending Event Updates ###
 
-In the previous step we already send a single event update to initialize the zone on the mouse. You can hook up to any event event in any blueprint to send updates to the server. One decent idea is to use the event we just defined to reflect player's health. To do so, edit your character's blueprint and create a new function `takeDamage`. Define it as below.
+In the previous step we already send a single event update to initialize the zone on the mouse. You can hook up to any event event in any blueprint to send updates to the server. One decent idea is to use the event we just defined to reflect the player's health. To do so, edit your character's blueprint and create a new function ***takeDamage***. Define it as below.
 
 ![blueprint-take-damage](/Resources/blueprint-take-damage.png)
 
-In this function, the `Health` value will be decremented with each invocation and reset to *100* once it hits *0*. The value will also be sent to the GameSense™ server with `Send Event`. If your character has a collision component, you could call `takeDamage` from event `OnComponentHit`. Also, make sure the collision component is set to generate `Hit` events. Alternatively, you could use events such as `BeginOverlap`.
+In this function, the ***Health*** value will be decremented with each invocation and reset to *100* once it hits *0*. The value will also be sent to the GameSense™ server with ***Send Event***. If your character has a collision component, you could call ***takeDamage*** from event ***OnComponentHit***. Also, make sure the collision component is set to generate ***Hit*** events. Alternatively, you could use events such as ***BeginOverlap***.
 
 ![blueprint-component-hit](/Resources/blueprint-component-hit.png)
 
-**!!! ATTENTION !!!** Do not forget to stop the client to release its resources when it is no longer needed. One place to do so is **Actor's** event `EndPlay`. In this case, the client will be stopped once your blueprint **Actor** gets removed from the game world.
+**!!! ATTENTION !!!** Do not forget to stop the client to release its resources when it is no longer needed. A good place to do so is in the **Actor's** ***EndPlay*** event. In this case, the client will be stopped once your blueprint **Actor** gets removed from the game world.
 
 ![blueprint-gamesense-stop](/Resources/blueprint-gamesense-stop.png)
 
