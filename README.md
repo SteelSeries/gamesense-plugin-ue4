@@ -1,9 +1,9 @@
 # GameSense™ Client for Unreal Engine 4
-GameSense™ Client for UE4 is an interface simplifying the process of integrating support for GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server through a simple to use C++ API with Blueprint bindings.
+GameSense™ Client for UE4 is an interface simplifying the process of integrating support for GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server through a simple-to-use C++ API with Blueprint bindings.
 
-Visit [SteelSeries Techblog](http://techblog.steelseries.com/2015/06/29/introducing-gamesense.html) to learn more about GameSense™.
+Visit [SteelSeries Techblog](https://techblog.steelseries.com/2015/06/29/introducing-gamesense.html) to learn more about GameSense™.
 
-For more information about GameSense™ SDK, visit [SteelSeries Developer Portal](http://developer.steelseries.com/gamesense).
+For more information about the GameSense™ SDK, visit the [SteelSeries Developer Portal](https://developer.steelseries.com/gamesense).
 
 # Installation
 
@@ -11,14 +11,14 @@ To install from this repo, simply copy the contents of this directory to your pr
 
 The client plugin will also be available soon in the Unreal Engine Marketplace.
 
-The client relies on the presence of the SteelSeries Engine 3 (aka the GameSense™ server). You can download it from [here](https://steelseries.com/engine).
+The client relies on the presence of the SteelSeries Engine (aka the GameSense™ server). You can download it from [here](https://steelseries.com/engine).
 
 At this time, only Windows and macOS platforms are supported.
 
 # Quick Start Guide
 **NOTE**: It is strongly advised you familiarize yourself with how GameSense™ works first! Please make sure to visit the SDK pages (link at the top) to learn the high-level concepts.
 
-The plugin exposes both C++ and Blueprints interfaces. Both are parallel in features and functionality and therefore it is valid to have a mixed usage of both. For better experience, we recommend you first try the Blueprint visual scripting to interface with GameSense™ due to the process being somewhat guided thanks to the context sensitive node creation.
+The plugin exposes both C++ and Blueprints interfaces. Both have identical features and functionality and therefore it is valid to have a mixed usage of both. For a better experience, we recommend you first try the Blueprint visual scripting to interface with GameSense™, due to the process being somewhat guided thanks to the context sensitive node creation.
 
 The GameSense™ workflow boils down to the following steps:
 
@@ -58,7 +58,7 @@ Adhering to the process described above, we proceed with the first steps.
 **NOTE**: The vast majority of the nodes conerning us will be located under category ***GameSense***.
 
 3. Drag off the exec pin of ***Start*** function and select ***Register Game***. Enter desired values for the function arguments.
-In an influx of diligence, you may create something that looks a lot like the following.
+You may create something that looks similar to the following.
 
 ![blueprint-register-game](/Resources/blueprint-register-game.png)
 
@@ -76,7 +76,7 @@ In an influx of diligence, you may create something that looks a lot like the fo
 7. Connect the exec pins to ensure correct execution order: ***Bind MyEvent -> Make Handler Collection -> Add Color Event -> Bind Event***.
 8. Drag off the exec pin of ***Bind Event***, create ***Send Event***, specify appropriate values for ***Game Name*** and ***Event Name***. Also, make structure for ***Data*** and specify a value of *100*. This will initialize the event on the zone on the device.
 
-Your graph should at this point resemble the below.
+At this point, your graph should resemble the image below.
 
 ![blueprint-complete-event](/Resources/blueprint-complete-event.png)
 
@@ -103,7 +103,7 @@ In this function, the ***Health*** value will be decremented with each invocatio
 
 ## C++
 
-Remember that you have an option to use the client entirely through code, entirely through bluerprints or have a mixed non-redundant calls from both. In this section we will create an equvalent sequence of calls to the one above in an **Actor** C++ class.
+Remember that you have an option to use the client entirely through code, entirely through bluerprints, or have a mix of non-redundant calls from both. In this section we will create an equvalent sequence of calls to the one above in an **Actor** C++ class.
 
 ```
 #include "SSGS_Client.h"
@@ -157,14 +157,14 @@ ssgs::SendEvent( { GAME_NAME,
 + Do not attempt to instantiate **UObject**-derived GameSense objects by yourself. Each **UObject**-derived GameSense class has a static method, usually called `Make*()`, to carry out the task. Use those methods instead.
 
 # General Advice
-+ By default, **SteelSeriesGameSense** module is loaded at *PreDefault* stage. Make sure it gets loaded before the module that depends on it.
-+ Be aware of where you put your `SendEvent()` calls. If you really insist on putting them somewhere inside `OnTick` and the likes, at least guard them with logic to send event updates only when the variables you use for updates change values. Under no circumstance should you spam updates every frame or send redundant data.
++ By default, the **SteelSeriesGameSense** module is loaded at the *PreDefault* stage. Please ensure it gets loaded before any modules that depend on it.
++ Please be mindful of the frequency of your `SendEvent()` calls. Ideally, you should only send events when the underlying event data has changed. Sending redundant data, or sending events every game frame, _may_ have unforeseen consequences.
 + You generally should consider sending initial values for each event before the game starts running regular updates.
 + Remember to bind your handlers for a particular event all at once. Any consecutive call to `BindEvent()` for the same event will override all previously bound handlers.
-+ During development you can increase log verbosity for *SSGS_Client* category. You will see lots of helpful output along with the messages from the GameSense™ server which can help you debug your handlers.
++ During development you can increase log verbosity for the  *SSGS_Client* category. You will see lots of helpful output along with the messages from the GameSense™ server which can help you debug your handlers.
 + In the event of a critical failure, such as when the client can't communicate with the GameSense™ server, the client assumes an inactive state, where all the API calls have no effect.
-+ The event handlers you bind are the defaults for your game. The end user can customize or disable the handler behavior in SteelSeries Engine 3.
-+ This document by no means is meant to be a comprehensive GameSense™ guide. You should refer to [SteelSeries Developer Portal](http://developer.steelseries.com/gamesense) for more information.
++ The event handlers you bind will be the defaults for your game. However, the end user can customize or disable the handler behavior in SteelSeries Engine.
++ This document is, by no means, meant to be a comprehensive GameSense™ guide. You should refer to [SteelSeries Developer Portal](http://developer.steelseries.com/gamesense) for more information.
 
 # License
 The GameSense™ Client for UE4 is a free, open-source project, available under the MIT license.

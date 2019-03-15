@@ -59,7 +59,7 @@ public:
     * Registers a game with the GameSense server.
     *
     * @param	gameName The string that the server uses to identify the game.
-    * @param	gameDisplayName The string used by SSE3 to display game title.
+    * @param	gameDisplayName The string used by SteelSeries Engine to display game title.
     */
     UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void RegisterGame( const FString& gameName, const FString& gameDisplayName );
@@ -71,7 +71,7 @@ public:
     * @param	eventName The string the server uses to identify an event for the game.
     * @param	minValue Minimum integer value for the event.
     * @param	maxValue Maximum integer value for the event.
-    * @param	iconId The ID value of an icon associated with the game. Used by SSE3.
+    * @param	iconId The ID value of an icon associated with the game. Used by SteelSeries Engine.
     */
     UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
     static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId );
@@ -83,7 +83,7 @@ public:
     * @param	eventName The string the server uses to identify an event for the game.
     * @param	minValue Minimum integer value for the event.
     * @param	maxValue Maximum integer value for the event.
-    * @param	iconId The ID value of an icon associated with the game. Used by SSE3.
+    * @param	iconId The ID value of an icon associated with the game. Used by SteelSeries Engine.
     * @param	handlers The collection of handlers to bind to the event.
     */
     UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
