@@ -157,8 +157,8 @@ ssgs::SendEvent( { GAME_NAME,
 + Do not attempt to instantiate **UObject**-derived GameSense objects by yourself. Each **UObject**-derived GameSense class has a static method, usually called `Make*()`, to carry out the task. Use those methods instead.
 
 # General Advice
-+ By default, the **SteelSeriesGameSense** module is loaded at the *PreDefault* stage. Make sure it gets loaded before the module that depends on it.
-+ Be aware of where you put your `SendEvent()` calls. If you really insist on putting them somewhere inside `OnTick`, and the like, at least guard them with logic to send event updates only when the variables you use for updates change values. Under no circumstance should you spam updates every frame or send redundant data.
++ By default, the **SteelSeriesGameSense** module is loaded at the *PreDefault* stage. Please ensure it gets loaded before any modules that depend on it.
++ Please be mindful of the frequency of your `SendEvent()` calls. Ideally, you should only send events when the underlying event data has changed. Sending redundant data, or sending events every game frame, _may_ have unforeseen consequences.
 + You generally should consider sending initial values for each event before the game starts running regular updates.
 + Remember to bind your handlers for a particular event all at once. Any consecutive call to `BindEvent()` for the same event will override all previously bound handlers.
 + During development you can increase log verbosity for the  *SSGS_Client* category. You will see lots of helpful output along with the messages from the GameSense™ server which can help you debug your handlers.
