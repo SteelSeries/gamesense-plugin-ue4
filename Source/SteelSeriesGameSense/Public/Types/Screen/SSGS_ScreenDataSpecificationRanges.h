@@ -37,6 +37,12 @@ class STEELSERIESGAMESENSE_API USSGS_ScreenDataSpecificationRanges : public USSG
 
 public:
 
+    /**
+    * Properly construct frame data ranges.
+    *
+    * @param    datas Array of frame data ranges.
+    * @return   USSGS_ScreenDataSpecificationRanges object.
+    */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
     static USSGS_ScreenDataSpecificationRanges* MakeScreenDataRanges( const TArray< FSSGS_FrameDataRange >& datas );
 

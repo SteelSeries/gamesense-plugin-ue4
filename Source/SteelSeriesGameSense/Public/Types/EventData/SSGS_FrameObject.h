@@ -89,6 +89,8 @@ private:
         StringArray
     };
 
+    typedef TArray< FSSGS_KeyValuePair > TSSGS_ObjectDef;
+
     typedef ssgs::Union< bool, uint8, int32, float, FString > Type;
     typedef ssgs::Union< TArray< bool >,
         TArray< uint8 >,

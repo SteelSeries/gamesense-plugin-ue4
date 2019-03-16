@@ -37,6 +37,12 @@ class STEELSERIESGAMESENSE_API USSGS_ScreenDataSpecificationStatic : public USSG
 
 public:
 
+    /**
+    * Properly construct static frame data.
+    *
+    * @param    datas Array of objects describing each frame.
+    * @return   USSGS_ScreenDataSpecificationStatic object.
+    */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
     static USSGS_ScreenDataSpecificationStatic* MakeStaticScreenData( const TArray< FSSGS_FrameData >& datas );
 

@@ -29,6 +29,9 @@
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
 
+#define LOG( lvl, format, ... ) UE_LOG( SSGS_Client, lvl, format, ##__VA_ARGS__ )
+
+
 template <typename T>
 FString _getEnumString( const FString& name, T value )
 {
@@ -627,17 +630,20 @@ TArray< uint8 > USSGS_ImageDataTexture2D::GetData()
     TArray< uint8 > data;
 
     if ( !_pTex ) {
+        LOG( Warning, TEXT( "Null texture resource" ) );
         return data;
     }
 
     if ( _dz.w() < _pTex->GetSizeX() ) {
         // do nothing if supplied texture is too wide
+        LOG( Warning, TEXT( "Texture too wide for target device" ) );
         return data;
     }
 
     int targetSize = _dz.w() * _dz.h();
     if ( targetSize == 0 )
     {
+        LOG( Error, TEXT( "Using generic screen device for image data" ) );
         return data;
     }
 
@@ -659,7 +665,7 @@ TArray< uint8 > USSGS_ImageDataTexture2D::GetData()
     const FColor* pData = static_cast< const FColor* >( _pTex->PlatformData->Mips[ 0 ].BulkData.LockReadOnly() );
     if ( !pData )
     {
-        // TODO log err
+        LOG( Error, TEXT( "Failed accessing colors from texture resource" ) );
         return data ;
     }
 

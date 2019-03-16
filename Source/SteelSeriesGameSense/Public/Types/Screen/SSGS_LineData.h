@@ -38,7 +38,22 @@ struct STEELSERIESGAMESENSE_API FSSGS_LineDataAccessor : public FSSGS_JsonConver
 
     FSSGS_LineDataAccessor() : _type( UpdateValue ) {}
 
+    /**
+    * Construct FSSGS_LineDataAccessor object to specify the name of the property in
+    * context frame of event update object.
+    *
+    * @param    key The name of the property in context frame.
+    * @return   FSSGS_LineDataAccessor object.
+    */
     static FSSGS_LineDataAccessor ContextFrameKey( const FString& key ) { return { FrameKey, key }; }
+
+    /**
+    * Construct FSSGS_LineDataAccessor object to specify GoLisp expression allowing to
+    * obtain and transform a value for the frame.
+    *
+    * @param    expr GoLisp expression.
+    * @return   FSSGS_LineDataAccessor object.
+    */
     static FSSGS_LineDataAccessor GoLispExpression( const FString& expr ) { return { GoLispExpr, expr }; }
 
     void Decorate( TSharedPtr< FJsonObject > obj ) const;

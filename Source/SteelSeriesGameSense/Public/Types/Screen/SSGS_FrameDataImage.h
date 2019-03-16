@@ -56,6 +56,14 @@ public:
 
     TArray< uint8 > GetData() final;
 
+    /**
+    * Properly construct image data source from texture resource. The luma component will
+    * be computed and thresholded for each color.
+    *
+    * @param    dz Device-zone object that supplies screen dimensions.
+    * @param    texture Texture resource.
+    * @return   USSGS_ImageDataTexture2D object.
+    */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|Screen|ImageData" )
     static USSGS_ImageDataTexture2D* MakeImageDataFromTexture( const FSSGS_ScreenDeviceZone& dz, UTexture2D* texture );
 
@@ -75,6 +83,13 @@ public:
 
     static USSGS_ImageDataArray* MakeImageDataFromArray( TArray< uint8 >&& packedBinaryImage );
 
+    /**
+    * Properly construct image data source from the supplied bit vector whose bit length
+    * must match the screen area (width * height).
+    *
+    * @param    packedBinaryImage Bit vector.
+    * @return   USSGS_ImageDataArray object.
+    */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|Screen|ImageData" )
     static USSGS_ImageDataArray* MakeImageDataFromArray( const TArray< uint8 >& packedBinaryImage );
 
