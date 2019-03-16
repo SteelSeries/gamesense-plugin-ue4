@@ -139,6 +139,16 @@ TJsonValues _getArrayOfJsonValuesString( const TArray< FString >& arr )
     return ret;
 }
 
+TSharedPtr< FJsonValue > _makeJsonObject( const TSSGS_ObjectDef& objDef )
+{
+    auto objProp = MakeShared< FJsonObject >();
+
+    for ( const auto& prop : objDef )
+        prop.Decorate( objProp );
+
+    return MakeShared< FJsonValueObject >( objProp );
+}
+
 // ****** FSSGS_RateRange ******
 FSSGS_RateRange::FSSGS_RateRange() {}
 
@@ -1158,6 +1168,12 @@ void FSSGS_KeyValuePair::Decorate( TSharedPtr< FJsonObject > obj ) const
         obj->SetStringField( _name, _variant.Get< Type >().Get< FString >() );
         break;
 
+    case Object: {
+        auto& objectDef = _variant.Get< Type >().Get< TSSGS_ObjectDef >();
+        obj->SetField( _name, _makeJsonObject( objectDef ) );
+        break;
+    }
+
     case BoolArray: {
         auto v = _variant.Get< ArrayType >().Get< TArray< bool > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesBoolean( v ) );
@@ -1186,6 +1202,18 @@ void FSSGS_KeyValuePair::Decorate( TSharedPtr< FJsonObject > obj ) const
         auto v = _variant.Get< ArrayType >().Get< TArray< FString > >();
         obj->SetArrayField( _name, _getArrayOfJsonValuesString( v ) );
         break;
+    }
+
+    case ObjectArray: {
+        TJsonValues arr;
+        auto& objects = _variant.Get< ArrayType >().Get< TArray< FSSGS_PropertyContainer > >();
+
+        for ( const auto& shim : objects )
+            arr.Add( _makeJsonObject( shim.properties ) );
+
+        obj->SetArrayField( _name, arr );
+        break;
+
     }
 
     }
@@ -1224,6 +1252,11 @@ FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyString( const FString& n, cons
     return FSSGS_KeyValuePair{ n, v };
 }
 
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyObject( const FString& n, const TSSGS_ObjectDef& v )
+{
+    return FSSGS_KeyValuePair{ n, v };
+}
+
 FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyBoolArray( const FString& n, const TArray< bool >& v )
 {
     return FSSGS_KeyValuePair{ n, v };
@@ -1245,6 +1278,11 @@ FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyFloatArray( const FString& n, 
 }
 
 FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyStringArray( const FString& n, const TArray< FString >& v )
+{
+    return FSSGS_KeyValuePair{ n, v };
+}
+
+FSSGS_KeyValuePair USSGS_FrameObject::MakePropertyObjectArray( const FString& n, const TArray< FSSGS_PropertyContainer >& v )
 {
     return FSSGS_KeyValuePair{ n, v };
 }

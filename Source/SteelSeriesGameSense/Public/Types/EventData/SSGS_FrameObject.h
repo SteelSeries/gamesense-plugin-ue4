@@ -36,6 +36,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_KeyValuePair : public FSSGS_JsonConvertabl
 
     GENERATED_BODY()
 
+    typedef TArray< FSSGS_KeyValuePair > TSSGS_ObjectDef;
+
 public:
 
     FSSGS_KeyValuePair() : _type( Invalid ) {};
@@ -55,6 +57,9 @@ public:
     FSSGS_KeyValuePair( const FString& n, const FString& v ) :
         _name( n ), _type( String ), _variant( v ) {}
 
+    FSSGS_KeyValuePair( const FString& n, const TSSGS_ObjectDef& v ) :
+        _name( n ), _type( Object ), _variant( v ) {}
+
     FSSGS_KeyValuePair( const FString& n, const TArray< bool >& v ) :
         _name( n ), _type( BoolArray ), _variant( v ) {}
 
@@ -70,6 +75,9 @@ public:
     FSSGS_KeyValuePair( const FString& n, const TArray< FString >& v ) :
         _name( n ), _type( StringArray ), _variant( v ) {}
 
+    FSSGS_KeyValuePair( const FString& n, const TArray< FSSGS_PropertyContainer >& v ) :
+        _name( n ), _type( ObjectArray ), _variant( v ) {}
+
 
     void Decorate( TSharedPtr< FJsonObject > obj ) const;
 
@@ -82,27 +90,37 @@ private:
         Int32,
         Float,
         String,
+        Object,
         BoolArray,
         Uint8Array,
         Int32Array,
         FloatArray,
-        StringArray
+        StringArray,
+        ObjectArray
     };
 
-    typedef TArray< FSSGS_KeyValuePair > TSSGS_ObjectDef;
-
-    typedef ssgs::Union< bool, uint8, int32, float, FString > Type;
+    typedef ssgs::Union< bool, uint8, int32, float, FString, TSSGS_ObjectDef > Type;
     typedef ssgs::Union< TArray< bool >,
         TArray< uint8 >,
         TArray< int32 >,
         TArray< float >,
-        TArray< FString > > ArrayType;
+        TArray< FString >,
+        TArray< FSSGS_PropertyContainer > > ArrayType;
 
 private:
 
     FString _name;
     _pv_type_ _type;
     ssgs::Union< Type, ArrayType > _variant;
+
+};
+
+USTRUCT( BlueprintType, meta = ( Category = "Gamesense|Types" ) )
+struct FSSGS_PropertyContainer {
+
+    GENERATED_BODY()
+
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) TArray< FSSGS_KeyValuePair > properties;
 
 };
 
@@ -134,6 +152,9 @@ public:
     static FSSGS_KeyValuePair MakePropertyString( const FString& name, const FString& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
+    static FSSGS_KeyValuePair MakePropertyObject( const FString& name, const TArray< FSSGS_KeyValuePair >& objectProperties );
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
     static FSSGS_KeyValuePair MakePropertyBoolArray( const FString& name, const TArray< bool >& value );
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
@@ -147,6 +168,9 @@ public:
 
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
     static FSSGS_KeyValuePair MakePropertyStringArray( const FString& name, const TArray< FString >& value );
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|EventData" )
+    static FSSGS_KeyValuePair MakePropertyObjectArray( const FString& name, const TArray< FSSGS_PropertyContainer >& value );
 
     TSharedPtr< FJsonValue > Convert() const;
 
