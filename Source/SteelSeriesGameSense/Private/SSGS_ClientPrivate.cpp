@@ -29,6 +29,7 @@
 
 #include <functional>
 
+#include "Runtime/Launch/Resources/Version.h"
 #include "Async/Async.h"
 #include "Misc/FileHelper.h"
 #include "JsonUtilities.h"
@@ -299,10 +300,18 @@ TSharedPtr< TPromise< bool > > _preq_completion;
 * Return per platform path to server coreProps.
 */
 FString _serverPropsPath() {
+
 #if PLATFORM_WINDOWS
     //"%PROGRAMDATA%/SteelSeries/SteelSeries Engine 3/coreProps.json"
+#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION < 21
+    TCHAR bfr[ _MAX_PATH + 1 ];
+    FWindowsPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA", bfr, _MAX_PATH );
+    FString programData( bfr );
+#else
     FString programData( FPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA" ) );
+#endif
     return FString( programData + FString(L"\\SteelSeries\\SteelSeries Engine 3\\coreProps.json") );
+
 #elif PLATFORM_MAC
     return FString( "/Library/Application Support/SteelSeries Engine 3/coreProps.json" );
 #else
