@@ -1,5 +1,5 @@
-# GameSense™ Client for Unreal Engine 4
-GameSense™ Client for UE4 simplifies the process of integrating GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server through a simple-to-use C++ API with Blueprint bindings.
+# GameSense™ Plugin for Unreal Engine 4
+GameSense™ Plugin for UE4 simplifies the process of integrating GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server through a simple-to-use C++ API with Blueprint bindings.
 
 ## More info
 * [GameSense Developer Portal](https://steelseries.com/developer)
