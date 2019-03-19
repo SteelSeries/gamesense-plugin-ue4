@@ -39,7 +39,7 @@ class STEELSERIESGAMESENSE_API USSGS_ImageDataSource : public UObject {
 public:
 
     virtual ~USSGS_ImageDataSource() {}
-    virtual TArray< uint8 > GetData() { return TArray< uint8 >();  }
+    virtual TArray< uint8 > GetData( const FSSGS_ScreenDeviceZone& dz ) { return TArray< uint8 >();  }
 
 protected:
 
@@ -54,22 +54,20 @@ class STEELSERIESGAMESENSE_API USSGS_ImageDataTexture2D final : public USSGS_Ima
 
 public:
 
-    TArray< uint8 > GetData() final;
+    TArray< uint8 > GetData( const FSSGS_ScreenDeviceZone& dz ) final;
 
     /**
     * Properly construct image data source from texture resource. The luma component will
     * be computed and thresholded for each color.
     *
-    * @param    dz Device-zone object that supplies screen dimensions.
     * @param    texture Texture resource.
     * @return   USSGS_ImageDataTexture2D object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|Screen|ImageData" )
-    static USSGS_ImageDataTexture2D* MakeImageDataFromTexture( const FSSGS_ScreenDeviceZone& dz, UTexture2D* texture );
+    static USSGS_ImageDataTexture2D* MakeImageDataFromTexture( UTexture2D* texture );
 
 private:
 
-    FSSGS_ScreenDeviceZone _dz;
     UTexture2D* _pTex;
 
 };
@@ -93,7 +91,7 @@ public:
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|Screen|ImageData" )
     static USSGS_ImageDataArray* MakeImageDataFromArray( const TArray< uint8 >& packedBinaryImage );
 
-    TArray< uint8 > GetData() final;
+    TArray< uint8 > GetData( const FSSGS_ScreenDeviceZone& dz ) final;
 
 private:
 
@@ -107,11 +105,12 @@ struct STEELSERIESGAMESENSE_API FSSGS_FrameDataImage : public FSSGS_JsonConverta
     GENERATED_BODY()
 
     FSSGS_FrameDataImage() {}
-    FSSGS_FrameDataImage( USSGS_ImageDataSource* pSrc, const FSSGS_FrameModifiers& frameModifiers );
+    FSSGS_FrameDataImage( USSGS_ImageDataSource* pSrc, const FSSGS_ScreenDeviceZone& dz, const FSSGS_FrameModifiers& frameModifiers );
 
     TSharedPtr< FJsonValue > Convert() const;
 
     UPROPERTY() TArray< uint8 > imageData;
     UPROPERTY() FSSGS_FrameModifiers frameModifiers;
+    FSSGS_ScreenDeviceZone dz;
 
 };

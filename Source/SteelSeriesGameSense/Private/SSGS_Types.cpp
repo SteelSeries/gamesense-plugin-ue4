@@ -624,15 +624,14 @@ TSharedPtr< FJsonValue > FSSGS_FrameDataMultiLine::Convert() const
 }
 
 // ****** USSGS_ImageDataTexture2D ******
-USSGS_ImageDataTexture2D* USSGS_ImageDataTexture2D::MakeImageDataFromTexture( const FSSGS_ScreenDeviceZone& dz, UTexture2D* pTex )
+USSGS_ImageDataTexture2D* USSGS_ImageDataTexture2D::MakeImageDataFromTexture( UTexture2D* pTex )
 {
     USSGS_ImageDataTexture2D* p = _createUObj< USSGS_ImageDataTexture2D >();
-    p->_dz = dz;
     p->_pTex = pTex;
     return p;
 }
 
-TArray< uint8 > USSGS_ImageDataTexture2D::GetData()
+TArray< uint8 > USSGS_ImageDataTexture2D::GetData( const FSSGS_ScreenDeviceZone& dz )
 {
     TArray< uint8 > data;
 
@@ -641,20 +640,20 @@ TArray< uint8 > USSGS_ImageDataTexture2D::GetData()
         return data;
     }
 
-    if ( _dz.w() < _pTex->GetSizeX() ) {
+    if ( dz.w() < _pTex->GetSizeX() ) {
         // do nothing if supplied texture is too wide
         LOG( Warning, TEXT( "Texture too wide for target device" ) );
         return data;
     }
 
-    int targetSize = _dz.w() * _dz.h();
+    int targetSize = dz.w() * dz.h();
     if ( targetSize == 0 )
     {
         LOG( Error, TEXT( "Using generic screen device for image data" ) );
         return data;
     }
 
-    int texSize = _pTex->GetSizeX() * std::min(_pTex->GetSizeY(), _dz.h());
+    int texSize = _pTex->GetSizeX() * std::min(_pTex->GetSizeY(), dz.h());
 
     // store original settings and convert the texture to something we can
     // easily sample
@@ -734,18 +733,35 @@ USSGS_ImageDataArray* USSGS_ImageDataArray::MakeImageDataFromArray( const TArray
     return p;
 }
 
-TArray< uint8 > USSGS_ImageDataArray::GetData()
+TArray< uint8 > USSGS_ImageDataArray::GetData( const FSSGS_ScreenDeviceZone& dz )
 {
     return _arr;
 }
 
 // ****** FSSGS_FrameDataImage ******
-FSSGS_FrameDataImage::FSSGS_FrameDataImage( USSGS_ImageDataSource* pSrc, const FSSGS_FrameModifiers& frameModifiers ) :
-    frameModifiers( frameModifiers )
+FSSGS_FrameDataImage::FSSGS_FrameDataImage( USSGS_ImageDataSource* pSrc, const FSSGS_ScreenDeviceZone& dz, const FSSGS_FrameModifiers& frameModifiers ) :
+    frameModifiers( frameModifiers ),
+    dz( dz )
 {
     if ( pSrc )
     {
-        imageData = pSrc->GetData();
+        int targetArraySize = ( dz.h() * dz.w() ) / 8;
+        if ( targetArraySize == 0 ) {
+            LOG( Error, TEXT( "Using generic screen device for image data" ) );
+        } else {
+
+            imageData = pSrc->GetData( dz );
+            if ( imageData.Num() != targetArraySize ) {
+                LOG( Warning,
+                     TEXT( "Invalid array length: have %d, need %d" ),
+                     imageData.Num(), targetArraySize );
+
+                // resulting array will be empty,
+                // default as per GameSense SDK
+                imageData.Empty();
+            }
+
+        }
     }
 }
 
@@ -809,9 +825,10 @@ FSSGS_FrameData USSGS_ScreenDataSpecification::MakeMultiLineFrameData( const TAr
                                                       frameModifiers } );
 }
 
-FSSGS_FrameData USSGS_ScreenDataSpecification::MakeImageFrameData( USSGS_ImageDataSource*& pSrc, FSSGS_FrameModifiers frameModifiers )
+FSSGS_FrameData USSGS_ScreenDataSpecification::MakeImageFrameData( USSGS_ImageDataSource*& pSrc, const FSSGS_ScreenDeviceZone& dz, FSSGS_FrameModifiers frameModifiers )
 {
     return FSSGS_FrameData( FSSGS_FrameDataImage{ pSrc,
+                                                  dz,
                                                   frameModifiers } );
 }
 

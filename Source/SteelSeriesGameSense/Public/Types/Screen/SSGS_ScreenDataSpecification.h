@@ -63,11 +63,12 @@ public:
     * Construct frame data from raw image.
     *
     * @param    source Object supplying raw image data.
+    * @param    dz Device - Zone object for source validation.
     * @param    frameModifiers Object for frame customization.
     * @return   FSSGS_FrameData object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_FrameData MakeImageFrameData( UPARAM( ref )USSGS_ImageDataSource*& source, FSSGS_FrameModifiers frameModifiers );
+    static FSSGS_FrameData MakeImageFrameData( UPARAM( ref )USSGS_ImageDataSource*& source, const FSSGS_ScreenDeviceZone& dz, FSSGS_FrameModifiers frameModifiers );
 
     /**
     * Construct line data out of text.
