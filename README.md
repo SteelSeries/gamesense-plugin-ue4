@@ -156,6 +156,29 @@ ssgs::SendEvent( { GAME_NAME,
 ### Tips ###
 + Do not attempt to instantiate **UObject**-derived GameSense objects by yourself. Each **UObject**-derived GameSense class has a static method, usually called `Make*()`, to carry out the task. Use those methods instead.
 
+# Preparing Image Data
+GameSense for OLED/LCD allows you specify bitmaps as sources for frame data. This section details the options available to you to accomplish this.
+
+## Texture Assets
+It is more than likely that freshly imported texture assets will not work out of the box with GameSense for OLED/LCD. To ensure the client is able to process the assets, follow these steps:
+
+1. In content browser, navigate to the directory containing your texture assets and select those that you'd like to use.
+2. Right-click on any of the selected assets and navigate to ***Asset Actions > Bulk Edit via Property Matrix...***
+3. In the new window, locate and set the following properties to the corresponding values:
+   + Mip Gen Settings = _NoMipmaps_
+   + Compression Settings = _VectorDisplacementmap (RGBA8)_
+   +  sRGB = unchecked
+4. Go to ***File > Save All...***
+5. Close the window.
+
+The texture assets now have the correct format and can be used as image sources for frames data in screen handlers. Simply use `USSGS_ImageDataTexture2D::MakeImageDataFromTexture(UTexture2D*)` from C++ or `MakeImageDataFromTexture()` from Blueprints. You still need to ensure the textures have correct size for the target screen device.
+
+## Bit Vector
+You can supply an byte array where the value of each bit corresponds to a white or black point on the screen as described [here](https://github.com/SteelSeries/gamesense-sdk/blob/master/doc/api/json-handlers-screen.md#showing-raw-bitmaps). It is mandatory for the length of the array to be equal to `ceiling(`_`width`_ `*` _`height`_ `/ 8)`, where _width_ and _height_ are the dimensions of the target screen device.
+
+## Subclass of `USSGS_ImageDataSource`
+You also have an option of making your own image source that suits your specific needs. To do it, create a class that derives from `USSGS_ImageDataSource` and reimplement `GetData()`. This function is expected to return the byte array as described above. The benefit of this method over the bit vector is that `GetData()` receives `FSSGS_ScreenDeviceZone` object which you can use to obtain target device width and height. Please refer to the implementation of `USSGS_ImageDataTexture2D::GetData()` for an example.
+
 # General Advice
 + By default, the **SteelSeriesGameSense** module is loaded at the *PreDefault* stage. Please ensure it gets loaded before any modules that depend on it.
 + Please be mindful of the frequency of your `SendEvent()` calls. Ideally, you should only send events when the underlying event data has changed. Sending redundant data, or sending events every game frame, _may_ have unforeseen consequences.
