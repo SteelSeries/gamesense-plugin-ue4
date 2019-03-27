@@ -44,7 +44,7 @@ public:
     Union( const Type4& v ) : _typeIdx( 0 ) { set( v ); }
     Union( const Type5& v ) : _typeIdx( 0 ) { set( v ); }
     Union( const Type6& v ) : _typeIdx( 0 ) { set( v ); }
-    Union( const Union& other ) {
+    Union( const Union& other ) : _typeIdx( 0 ) {
 
         switch ( other._typeIdx )
         {
