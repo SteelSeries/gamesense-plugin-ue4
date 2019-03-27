@@ -655,17 +655,14 @@ TArray< uint8 > USSGS_ImageDataTexture2D::GetData( const FSSGS_ScreenDeviceZone&
 
     int texSize = _pTex->GetSizeX() * std::min(_pTex->GetSizeY(), dz.h());
 
-    // store original settings and convert the texture to something we can
-    // easily sample
-    TextureCompressionSettings OldCompressionSettings = _pTex->CompressionSettings;
-    TextureMipGenSettings OldMipGenSettings = _pTex->MipGenSettings;
-    bool OldSRGB = _pTex->SRGB;
-
-    _pTex->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
-    _pTex->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
-    _pTex->SRGB = false;
-    _pTex->UpdateResource();
-
+    // see if we can read pixels before attempting to access them
+    if ( ( _pTex->CompressionSettings != TextureCompressionSettings::TC_VectorDisplacementmap ) ||
+         ( _pTex->PlatformData->Mips.Num() != 1 ) ||
+         ( _pTex->SRGB != false ) )
+    {
+        LOG( Error, TEXT( "Invalid texture format" ) );
+        return data;
+    }
 
     // get pixels
     const FColor* pData = static_cast< const FColor* >( _pTex->PlatformData->Mips[ 0 ].BulkData.LockReadOnly() );
@@ -687,12 +684,6 @@ TArray< uint8 > USSGS_ImageDataTexture2D::GetData( const FSSGS_ScreenDeviceZone&
     }
 
     _pTex->PlatformData->Mips[ 0 ].BulkData.Unlock();
-
-    // restore original settings
-    _pTex->CompressionSettings = OldCompressionSettings;
-    _pTex->MipGenSettings = OldMipGenSettings;
-    _pTex->SRGB = OldSRGB;
-    _pTex->UpdateResource();
 
     // threshold and pack
     int idx = 0;
