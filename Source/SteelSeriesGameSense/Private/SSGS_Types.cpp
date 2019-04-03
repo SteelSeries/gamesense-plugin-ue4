@@ -1004,12 +1004,20 @@ FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName 
     gameDisplayName( displayName )
 {}
 
+FSSGS_GameInfo::FSSGS_GameInfo( const FString& game, const FString& displayName, const FString& developer ) :
+    game( game ),
+    gameDisplayName( displayName ),
+    developer( developer )
+{}
+
 TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
 {
     auto obj = MakeShared< FJsonObject >();
 
     obj->SetStringField( "game", game );
     obj->SetStringField( "game_display_name", gameDisplayName );
+    if ( !developer.IsEmpty() )
+        obj->SetStringField( "developer", developer );
 
     return MakeShared< FJsonValueObject >( obj );
 }

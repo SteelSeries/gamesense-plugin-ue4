@@ -60,9 +60,10 @@ public:
     *
     * @param	gameName The string that the server uses to identify the game.
     * @param	gameDisplayName The string used by SteelSeries Engine to display game title.
+    * @param    developer The optional string used by SteelSeriers Engine to display game developer name.
     */
-    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
-    static void RegisterGame( const FString& gameName, const FString& gameDisplayName );
+    UFUNCTION( BlueprintCallable, Category = "Gamesense|Client", meta = ( AutoCreateRefTerm = "developer" ) )
+    static void RegisterGame( const FString& gameName, const FString& gameDisplayName, const FString& developer );
     
     /**
     * Registers a game event with the GameSense server.

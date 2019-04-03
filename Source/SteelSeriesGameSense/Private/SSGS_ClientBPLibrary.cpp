@@ -48,11 +48,12 @@ void USSGS_ClientBPLibrary::Stop()
 #endif
 }
 
-void USSGS_ClientBPLibrary::RegisterGame( const FString& gameName, const FString& gameDisplayName )
+void USSGS_ClientBPLibrary::RegisterGame( const FString& gameName, const FString& gameDisplayName, const FString& developer )
 {
 #if STEELSERIESGAMESENSE_SUPPORTED_PLATFORMS
     Client::Instance()->RegisterGame( FSSGS_GameInfo( gameName,
-                                                      gameDisplayName ) );
+                                                      gameDisplayName,
+                                                      developer ) );
 #endif
 }
 

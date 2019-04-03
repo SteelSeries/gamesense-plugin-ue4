@@ -40,9 +40,11 @@ struct STEELSERIESGAMESENSE_API FSSGS_GameInfo: public FSSGS_JsonConvertable {
 
     FSSGS_GameInfo();
     FSSGS_GameInfo( const FString& game, const FString& displayName );
+    FSSGS_GameInfo( const FString& game, const FString& displayName, const FString& developer );
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString game;
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString gameDisplayName;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString developer;
 
     TSharedPtr< FJsonValue > Convert() const;
 
