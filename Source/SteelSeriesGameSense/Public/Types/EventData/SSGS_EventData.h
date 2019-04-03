@@ -35,6 +35,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventData : public FSSGS_JsonConvertable {
     GENERATED_BODY()
 
     FSSGS_EventData() : value( 0 ), frame( nullptr ) {}
+    FSSGS_EventData( int32 value ) : value( value ), frame( nullptr ) {}
+    FSSGS_EventData( int32 value, USSGS_Frame* frame ) : value( value ), frame( frame ) {}
 
     TSharedPtr< FJsonValue > Convert() const;
 
