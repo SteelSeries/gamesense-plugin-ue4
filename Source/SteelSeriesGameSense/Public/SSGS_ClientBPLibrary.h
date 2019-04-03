@@ -72,9 +72,10 @@ public:
     * @param	minValue Minimum integer value for the event.
     * @param	maxValue Maximum integer value for the event.
     * @param	iconId The ID value of an icon associated with the game. Used by SteelSeries Engine.
+    * @param	valueOptional If true, handlers will be processed on every event update with no regard to update value.
     */
     UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
-    static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId );
+    static void RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, bool valueOptional = false );
     
     /**
     * Registers a game event with the GameSense server and binds specified handlers to the event.
@@ -85,9 +86,10 @@ public:
     * @param	maxValue Maximum integer value for the event.
     * @param	iconId The ID value of an icon associated with the game. Used by SteelSeries Engine.
     * @param	handlers The collection of handlers to bind to the event.
+    * @param	valueOptional If true, handlers will be processed on every event update with no regard to update value.
     */
     UFUNCTION( BlueprintCallable, Category = "Gamesense|Client" )
-    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, UPARAM( ref, DisplayName = "Handler Collection" ) USSGS_HandlerCollection*& handlers );
+    static void BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, UPARAM( ref, DisplayName = "Handler Collection" ) USSGS_HandlerCollection*& handlers, bool valueOptional = false );
     
     /**
     * Sends event update to the GameSense server.

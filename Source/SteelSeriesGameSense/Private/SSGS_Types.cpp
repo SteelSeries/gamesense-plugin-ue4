@@ -1016,14 +1016,22 @@ TSharedPtr< FJsonValue > FSSGS_GameInfo::Convert() const
 
 
 // ****** FSSGS_EventInfo ******
-FSSGS_EventInfo::FSSGS_EventInfo() {}
+FSSGS_EventInfo::FSSGS_EventInfo() :
+    game(),
+    eventName(),
+    minValue( 0 ),
+    maxValue( 0 ),
+    iconId( ESSGS_EventIconId::Default ),
+    valueOptional( false )
+{}
 
-FSSGS_EventInfo::FSSGS_EventInfo( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId ) :
+FSSGS_EventInfo::FSSGS_EventInfo( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, bool valueOptional ) :
     game( gameName ),
     eventName( eventName ),
     minValue( minValue ),
     maxValue( maxValue ),
-    iconId( iconId )
+    iconId( iconId ),
+    valueOptional( valueOptional )
 {}
 
 TSharedPtr< FJsonValue > FSSGS_EventInfo::Convert() const
@@ -1035,23 +1043,32 @@ TSharedPtr< FJsonValue > FSSGS_EventInfo::Convert() const
     obj->SetNumberField( "min_value", minValue );
     obj->SetNumberField( "max_value", maxValue );
     obj->SetNumberField( "icon_id", ( uint32 )iconId );
+    obj->SetBoolField( "value_optional", valueOptional );
 
     return MakeShared< FJsonValueObject >( obj );
 }
 
 // ****** FSSGS_EventBinding ******
-FSSGS_EventBinding::FSSGS_EventBinding()
+FSSGS_EventBinding::FSSGS_EventBinding() :
+    game(),
+    eventName(),
+    minValue( 0 ),
+    maxValue( 0 ),
+    iconId( ESSGS_EventIconId::Default ),
+    handlers( nullptr ),
+    valueOptional( false )
 {
     handlers = _createUObj< USSGS_HandlerCollection >();
 }
 
-FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers ) :
+FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection* handlers, bool valueOptional ) :
     game( gameName ),
     eventName( eventName ),
     minValue( minValue ),
     maxValue( maxValue ),
     iconId( iconId ),
-    handlers( handlers )
+    handlers( handlers ),
+    valueOptional( valueOptional )
 {}
 
 FSSGS_EventBinding::~FSSGS_EventBinding()
@@ -1069,6 +1086,7 @@ TSharedPtr< FJsonValue > FSSGS_EventBinding::Convert() const
     obj->SetNumberField( "min_value", minValue );
     obj->SetNumberField( "max_value", maxValue );
     obj->SetNumberField( "icon_id", ( uint32 )iconId );
+    obj->SetBoolField( "value_optional", valueOptional );
 
     if ( handlers ) {
         auto handlersJsonArray = handlers->Convert();

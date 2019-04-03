@@ -56,18 +56,19 @@ void USSGS_ClientBPLibrary::RegisterGame( const FString& gameName, const FString
 #endif
 }
 
-void USSGS_ClientBPLibrary::RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId )
+void USSGS_ClientBPLibrary::RegisterEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, bool valueOptional )
 {
 #if STEELSERIESGAMESENSE_SUPPORTED_PLATFORMS
     Client::Instance()->RegisterEvent( FSSGS_EventInfo( gameName,
                                                         eventName,
                                                         minValue,
                                                         maxValue,
-                                                        iconId ) );
+                                                        iconId,
+                                                        valueOptional ) );
 #endif
 }
 
-void USSGS_ClientBPLibrary::BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection*& handlers )
+void USSGS_ClientBPLibrary::BindEvent( const FString& gameName, const FString& eventName, int32 minValue, int32 maxValue, ESSGS_EventIconId iconId, USSGS_HandlerCollection*& handlers, bool valueOptional )
 {
 #if STEELSERIESGAMESENSE_SUPPORTED_PLATFORMS
     Client::Instance()->BindEvent(
@@ -76,7 +77,8 @@ void USSGS_ClientBPLibrary::BindEvent( const FString& gameName, const FString& e
                             minValue,
                             maxValue,
                             iconId,
-                            handlers ) );
+                            handlers,
+                            valueOptional ) );
 #endif
 }
 
