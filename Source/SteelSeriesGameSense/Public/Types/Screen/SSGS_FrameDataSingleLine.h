@@ -36,11 +36,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_FrameDataSingleLine : public FSSGS_JsonCon
     GENERATED_BODY()
 
     FSSGS_FrameDataSingleLine() {}
-    FSSGS_FrameDataSingleLine( const FSSGS_LineData& lineData, const FSSGS_FrameModifiers& frameModifiers ) : lineData( lineData ), frameModifiers( frameModifiers ) {}
+    FSSGS_FrameDataSingleLine( const FSSGS_LineData& lineData, const FSSGS_FrameModifiers& frameModifiers, ESSGS_EventIconId icon_id = ESSGS_EventIconId::Default ) :
+        lineData( lineData ), frameModifiers( frameModifiers ), icon_id( icon_id ) {}
 
     TSharedPtr< FJsonValue > Convert() const;
 
     UPROPERTY() FSSGS_LineData lineData;
     UPROPERTY() FSSGS_FrameModifiers frameModifiers;
+    UPROPERTY() ESSGS_EventIconId icon_id;
 
 };

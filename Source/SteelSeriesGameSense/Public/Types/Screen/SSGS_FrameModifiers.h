@@ -35,18 +35,17 @@ struct STEELSERIESGAMESENSE_API FSSGS_FrameModifiers : public FSSGS_JsonConverta
     
     GENERATED_BODY()
 
-    FSSGS_FrameModifiers() : FSSGS_FrameModifiers( 0, ESSGS_EventIconId::Default ) {}
-    FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, bool repeats ) :
-        length_millis( length_millis ), icon_id( icon_id ), _repeats_type( Boolean ), _repeats( repeats ) {}
-    FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count ) :
-        length_millis( length_millis ), icon_id( icon_id ), _repeats_type( Integer ), _repeats( repeat_count ) {}
-    FSSGS_FrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id ) :
-        length_millis( length_millis ), icon_id( icon_id ), _repeats_type( None ) {}
+    FSSGS_FrameModifiers() : FSSGS_FrameModifiers( 0 ) {}
+    FSSGS_FrameModifiers( int32 length_millis, bool repeats ) :
+        length_millis( length_millis ), _repeats_type( Boolean ), _repeats( repeats ) {}
+    FSSGS_FrameModifiers( int32 length_millis, int32 repeat_count ) :
+        length_millis( length_millis ), _repeats_type( Integer ), _repeats( repeat_count ) {}
+    FSSGS_FrameModifiers( int32 length_millis ) :
+        length_millis( length_millis ), _repeats_type( None ) {}
 
     void Decorate( TSharedPtr<FJsonObject> obj ) const;
 
     UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 length_millis;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) ESSGS_EventIconId icon_id;
 
 private:
 

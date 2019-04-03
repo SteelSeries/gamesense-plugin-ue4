@@ -44,20 +44,22 @@ public:
     *
     * @param    lineData Object describing the line contents.
     * @param    frameModifiers Object for frame customization.
+    * @param    icon_id Optional id of icon to display alongside the text.
     * @return   FSSGS_FrameData object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_FrameData MakeSingleLineFrameData( const FSSGS_LineData& lineData, FSSGS_FrameModifiers frameModifiers );
+    static FSSGS_FrameData MakeSingleLineFrameData( const FSSGS_LineData& lineData, FSSGS_FrameModifiers frameModifiers, ESSGS_EventIconId icon_id = ESSGS_EventIconId::Default );
 
     /**
     * Construct frame data for multiple lines.
     *
     * @param    lines Array of objects describing each line contents.
     * @param    frameModifiers Object for frame customization.
+    * @param    icon_id Optional id of icon to display alongside the text.
     * @return   FSSGS_FrameData object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_FrameData MakeMultiLineFrameData( const TArray< FSSGS_LineData >& lines, FSSGS_FrameModifiers frameModifiers );
+    static FSSGS_FrameData MakeMultiLineFrameData( const TArray< FSSGS_LineData >& lines, FSSGS_FrameModifiers frameModifiers, ESSGS_EventIconId icon_id = ESSGS_EventIconId::Default );
 
     /**
     * Construct frame data from raw image.
@@ -95,33 +97,30 @@ public:
     * Construct frame modifiers
     *
     * @param    length_millis Specifies frame duration in milliseconds (0 = infinite).
-    * @param    icon_id Optional id of icon to display alongside the text.
     * @param    repeats Whether to repeat the frame sequence or not. Meaningful on the last frame.
     * @return   FSSGS_FrameModifiers object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_FrameModifiers MakeFrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, bool repeats );
+    static FSSGS_FrameModifiers MakeFrameModifiers( int32 length_millis, bool repeats );
 
     /**
     * Construct frame modifiers
     *
     * @param    length_millis Specifies frame duration in milliseconds (0 = infinite).
-    * @param    icon_id Optional id of icon to display alongside the text.
     * @param    repeat_count Specifies the number of times the frame sequence is displayed (0 = infinite).
     * @return   FSSGS_FrameModifiers object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_FrameModifiers MakeFrameModifiersWithRepeatCount( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count );
+    static FSSGS_FrameModifiers MakeFrameModifiersWithRepeatCount( int32 length_millis, int32 repeat_count );
 
     /**
     * Construct frame modifiers for frames to be displayed only once.
     *
     * @param    length_millis Specifies frame duration in milliseconds (0 = infinite).
-    * @param    icon_id Optional id of icon to display alongside the text.
     * @return   FSSGS_FrameModifiers object.
     */
     UFUNCTION( BlueprintCallable, BlueprintPure, Category = "Gamesense|ScreenDataSpecification" )
-    static FSSGS_FrameModifiers MakeFrameModifiersWithNoRepeat( int32 length_millis, ESSGS_EventIconId icon_id );
+    static FSSGS_FrameModifiers MakeFrameModifiersWithNoRepeat( int32 length_millis );
 
     /**
     * Construct line data accessor with a key name.

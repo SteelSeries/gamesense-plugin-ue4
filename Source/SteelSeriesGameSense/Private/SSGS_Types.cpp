@@ -585,7 +585,6 @@ TSharedPtr< FJsonValue > FSSGS_LineData::Convert() const
 void FSSGS_FrameModifiers::Decorate( TSharedPtr< FJsonObject > obj ) const
 {
     obj->SetNumberField( "length-millis", length_millis );
-    obj->SetNumberField( "icon-id", (uint8)icon_id );
 
     switch ( _repeats_type ) {
 
@@ -606,6 +605,7 @@ TSharedPtr< FJsonValue > FSSGS_FrameDataSingleLine::Convert() const
     auto obj = lineData.Convert()->AsObject();
 
     frameModifiers.Decorate( obj );
+    obj->SetNumberField( "icon-id", ( uint8 )icon_id );
 
     return MakeShared< FJsonValueObject >( obj );
 }
@@ -616,6 +616,7 @@ TSharedPtr< FJsonValue > FSSGS_FrameDataMultiLine::Convert() const
     auto obj = MakeShared< FJsonObject >();
 
     frameModifiers.Decorate( obj );
+    obj->SetNumberField( "icon-id", ( uint8 )icon_id );
 
     if ( lines.Num() > 0 )
         obj->SetArrayField( "lines", _getArrayOfJsonValues( lines ) );
@@ -804,16 +805,18 @@ TSharedPtr< FJsonValue > FSSGS_FrameDataRange::Convert() const
 }
 
 // ****** USSGS_ScreenDataSpecification ******
-FSSGS_FrameData USSGS_ScreenDataSpecification::MakeSingleLineFrameData( const FSSGS_LineData& lineData, FSSGS_FrameModifiers frameModifiers )
+FSSGS_FrameData USSGS_ScreenDataSpecification::MakeSingleLineFrameData( const FSSGS_LineData& lineData, FSSGS_FrameModifiers frameModifiers, ESSGS_EventIconId icon_id )
 {
     return FSSGS_FrameData( FSSGS_FrameDataSingleLine{ lineData,
-                                                       frameModifiers } );
+                                                       frameModifiers,
+                                                       icon_id } );
 }
 
-FSSGS_FrameData USSGS_ScreenDataSpecification::MakeMultiLineFrameData( const TArray< FSSGS_LineData >& lines, FSSGS_FrameModifiers frameModifiers )
+FSSGS_FrameData USSGS_ScreenDataSpecification::MakeMultiLineFrameData( const TArray< FSSGS_LineData >& lines, FSSGS_FrameModifiers frameModifiers, ESSGS_EventIconId icon_id )
 {
     return FSSGS_FrameData( FSSGS_FrameDataMultiLine{ lines,
-                                                      frameModifiers } );
+                                                      frameModifiers,
+                                                      icon_id } );
 }
 
 FSSGS_FrameData USSGS_ScreenDataSpecification::MakeImageFrameData( USSGS_ImageDataSource*& pSrc, const FSSGS_ScreenDeviceZone& dz, FSSGS_FrameModifiers frameModifiers )
@@ -845,19 +848,19 @@ FSSGS_LineData USSGS_ScreenDataSpecification::MakeProgressBarLineData()
     return FSSGS_LineData{ FSSGS_LineDataProgressBar() };
 }
 
-FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiers( int32 length_millis, ESSGS_EventIconId icon_id, bool repeats )
+FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiers( int32 length_millis, bool repeats )
 {
-    return FSSGS_FrameModifiers{ length_millis, icon_id, repeats };
+    return FSSGS_FrameModifiers{ length_millis, repeats };
 }
 
-FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithRepeatCount( int32 length_millis, ESSGS_EventIconId icon_id, int32 repeat_count )
+FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithRepeatCount( int32 length_millis, int32 repeat_count )
 {
-    return FSSGS_FrameModifiers{ length_millis, icon_id, repeat_count };
+    return FSSGS_FrameModifiers{ length_millis, repeat_count };
 }
 
-FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithNoRepeat( int32 length_millis, ESSGS_EventIconId icon_id )
+FSSGS_FrameModifiers USSGS_ScreenDataSpecification::MakeFrameModifiersWithNoRepeat( int32 length_millis )
 {
-    return FSSGS_FrameModifiers{ length_millis, icon_id };
+    return FSSGS_FrameModifiers{ length_millis };
 }
 
 FSSGS_LineDataAccessor USSGS_ScreenDataSpecification::MakeContextFrameKeyAccessor( const FString& key )
