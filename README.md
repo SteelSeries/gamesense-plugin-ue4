@@ -1,9 +1,10 @@
-# GameSense™ Client for Unreal Engine 4
-GameSense™ Client for UE4 is an interface simplifying the process of integrating support for GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server through a simple-to-use C++ API with Blueprint bindings.
+# GameSense™ Plugin for Unreal Engine 4
+GameSense™ Plugin for UE4 simplifies the process of integrating GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server through a simple-to-use C++ API with Blueprint bindings.
 
-Visit [SteelSeries Techblog](https://techblog.steelseries.com/2015/06/29/introducing-gamesense.html) to learn more about GameSense™.
-
-For more information about the GameSense™ SDK, visit the [SteelSeries Developer Portal](https://developer.steelseries.com/gamesense).
+## More info
+* [GameSense Developer Portal](https://steelseries.com/developer)
+* [GameSense SDK documentation](https://github.com/SteelSeries/gamesense-sdk)
+* [Unity Engine plugin](https://github.com/SteelSeries/unity-gamesense-client)
 
 # Installation
 
@@ -58,7 +59,7 @@ Adhering to the process described above, we proceed with the first steps.
 **NOTE**: The vast majority of the nodes conerning us will be located under category ***GameSense***.
 
 3. Drag off the exec pin of ***Start*** function and select ***Register Game***. Enter desired values for the function arguments.
-In an influx of diligence, you may create something that looks a lot like the following.
+You may create something that looks similar to the following.
 
 ![blueprint-register-game](/Resources/blueprint-register-game.png)
 
