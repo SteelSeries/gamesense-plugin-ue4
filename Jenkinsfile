@@ -11,6 +11,7 @@ pipeline {
             }
             environment {
                 BUILD_DIR = "$WORKSPACE\\build"
+                UE_VERSION = "${params.UE_VERSION}"
             }
             steps {
                 echo 'Building..'
