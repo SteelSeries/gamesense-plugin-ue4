@@ -508,7 +508,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
     double tLastMsg = FPlatformTime::Seconds();
     double tNow = tLastMsg;
     _mClientState = Probing;
-    _preq_completion = TSharedPtr< TPromise< bool > >( new ( std::nothrow ) TPromise< bool >() );
+    _preq_completion = MakeShared< TPromise< bool > >();
 
     // Ensure http module is loaded
     FHttpModule::Get();
@@ -638,7 +638,7 @@ Client* Client::Instance()
 bool Client::Initialize()
 {
     if ( !_mpInstance ) {
-        _mpInstance = new ( std::nothrow ) Client;
+        _mpInstance = new Client;
         if ( _mpInstance ) {
             // spawn the worker thread
             TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
