@@ -17,6 +17,7 @@ IF NOT EXIST %BUILD_DIR% (
     MKDIR %BUILD_DIR%
 ) ELSE (
     DEL /Q %BUILD_DIR%\*
+    FOR /D %%p IN (%BUILD_DIR%\*) DO RMDIR /S /Q "%%p"
 )
 
 CALL "%ue4ScriptsPath%\RunUAT.bat" BuildPlugin -Plugin="%WORKSPACE%\SteelSeriesGameSense.uplugin" -Package="%BUILD_DIR%" -Rocket
