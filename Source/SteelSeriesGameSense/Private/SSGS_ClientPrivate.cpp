@@ -33,7 +33,7 @@ struct _i_queue_msg_ {
     virtual ~_i_queue_msg_() {}
     virtual bool IsCritical() { return true; }
     virtual const FString& GetUri() { return _dummy; }
-  
+
     virtual FSSGS_JsonConvertable* GetConvertable() { return nullptr; }
     FString GetJsonString() {
         FString payload;
@@ -273,8 +273,8 @@ enum _send_msg_err_ {
 * Client's static resources
 */
 Client* Client::_mpInstance = nullptr;
+FEvent* _preq_completion_event = nullptr;
 TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
-TSharedPtr< TPromise< bool > > _preq_completion;
 
 /**
 * Return per platform path to server coreProps.
@@ -337,32 +337,30 @@ void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, con
 }
 
 /**
-* Request completion delegate. Sets the completion status for our waiting thread.
+* Request completion delegate. Signals the request completion event for our waiting thread.
 */
 void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
 {
-    _preq_completion->SetValue( completed );
+    if ( _preq_completion_event ) {
+        _preq_completion_event->Trigger();
+    }
 }
 
 /**
 * Configure the request and send it.
 *
-* @return   Future object that synchronizes with request completion.
+* @return   True if the request was started, false otherwise.
 */
-TFuture< bool > _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data ){
-    // reset the promise
-    *_preq_completion = TPromise< bool >();
-    TFuture< bool > result = _preq_completion->GetFuture();
+bool _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data )
+{
+    // Reset the request completion event to untriggered state
+    _preq_completion_event->Reset();
 
     request->OnProcessRequestComplete().BindStatic( &_onRequestComplete );
 
     _configureRequest( request, uri, data );
 
-    if ( !request->ProcessRequest() ) {
-        _preq_completion->SetValue( false );
-    }
-
-    return result;
+    return request->ProcessRequest();
 }
 
 /**
@@ -382,22 +380,19 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
     LOG( VeryVerbose, TEXT( "%s" ), *data );
 
     FHttpRequestPtr request = FHttpModule::Get().CreateRequest();
-    TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
+    bool result = _sendMsg( request, pMsg->GetUri(), data );
 
     // wait for the request to complete
-    bool available = result.WaitFor( FTimespan::FromSeconds( 5.0 ) );
+    bool available = _preq_completion_event->Wait( FTimespan::FromSeconds( 5.0 ) );
     if ( !available ) {
-        // timeout occurred
-        // cancel request and fullfill the promise object
-        // so that we do not trigger a bugcheck
+        // Timeout occurred...
+        // Unbind process request complete delegate
+        request->OnProcessRequestComplete().Unbind();
         request->CancelRequest();
-        _preq_completion->SetValue( false );
-
         LOG( Error, TEXT( "The request was not completed in a timely manner" ) );
         return smerr_requesttimedout;
     }
 
-    result.Get();
     switch ( request->GetStatus() ) {
 
     case EHttpRequestStatus::Failed:
@@ -462,6 +457,84 @@ Client::Client() :
 {}
 
 /**
+* Configures ping request with discovered server port and sends it.
+*
+* @return   True if the request was started, false otherwise.
+*/
+bool _pingServer( const FHttpRequestPtr& request, const FString& serverPort )
+{
+    request->SetVerb( TEXT( "GET" ) );
+    request->SetURL( FString( TEXT( "http://127.0.0.1:" ) + serverPort + TEXT( "/ping" ) ) );
+
+    return request->ProcessRequest();
+}
+
+/**
+* Server probing function
+*
+* @return   True on succeess, false otherwise.
+*/
+bool _doProbing( const FString& serverPort )
+{
+    const uint32_t MaxRetries = 6;  // Maximum number of server ping/poll retries
+    LOG( Display, TEXT( "Probing GameSense server" ) );
+
+    FHttpRequestPtr requestPtr = FHttpModule::Get().CreateRequest();
+    // Ping the server to determine if a connection can be established
+    _pingServer( requestPtr, serverPort );
+
+    bool probeSuccess = false;
+    bool retryRequest = false;
+    bool retry = true;
+
+    uint32_t retries = 0;
+    while ( retry && ( retries <= MaxRetries ) )
+    {
+        if ( retryRequest ) {
+            LOG( Display, TEXT( "Retrying ping" ) )
+            _pingServer( requestPtr, serverPort );
+            retryRequest = false;
+        }
+
+        // Wait (2 ^ retires * 200) milliseconds
+        FPlatformProcess::Sleep( (1 << retries) * 0.2f );
+        FHttpResponsePtr responsePtr = requestPtr->GetResponse();
+        bool responsePtrValid = responsePtr.IsValid();
+        if ( responsePtrValid ) { LOG( Verbose, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+
+        switch ( requestPtr->GetStatus() ) {
+
+        case EHttpRequestStatus::NotStarted:
+            if ( responsePtrValid ) { LOG( Warning, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            break;
+
+        case EHttpRequestStatus::Processing:
+            break;
+
+        case EHttpRequestStatus::Failed:
+            if ( responsePtrValid ) { LOG( Error, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            retryRequest = true;
+            break;
+
+        case EHttpRequestStatus::Failed_ConnectionError:
+            if ( responsePtrValid ) { LOG( Warning, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            retryRequest = true;
+            break;
+
+        case EHttpRequestStatus::Succeeded:
+            retry = false;
+            probeSuccess = true;
+            break;
+
+        default:
+            break;
+        }
+        ++retries;
+    }
+    return probeSuccess;
+}
+
+/**
 * Client's worker thread.
 *
 * @return 0 on success.
@@ -469,13 +542,13 @@ Client::Client() :
 Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 {
     _queue_msg_wrapper_ pendingMsg;
-    const float msgCheckInterval = 0.01f;   // 10 ms
-    const float serverProbeInterval = 5.0f;   // 5s
-    const double maxIdleTimeBeforeHeartbeat = 5.0;   // 5 seconds
+    const float msgCheckInterval = 0.01f;           // 10 ms
+    const float serverProbeInterval = 5.0f;         // 5 seconds
+    const double maxIdleTimeBeforeHeartbeat = 5.0;  // 5 seconds
     double tLastMsg = FPlatformTime::Seconds();
     double tNow = tLastMsg;
     _mClientState = Probing;
-    _preq_completion = TSharedPtr< TPromise< bool > >( new ( std::nothrow ) TPromise< bool >() );
+    _preq_completion_event = FGenericPlatformProcess::GetSynchEventFromPool( false );
 
     // Ensure http module is loaded
     FHttpModule::Get();
@@ -544,7 +617,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
                 _mClientState = Disabled;
 
             } else if ( err == smerr_unknown ) {
-                
+
                 // abort
                 LOG( Error, TEXT( "Unknown error occurred" ) );
                 _mClientState = Disabled;
@@ -556,19 +629,26 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 
         case Probing: {
-            
+
             // obtain GameSense server port
             FString serverPort = _getServerPort();
             if ( serverPort == "" ) {
                 // SteelSeries Engine not installed or the coreProps.json file is invalid
                 // this failure is beyond anything we can do, GameSense will remain disabled
-                LOG( Error, TEXT("GameSense server port could not be obtained") );
+                LOG( Error, TEXT( "GameSense server port could not be obtained" ) );
                 _mClientState = Disabled;
             } else {
-                // successfully obtained server port
-                _initializedUris( FString( TEXT( "http://127.0.0.1:" ) + serverPort ) );
-                _mClientState = Active;
-
+                // Successfully obtained server port, now ping
+                bool serverOnline = _doProbing( serverPort );
+                if ( serverOnline ) {
+                    // Enable client
+                    _initializedUris( FString( TEXT( "http://127.0.0.1:" ) + serverPort ) );
+                    _mClientState = Active;
+                } else {
+                    // SteelSeries Engine ping failed, disable client
+                    LOG( Error, TEXT( "GameSense server could not be reached" ) );
+                    _mClientState = Disabled;
+                }
             }
 
             break;
@@ -582,7 +662,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 
         default:
-            LOG( Error, TEXT( "Undefined GameSense client state tranistion" ) );
+            LOG( Error, TEXT( "Undefined GameSense client state transition" ) );
             _mClientState = Disabled;
             break;
 
@@ -590,7 +670,11 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
     }
 
     _msg_queue.Empty();
-    _preq_completion.Reset();
+
+    if ( _preq_completion_event ) {
+        FGenericPlatformProcess::ReturnSynchEventToPool( _preq_completion_event );
+        _preq_completion_event = nullptr;
+    }
 
     LOG( Display, TEXT("GameSense worker exiting") );
     // TODO report err
