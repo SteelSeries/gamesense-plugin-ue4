@@ -33,7 +33,7 @@ struct _i_queue_msg_ {
     virtual ~_i_queue_msg_() {}
     virtual bool IsCritical() { return true; }
     virtual const FString& GetUri() { return _dummy; }
-  
+
     virtual FSSGS_JsonConvertable* GetConvertable() { return nullptr; }
     FString GetJsonString() {
         FString payload;
@@ -457,6 +457,7 @@ Client::~Client()
 Client::Client() :
     _mShouldRun( true ),
     _mClientState( Disabled ),
+    _mInitialized( false ),
     _mGameName(),
     _gsWorkerReturnStatus()
 {}
@@ -544,7 +545,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
                 _mClientState = Disabled;
 
             } else if ( err == smerr_unknown ) {
-                
+
                 // abort
                 LOG( Error, TEXT( "Unknown error occurred" ) );
                 _mClientState = Disabled;
@@ -556,7 +557,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 
         case Probing: {
-            
+
             // obtain GameSense server port
             FString serverPort = _getServerPort();
             if ( serverPort == "" ) {
@@ -599,18 +600,24 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 Client* Client::Instance()
 {
+    if ( !_mpInstance ) {
+        LOG( Display, TEXT( "Creating new GameSense client instance" ) );
+        _mpInstance = new Client;
+    }
+
     return _mpInstance;
 }
 
 bool Client::Initialize()
 {
-    if ( !_mpInstance ) {
-        _mpInstance = new ( std::nothrow ) Client;
-        if ( _mpInstance ) {
-            // spawn the worker thread
-            TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
-            _mpInstance->_gsWorkerReturnStatus = AsyncThread( fn ).Share();
-        }
+    if ( _mpInstance && !_mInitialized ) {
+        LOG( Display, TEXT( "Initializing GameSense client" ) );
+
+        // spawn the worker thread
+        TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
+        _gsWorkerReturnStatus = AsyncThread( fn ).Share();
+        _mInitialized = true;
+        LOG( Display, TEXT( "GameSense client initializing done" ) );
     }
 
     return _mpInstance != nullptr;
@@ -619,10 +626,14 @@ bool Client::Initialize()
 void Client::Release()
 {
     if ( _mpInstance ) {
+        LOG( Display, TEXT( "Stoping and releasing GameSense client" ) );
 
         // sync with thread exiting
         _mpInstance->_mShouldRun = false;
-        _mpInstance->_gsWorkerReturnStatus.Get();
+        if ( _mpInstance->_gsWorkerReturnStatus.IsValid() ) {
+            _mpInstance->_gsWorkerReturnStatus.Get();
+        }
+        _mpInstance->_mInitialized = false;
 
         delete _mpInstance;
         _mpInstance = nullptr;

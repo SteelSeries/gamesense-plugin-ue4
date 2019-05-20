@@ -47,8 +47,9 @@ public:
     * Singleton access
     */
     static Client* Instance();
-    static bool Initialize();
     static void Release();
+
+    bool Initialize();
 
 private:
 
@@ -70,6 +71,7 @@ private:
 private:
 
     bool _mShouldRun;
+    bool _mInitialized;
     _state_ _mClientState;
     FString _mGameName;
     TSharedFuture< _gsWorkerReturnType_ > _gsWorkerReturnStatus;

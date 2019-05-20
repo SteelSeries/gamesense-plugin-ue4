@@ -16,7 +16,7 @@ using namespace ssgs;
 bool USSGS_ClientBPLibrary::Start()
 {
 #if STEELSERIESGAMESENSE_SUPPORTED_PLATFORMS
-    return Client::Initialize();
+    return Client::Instance()->Initialize();
 #else
     return false;
 #endif
