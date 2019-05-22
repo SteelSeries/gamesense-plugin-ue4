@@ -496,7 +496,7 @@ bool _doProbing( const FString& serverPort )
             retryRequest = false;
         }
 
-        // Wait (2 ^ retires * 200) milliseconds
+        // Wait (2 ^ retries * 200) milliseconds
         FPlatformProcess::Sleep( (1 << retries) * 0.2f );
         FHttpResponsePtr responsePtr = requestPtr->GetResponse();
         bool responsePtrValid = responsePtr.IsValid();
