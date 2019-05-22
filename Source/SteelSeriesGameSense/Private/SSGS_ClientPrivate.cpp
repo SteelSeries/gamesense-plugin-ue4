@@ -626,7 +626,7 @@ bool Client::Initialize()
 void Client::Release()
 {
     if ( _mpInstance ) {
-        LOG( Display, TEXT( "Stoping and releasing GameSense client" ) );
+        LOG( Display, TEXT( "Stopping and releasing GameSense client" ) );
 
         // sync with thread exiting
         _mpInstance->_mShouldRun = false;
