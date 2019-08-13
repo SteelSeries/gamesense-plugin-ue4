@@ -35,6 +35,8 @@ struct _i_queue_msg_ {
     virtual const FString& GetUri() { return _dummy; }
 
     virtual FSSGS_JsonConvertable* GetConvertable() { return nullptr; }
+    virtual FSSGS_EventUpdate* GetEventUpdate() { return nullptr; }
+
     FString GetJsonString() {
         FString payload;
 
@@ -75,7 +77,8 @@ enum _queue_msg_tag_ {
     qmt_game_event,
     qmt_game_heartbeat,
     qmt_remove_game_event,
-    qmt_remove_game
+    qmt_remove_game,
+    qmt_multi_event
 };
 
 /**
@@ -89,6 +92,7 @@ FString ENDPOINT_GAME_EVENT( TEXT( "game_event" ) );
 FString ENDPOINT_GAME_HEARTBEAT( TEXT( "game_heartbeat" ) );
 FString ENDPOINT_REMOVE_GAME_EVENT(  TEXT( "remove_game_event" ) );
 FString ENDPOINT_REMOVE_GAME( TEXT( "remove_game" ) );
+FString ENDPOINT_MULTI_EVENT( TEXT( "multiple_game_events") );
 
 /**
 * Template for all the messages.
@@ -105,6 +109,13 @@ struct _queue_msg_ : public _i_queue_msg_ {
     bool IsCritical() { return critical; }
     const FString& GetUri() { return _uri; }
     FSSGS_JsonConvertable* GetConvertable() { return ( FSSGS_JsonConvertable* )&data; }
+    FSSGS_EventUpdate* GetEventUpdate() {
+        if (tag == qmt_game_event) {
+            return ( FSSGS_EventUpdate* ) &data;
+        } else {
+            return nullptr;
+        }
+    }
 
     _queue_msg_< msgTag, T, endpoint, critical >() {};
     _queue_msg_< msgTag, T, endpoint, critical >( const T& v ) : data( v ) {}
@@ -125,6 +136,7 @@ DECL_QUEUE_MSG( qmt_game_event, FSSGS_EventUpdate, ENDPOINT_GAME_EVENT, false, _
 DECL_QUEUE_MSG( qmt_game_heartbeat, FSSGS_Game, ENDPOINT_GAME_HEARTBEAT, false, _msg_heartbeat_ )
 DECL_QUEUE_MSG( qmt_remove_game_event, FSSGS_Event, ENDPOINT_REMOVE_GAME_EVENT, false, _msg_remove_event_ )
 DECL_QUEUE_MSG( qmt_remove_game, FSSGS_Game, ENDPOINT_REMOVE_GAME, true, _msg_remove_game_ )
+DECL_QUEUE_MSG( qmt_multi_event, FSSGS_MultiEventUpdate, ENDPOINT_MULTI_EVENT, false, _msg_multi_event_)
 
 /**
 * Reconfigures endpoint URLs with new base address.
@@ -137,6 +149,7 @@ void _initializedUris( const FString& base ) {
     _msg_heartbeat_::setBaseUri( base );
     _msg_remove_event_::setBaseUri( base );
     _msg_remove_game_::setBaseUri( base );
+    _msg_multi_event_::setBaseUri( base );
 }
 
 /**
@@ -155,6 +168,7 @@ class _queue_msg_wrapper_ {
         _msg_heartbeat_ hearbeat;
         _msg_remove_event_ remove_event;
         _msg_remove_game_ remove_game;
+        _msg_multi_event_ multi_event;
 
 #pragma warning(disable:4582)
         _queue_msg_variant_() : invalid() {}
@@ -176,6 +190,7 @@ class _queue_msg_wrapper_ {
         case qmt_game_heartbeat: _v.hearbeat.~_msg_heartbeat_(); break;
         case qmt_remove_game_event: _v.remove_event.~_msg_remove_event_(); break;
         case qmt_remove_game: _v.remove_game.~_msg_remove_game_(); break;
+        case qmt_multi_event: _v.multi_event.~_msg_multi_event_(); break;
 
         }
     }
@@ -191,6 +206,7 @@ class _queue_msg_wrapper_ {
         case qmt_game_heartbeat: new ( &_v.hearbeat ) _msg_heartbeat_( v.hearbeat ); break;
         case qmt_remove_game_event: new ( &_v.remove_event ) _msg_remove_event_( v.remove_event ); break;
         case qmt_remove_game: new ( &_v.remove_game ) _msg_remove_game_( v.remove_game ); break;
+        case qmt_multi_event: new ( &_v.multi_event ) _msg_multi_event_( v.multi_event ); break;
 
         }
 
@@ -254,6 +270,10 @@ public:
 
     bool isValid() {
         return _activeTag != qmt_invalid;
+    }
+
+    bool isGameEvent() {
+        return _activeTag == qmt_game_event;
     }
 
 };
@@ -471,6 +491,19 @@ bool _pingServer( const FHttpRequestPtr& request, const FString& serverPort )
 }
 
 /**
+* Configures a request to test whether multi-event requests are supported
+*
+* @return   True if the request was started, false otherwise.
+*/
+bool _testMultiEvents( const FHttpRequestPtr& request, const FString& serverPort )
+{
+    request->SetVerb( TEXT( "GET" ) );
+    request->SetURL( FString( TEXT( "http://127.0.0.1:" ) + serverPort + TEXT( "/supports_multiple_game_events" ) ) );
+
+    return request->ProcessRequest();
+}
+
+/**
 * Server probing function
 *
 * @return   True on succeess, false otherwise.
@@ -532,7 +565,72 @@ bool _doProbing( const FString& serverPort )
         }
         ++retries;
     }
+    LOG(Display, TEXT("GameSense server online: %s"), (probeSuccess ? TEXT("true") : TEXT("false")))
     return probeSuccess;
+}
+
+/**
+* Server probing function to test ability to use a specific feature
+* Executed after standard probing and the feature is optional, so do not send additional retry requests
+* Instead, only wait for the first to complete
+*
+* @return   True on succeess, false otherwise.
+*/
+bool _doTestMultiEventsSupported( const FString& serverPort )
+{
+    const uint32_t MaxRetries = 3;  // Maximum number of server ping/poll retries
+    LOG( Verbose, TEXT( "Testing for version supporting multi-event updates" ) );
+
+    FHttpRequestPtr requestPtr = FHttpModule::Get().CreateRequest();
+    // Ping the server to determine if a connection can be established
+    _testMultiEvents( requestPtr, serverPort );
+
+    bool testSuccess = false;
+    bool retry = true;
+    int32 responseCode = 0;
+
+    uint32_t retries = 0;
+    while ( retry && ( retries <= MaxRetries ) )
+    {
+        // Wait (2 ^ retries * 200) milliseconds
+        FPlatformProcess::Sleep( (1 << retries) * 0.2f );
+        FHttpResponsePtr responsePtr = requestPtr->GetResponse();
+        bool responsePtrValid = responsePtr.IsValid();
+        if ( responsePtrValid ) { LOG( Verbose, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+
+        switch ( requestPtr->GetStatus() ) {
+
+        case EHttpRequestStatus::NotStarted:
+            if ( responsePtrValid ) { LOG( Warning, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            break;
+
+        case EHttpRequestStatus::Processing:
+            break;
+
+        case EHttpRequestStatus::Failed:
+            if ( responsePtrValid ) { LOG( Error, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            retry = false;
+            break;
+
+        case EHttpRequestStatus::Failed_ConnectionError:
+            if ( responsePtrValid ) { LOG( Warning, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            retry = false;
+            break;
+
+        case EHttpRequestStatus::Succeeded:
+            retry = false;
+            responseCode = responsePtr->GetResponseCode();
+            testSuccess = (responseCode == 200);
+            break;
+
+        default:
+            break;
+        }
+        ++retries;
+    }
+
+    LOG(Display, TEXT("GameSense server support for multi-event updates: %s"), (testSuccess ? TEXT("true") : TEXT("false")))
+    return testSuccess;
 }
 
 /**
@@ -546,8 +644,10 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
     const float msgCheckInterval = 0.01f;           // 10 ms
     const float serverProbeInterval = 5.0f;         // 5 seconds
     const double maxIdleTimeBeforeHeartbeat = 5.0;  // 5 seconds
+    const int maxCombinedEvents = 50;
     double tLastMsg = FPlatformTime::Seconds();
     double tNow = tLastMsg;
+    bool clientSupportsMultiEvents = false;
     _mClientState = Probing;
     _preq_completion_event = FGenericPlatformProcess::GetSynchEventFromPool( false );
 
@@ -589,6 +689,42 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
                 // sanity check
                 // silently drop an invalid message
                 break;
+            }
+
+            // If the message is a game event and the client supports the multiple game event endpoint,
+            // we take all queued messages up until the next one that is not a game event and combine them
+            // into a multi-event
+            if ( msg.isGameEvent() && clientSupportsMultiEvents) {
+                FSSGS_MultiEventUpdate multiEvent = FSSGS_MultiEventUpdate(_mGameName);
+                _queue_msg_wrapper_ peekedMsg;
+                _i_queue_msg_* pMsg;
+                bool newMessageDequeued;
+                bool peekReturnedItem;
+                FSSGS_EventUpdate* pEventUpdate;
+                int numCombined = 0;
+
+                do {
+                    pMsg = msg.get();
+                    pEventUpdate = pMsg->GetEventUpdate();
+                    if ( !pEventUpdate ) {
+                        LOG( Error, TEXT( "Could not obtain FSSGS_EventUpdate during multi-event conversion: Invalid message type" ) );
+                        break;
+                    }
+
+                    multiEvent.AddEventUpdate(*pEventUpdate);
+                    numCombined++;
+
+                    newMessageDequeued = false;
+                    if (numCombined < maxCombinedEvents) {
+                        peekReturnedItem = _msg_queue.Peek( peekedMsg );
+                        if (peekReturnedItem && peekedMsg.isGameEvent()) {
+                            newMessageDequeued = _msg_queue.Dequeue(msg);
+                        }                        
+                    }
+                } while (newMessageDequeued && msg.isGameEvent());
+
+
+                msg.set( _msg_multi_event_( multiEvent ));
             }
 
             _send_msg_err_ err = _submitMsg( msg );
@@ -645,6 +781,8 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
                     // Enable client
                     _initializedUris( FString( TEXT( "http://127.0.0.1:" ) + serverPort ) );
                     _mClientState = Active;
+
+                    clientSupportsMultiEvents = _doTestMultiEventsSupported( serverPort);
                 } else {
                     // SteelSeries Engine ping failed, disable client
                     LOG( Error, TEXT( "GameSense server could not be reached" ) );
@@ -659,6 +797,9 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
         case Disabled:
             LOG( Warning, TEXT( "Disabling GameSense client" ) );
             _mShouldRun = false;
+
+            // Also dump any pending messages
+            _msg_queue.Empty();
             break;
 
 
@@ -749,19 +890,19 @@ void Client::BindEvent( const FSSGS_EventBinding& v )
 
 void Client::SendEvent( const FSSGS_EventUpdate& v )
 {
-    if ( !_isActive() ) return;
+    if ( !_isActiveOrProbing() ) return;
     _msg_queue.Enqueue( _queue_msg_wrapper_( _msg_send_event_( v ) ) );
 }
 
 void Client::RemoveEvent( const FSSGS_Event& v )
 {
-    if ( !_isActive() ) return;
+    if ( !_isActiveOrProbing() ) return;
     _msg_queue.Enqueue( _queue_msg_wrapper_( _msg_remove_event_( v ) ) );
 }
 
 void Client::RemoveGame( const FSSGS_Game& v )
 {
-    if ( !_isActive() ) return;
+    if ( !_isActiveOrProbing() ) return;
     _msg_queue.Enqueue( _queue_msg_wrapper_( _msg_remove_game_( v ) ) );
 }
 

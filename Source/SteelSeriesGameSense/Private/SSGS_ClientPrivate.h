@@ -8,6 +8,7 @@
 
 #include "Async/Future.h"
 #include "Types/SSGS_Payload.h"
+#include "Types/SSGS_MultiEventUpdate.h"
 
 
 DECLARE_LOG_CATEGORY_EXTERN( SSGS_Client, Log, All );
@@ -59,7 +60,7 @@ private:
     Client& operator=( const Client& rhs ) = delete;
     Client& operator=( const Client&& rhs ) = delete;
 
-    bool _isActive() { return _mClientState == Active; }
+    bool _isActiveOrProbing() { return _mClientState == Active || _mClientState == Probing; }
     bool _isDisabled() { return _mClientState == Disabled; }
 
     _gsWorkerReturnType_ _gsWorkerFn();
