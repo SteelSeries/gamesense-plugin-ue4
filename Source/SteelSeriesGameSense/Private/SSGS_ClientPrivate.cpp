@@ -1,26 +1,7 @@
 /**
-* authors: sharkgoesmad
+* Authors: sharkgoesmad
 *
-* Copyright (c) 2019 SteelSeries
-*
-* Permission is hereby granted, free of charge, to any person obtaining
-* a copy of this software and associated documentation files (the
-* "Software"), to deal in the Software without restriction, including
-* without limitation the rights to use, copy, modify, merge, publish,
-* distribute, sublicense, and/or sell copies of the Software, and to
-* permit persons to whom the Software is furnished to do so, subject to
-* the following conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+* Copyright (c) 2019 SteelSeries ApS. All Rights Reserved.
 */
 
 
@@ -53,7 +34,7 @@ struct _i_queue_msg_ {
     virtual ~_i_queue_msg_() {}
     virtual bool IsCritical() { return true; }
     virtual const FString& GetUri() { return _dummy; }
-  
+
     virtual FSSGS_JsonConvertable* GetConvertable() { return nullptr; }
     FString GetJsonString() {
         FString payload;
@@ -293,8 +274,8 @@ enum _send_msg_err_ {
 * Client's static resources
 */
 Client* Client::_mpInstance = nullptr;
+FEvent* _preq_completion_event = nullptr;
 TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
-TSharedPtr< TPromise< bool > > _preq_completion;
 
 /**
 * Return per platform path to server coreProps.
@@ -365,32 +346,30 @@ void _configureRequest( const FHttpRequestPtr& pRequest, const FString& uri, con
 }
 
 /**
-* Request completion delegate. Sets the completion status for our waiting thread.
+* Request completion delegate. Signals the request completion event for our waiting thread.
 */
 void _onRequestComplete( FHttpRequestPtr pReq, FHttpResponsePtr pResp, bool completed )
 {
-    _preq_completion->SetValue( completed );
+    if ( _preq_completion_event ) {
+        _preq_completion_event->Trigger();
+    }
 }
 
 /**
 * Configure the request and send it.
 *
-* @return   Future object that synchronizes with request completion.
+* @return   True if the request was started, false otherwise.
 */
-TFuture< bool > _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data ){
-    // reset the promise
-    *_preq_completion = TPromise< bool >();
-    TFuture< bool > result = _preq_completion->GetFuture();
+bool _sendMsg( const FHttpRequestPtr& request, const FString& uri, const FString& data )
+{
+    // Reset the request completion event to untriggered state
+    _preq_completion_event->Reset();
 
     request->OnProcessRequestComplete().BindStatic( &_onRequestComplete );
 
     _configureRequest( request, uri, data );
 
-    if ( !request->ProcessRequest() ) {
-        _preq_completion->SetValue( false );
-    }
-
-    return result;
+    return request->ProcessRequest();
 }
 
 /**
@@ -410,27 +389,20 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
     LOG( VeryVerbose, TEXT( "%s" ), *data );
 
     FHttpRequestPtr request = FHttpModule::Get().CreateRequest();
-    TFuture< bool > result = _sendMsg( request, pMsg->GetUri(), data );
+    bool result = _sendMsg( request, pMsg->GetUri(), data );
 
     // wait for the request to complete
-#if !UE_BUILD_SHIPPING
-    result.Wait();
-    bool available = true;
-#else
-    bool available = result.WaitFor( FTimespan::FromSeconds( 5.0 ) );
-#endif
-    if ( !available ) {
-        // timeout occurred
-        // cancel request and fullfill the promise object
-        // so that we do not trigger a bugcheck
-        request->CancelRequest();
-        _preq_completion->SetValue( false );
+    bool available = _preq_completion_event->Wait( FTimespan::FromSeconds( 5.0 ) );
 
+    if ( !available ) {
+        // Timeout occurred...
+        // Unbind process request complete delegate
+        request->OnProcessRequestComplete().Unbind();
+        request->CancelRequest();
         LOG( Error, TEXT( "The request was not completed in a timely manner" ) );
         return smerr_requesttimedout;
     }
 
-    result.Get();
     switch ( request->GetStatus() ) {
 
     case EHttpRequestStatus::Failed:
@@ -490,9 +462,88 @@ Client::~Client()
 Client::Client() :
     _mShouldRun( true ),
     _mClientState( Disabled ),
+    _mInitialized( false ),
     _mGameName(),
     _gsWorkerReturnStatus()
 {}
+
+/**
+* Configures ping request with discovered server port and sends it.
+*
+* @return   True if the request was started, false otherwise.
+*/
+bool _pingServer( const FHttpRequestPtr& request, const FString& serverPort )
+{
+    request->SetVerb( TEXT( "GET" ) );
+    request->SetURL( FString( TEXT( "http://127.0.0.1:" ) + serverPort + TEXT( "/ping" ) ) );
+
+    return request->ProcessRequest();
+}
+
+/**
+* Server probing function
+*
+* @return   True on succeess, false otherwise.
+*/
+bool _doProbing( const FString& serverPort )
+{
+    const uint32_t MaxRetries = 6;  // Maximum number of server ping/poll retries
+    LOG( Display, TEXT( "Probing GameSense server" ) );
+
+    FHttpRequestPtr requestPtr = FHttpModule::Get().CreateRequest();
+    // Ping the server to determine if a connection can be established
+    _pingServer( requestPtr, serverPort );
+
+    bool probeSuccess = false;
+    bool retryRequest = false;
+    bool retry = true;
+
+    uint32_t retries = 0;
+    while ( retry && ( retries <= MaxRetries ) )
+    {
+        if ( retryRequest ) {
+            LOG( Display, TEXT( "Retrying ping" ) )
+            _pingServer( requestPtr, serverPort );
+            retryRequest = false;
+        }
+
+        // Wait (2 ^ retries * 200) milliseconds
+        FPlatformProcess::Sleep( (1 << retries) * 0.2f );
+        FHttpResponsePtr responsePtr = requestPtr->GetResponse();
+        bool responsePtrValid = responsePtr.IsValid();
+        if ( responsePtrValid ) { LOG( Verbose, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+
+        switch ( requestPtr->GetStatus() ) {
+
+        case EHttpRequestStatus::NotStarted:
+            if ( responsePtrValid ) { LOG( Warning, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            break;
+
+        case EHttpRequestStatus::Processing:
+            break;
+
+        case EHttpRequestStatus::Failed:
+            if ( responsePtrValid ) { LOG( Error, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            retryRequest = true;
+            break;
+
+        case EHttpRequestStatus::Failed_ConnectionError:
+            if ( responsePtrValid ) { LOG( Warning, TEXT( "%s" ), *responsePtr->GetContentAsString() ); }
+            retryRequest = true;
+            break;
+
+        case EHttpRequestStatus::Succeeded:
+            retry = false;
+            probeSuccess = true;
+            break;
+
+        default:
+            break;
+        }
+        ++retries;
+    }
+    return probeSuccess;
+}
 
 /**
 * Client's worker thread.
@@ -502,13 +553,13 @@ Client::Client() :
 Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 {
     _queue_msg_wrapper_ pendingMsg;
-    const float msgCheckInterval = 0.01f;   // 10 ms
-    const float serverProbeInterval = 5.0f;   // 5s
-    const double maxIdleTimeBeforeHeartbeat = 5.0;   // 5 seconds
+    const float msgCheckInterval = 0.01f;           // 10 ms
+    const float serverProbeInterval = 5.0f;         // 5 seconds
+    const double maxIdleTimeBeforeHeartbeat = 5.0;  // 5 seconds
     double tLastMsg = FPlatformTime::Seconds();
     double tNow = tLastMsg;
     _mClientState = Probing;
-    _preq_completion = MakeShared< TPromise< bool > >();
+    _preq_completion_event = FGenericPlatformProcess::GetSynchEventFromPool( false );
 
     // Ensure http module is loaded
     FHttpModule::Get();
@@ -577,7 +628,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
                 _mClientState = Disabled;
 
             } else if ( err == smerr_unknown ) {
-                
+
                 // abort
                 LOG( Error, TEXT( "Unknown error occurred" ) );
                 _mClientState = Disabled;
@@ -589,19 +640,26 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 
         case Probing: {
-            
+
             // obtain GameSense server port
             FString serverPort = _getServerPort();
             if ( serverPort == "" ) {
                 // SteelSeries Engine not installed or the coreProps.json file is invalid
                 // this failure is beyond anything we can do, GameSense will remain disabled
-                LOG( Error, TEXT("GameSense server port could not be obtained") );
+                LOG( Error, TEXT( "GameSense server port could not be obtained" ) );
                 _mClientState = Disabled;
             } else {
-                // successfully obtained server port
-                _initializedUris( FString( TEXT( "http://127.0.0.1:" ) + serverPort ) );
-                _mClientState = Active;
-
+                // Successfully obtained server port, now ping
+                bool serverOnline = _doProbing( serverPort );
+                if ( serverOnline ) {
+                    // Enable client
+                    _initializedUris( FString( TEXT( "http://127.0.0.1:" ) + serverPort ) );
+                    _mClientState = Active;
+                } else {
+                    // SteelSeries Engine ping failed, disable client
+                    LOG( Error, TEXT( "GameSense server could not be reached" ) );
+                    _mClientState = Disabled;
+                }
             }
 
             break;
@@ -615,7 +673,7 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 
         default:
-            LOG( Error, TEXT( "Undefined GameSense client state tranistion" ) );
+            LOG( Error, TEXT( "Undefined GameSense client state transition" ) );
             _mClientState = Disabled;
             break;
 
@@ -623,7 +681,11 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
     }
 
     _msg_queue.Empty();
-    _preq_completion.Reset();
+
+    if ( _preq_completion_event ) {
+        FGenericPlatformProcess::ReturnSynchEventToPool( _preq_completion_event );
+        _preq_completion_event = nullptr;
+    }
 
     LOG( Display, TEXT("GameSense worker exiting") );
     // TODO report err
@@ -632,18 +694,24 @@ Client::_gsWorkerReturnType_ Client::_gsWorkerFn()
 
 Client* Client::Instance()
 {
+    if ( !_mpInstance ) {
+        LOG( Display, TEXT( "Creating new GameSense client instance" ) );
+        _mpInstance = new Client;
+    }
+
     return _mpInstance;
 }
 
 bool Client::Initialize()
 {
-    if ( !_mpInstance ) {
-        _mpInstance = new Client;
-        if ( _mpInstance ) {
-            // spawn the worker thread
-            TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
-            _mpInstance->_gsWorkerReturnStatus = AsyncThread( fn ).Share();
-        }
+    if ( _mpInstance && !_mInitialized ) {
+        LOG( Display, TEXT( "Initializing GameSense client" ) );
+
+        // spawn the worker thread
+        TFunction< _gsWorkerReturnType_( void ) > fn( std::bind( &Client::_gsWorkerFn, _mpInstance ) );
+        _gsWorkerReturnStatus = AsyncThread( fn ).Share();
+        _mInitialized = true;
+        LOG( Display, TEXT( "GameSense client initializing done" ) );
     }
 
     return _mpInstance != nullptr;
@@ -652,10 +720,14 @@ bool Client::Initialize()
 void Client::Release()
 {
     if ( _mpInstance ) {
+        LOG( Display, TEXT( "Stopping and releasing GameSense client" ) );
 
         // sync with thread exiting
         _mpInstance->_mShouldRun = false;
-        _mpInstance->_gsWorkerReturnStatus.Get();
+        if ( _mpInstance->_gsWorkerReturnStatus.IsValid() ) {
+            _mpInstance->_gsWorkerReturnStatus.Get();
+        }
+        _mpInstance->_mInitialized = false;
 
         delete _mpInstance;
         _mpInstance = nullptr;
