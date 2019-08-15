@@ -17,12 +17,12 @@ struct STEELSERIESGAMESENSE_API FSSGS_MultiEventUpdate: public FSSGS_JsonConvert
 
     GENERATED_BODY()
 
-	~FSSGS_MultiEventUpdate();
+    ~FSSGS_MultiEventUpdate();
 
-	FSSGS_MultiEventUpdate();
+    FSSGS_MultiEventUpdate();
     FSSGS_MultiEventUpdate( const FString& game );
 
-	void AddEventUpdate(const FSSGS_EventUpdate& event);
+    void AddEventUpdate(const FSSGS_EventUpdate& event);
 
     TSharedPtr< FJsonValue > Convert() const;
 
