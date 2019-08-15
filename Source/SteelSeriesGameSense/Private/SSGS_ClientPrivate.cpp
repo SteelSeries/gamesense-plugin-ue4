@@ -10,6 +10,7 @@
 
 #include <functional>
 
+#include "Runtime/Launch/Resources/Version.h"
 #include "Async/Async.h"
 #include "Misc/FileHelper.h"
 #include "JsonUtilities.h"
@@ -280,10 +281,18 @@ TQueue< _queue_msg_wrapper_, EQueueMode::Mpsc > _msg_queue;
 * Return per platform path to server coreProps.
 */
 FString _serverPropsPath() {
+
 #if PLATFORM_WINDOWS
     //"%PROGRAMDATA%/SteelSeries/SteelSeries Engine 3/coreProps.json"
+#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION < 21
+    TCHAR bfr[ _MAX_PATH + 1 ];
+    FWindowsPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA", bfr, _MAX_PATH );
+    FString programData( bfr );
+#else
     FString programData( FPlatformMisc::GetEnvironmentVariable( L"PROGRAMDATA" ) );
+#endif
     return FString( programData + FString(L"\\SteelSeries\\SteelSeries Engine 3\\coreProps.json") );
+
 #elif PLATFORM_MAC
     return FString( "/Library/Application Support/SteelSeries Engine 3/coreProps.json" );
 #else
@@ -384,6 +393,7 @@ _send_msg_err_ _submitMsg( _queue_msg_wrapper_& msg ) {
 
     // wait for the request to complete
     bool available = _preq_completion_event->Wait( FTimespan::FromSeconds( 5.0 ) );
+
     if ( !available ) {
         // Timeout occurred...
         // Unbind process request complete delegate

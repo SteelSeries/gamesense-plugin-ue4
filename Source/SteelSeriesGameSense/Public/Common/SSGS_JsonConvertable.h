@@ -16,6 +16,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_JsonConvertable
     GENERATED_BODY()
 
     virtual ~FSSGS_JsonConvertable() {};
+    virtual void Decorate( TSharedPtr< FJsonObject > obj ) const {}
     virtual TSharedPtr< FJsonValue > Convert() const {
         return TSharedPtr< FJsonValue >( nullptr );
     }
