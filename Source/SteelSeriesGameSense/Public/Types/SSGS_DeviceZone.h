@@ -49,6 +49,30 @@ struct FSSGS_TactileDeviceZone {
 
 };
 
+USTRUCT( BlueprintType )
+struct FSSGS_ScreenDeviceZone {
+
+    GENERATED_BODY();
+
+    FSSGS_ScreenDeviceZone() : device( TEXT( "*** BAD VALUE ***" ) ), zone( TEXT( "*** BAD VALUE ***" ) ) { _w = _h = 0; }
+    FSSGS_ScreenDeviceZone( const FString& device, const FString& zone ) : device( device ), zone( zone ) { _w = _h = 0; }
+    FSSGS_ScreenDeviceZone( int32 w, int32 h, const FString& zone ) : zone( zone ), _w( w ), _h( h ) {
+        device = FString( "screened-" ) + FString::FromInt( w ) + FString( "x" ) + FString::FromInt( h );
+    }
+
+    int32 w() const { return _w; }
+    int32 h() const { return _h; }
+
+    FString device;
+    FString zone;
+
+private:
+
+    int32 _w;
+    int32 _h;
+
+};
+
 UCLASS()
 class USSGS_IlluminationDeviceZoneFactory: public UObject {
 
@@ -169,5 +193,26 @@ public:
     static const FSSGS_TactileDeviceZone make_tactile_one() {
         return FSSGS_TactileDeviceZone{ "tactile", "one" };
     }
+
+};
+
+UCLASS()
+class USSGS_ScreenDeviceZoneFactory : public UObject {
+
+    GENERATED_BODY()
+
+public:
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_one() { return FSSGS_ScreenDeviceZone{ "screened", "one" }; }
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_128x36_one() { return FSSGS_ScreenDeviceZone{ 128, 36, "one" }; }
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_128x48_one() { return FSSGS_ScreenDeviceZone{ 128, 48, "one" }; }
+
+    UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+    static const FSSGS_ScreenDeviceZone make_screened_128x52_one() { return FSSGS_ScreenDeviceZone{ 128, 52, "one" }; }
 
 };
