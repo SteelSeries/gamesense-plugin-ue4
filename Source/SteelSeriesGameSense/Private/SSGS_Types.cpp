@@ -1132,12 +1132,12 @@ void FSSGS_MultiEventUpdate::AddEventUpdate(const FSSGS_EventUpdate& event) {
 
 TSharedPtr< FJsonValue > FSSGS_MultiEventUpdate::Convert() const
 {
-    TSharedPtr< FJsonObject > obj( new ( std::nothrow ) FJsonObject() );
+    auto obj = MakeShared< FJsonObject >();
 
     obj->SetStringField( "game", game );
     obj->SetArrayField( "events", _getArrayOfJsonValues( _events ) );
 
-    return TSharedPtr< FJsonValue >( new ( std::nothrow ) FJsonValueObject( obj ) );
+    return MakeShared< FJsonValueObject >( obj );
 }
 
 // ****** FSSGS_Event ******
