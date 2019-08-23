@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include "Types/SSGS_Payload.h"
+#include "Types/SSGS_MultiEventUpdate.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
 
@@ -1108,6 +1109,33 @@ TSharedPtr< FJsonValue > FSSGS_EventUpdate::Convert() const
     obj->SetStringField( "game", game );
     obj->SetStringField( "event", eventName );
     obj->SetField( "data", data.Convert() );
+
+    return MakeShared< FJsonValueObject >( obj );
+}
+
+FSSGS_MultiEventUpdate::~FSSGS_MultiEventUpdate() {
+    _events.Empty();
+}
+
+FSSGS_MultiEventUpdate::FSSGS_MultiEventUpdate() :
+    _events()
+ {}
+
+FSSGS_MultiEventUpdate::FSSGS_MultiEventUpdate(const FString& game) :
+    game( game ),
+    _events()
+{}
+
+void FSSGS_MultiEventUpdate::AddEventUpdate(const FSSGS_EventUpdate& event) {
+    _events.Add(event);
+}
+
+TSharedPtr< FJsonValue > FSSGS_MultiEventUpdate::Convert() const
+{
+    auto obj = MakeShared< FJsonObject >();
+
+    obj->SetStringField( "game", game );
+    obj->SetArrayField( "events", _getArrayOfJsonValues( _events ) );
 
     return MakeShared< FJsonValueObject >( obj );
 }
