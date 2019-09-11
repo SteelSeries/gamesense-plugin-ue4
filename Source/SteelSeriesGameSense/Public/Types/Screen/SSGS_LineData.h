@@ -86,11 +86,11 @@ struct STEELSERIESGAMESENSE_API FSSGS_LineDataText {
     FSSGS_LineDataText( const FString& prefix, const FString& suffix, bool bold, int32 wrap ) :
         has_text( true ), prefix( prefix ), suffix( suffix ), bold( bold ), wrap( wrap ) {}
 
-    UPROPERTY()                                   bool has_text;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString prefix;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FString suffix;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) bool bold;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 wrap;
+    UPROPERTY( )                                                       bool has_text;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Optional" ) FString prefix;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Optional" ) FString suffix;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Optional" ) bool bold;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Optional" ) int32 wrap;
 
 };
 

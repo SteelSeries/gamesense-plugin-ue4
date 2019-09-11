@@ -15,6 +15,6 @@ struct STEELSERIESGAMESENSE_API FSSGS_ColorGradient {
 
     GENERATED_BODY()
     
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_Gradient gradient;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) FSSGS_Gradient gradient;
 
 };

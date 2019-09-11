@@ -14,8 +14,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_RepeatLimit {
 
     GENERATED_BODY()
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 low;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 high;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 repeat_limit;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 low;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 high;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 repeat_limit;
 
 };

@@ -40,7 +40,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_EventData : public FSSGS_JsonConvertable {
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 value;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) USSGS_Frame* frame;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Data" ) int32 value;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Data" ) USSGS_Frame* frame;
 
 };

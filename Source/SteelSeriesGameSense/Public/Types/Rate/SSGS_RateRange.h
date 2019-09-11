@@ -21,7 +21,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_RateRange {
     FSSGS_RateRange( const TArray< FSSGS_Frequency >& frequency, const TArray< FSSGS_RepeatLimit >& repeatLimit = TArray< FSSGS_RepeatLimit >() );
     FSSGS_RateRange( const TArray< FSSGS_FrequencyRepeatLimitPair >& v );
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) TArray< FSSGS_Frequency > frequency;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) TArray< FSSGS_RepeatLimit > repeat_limit;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) TArray< FSSGS_Frequency > frequency;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) TArray< FSSGS_RepeatLimit > repeat_limit;
 
 };

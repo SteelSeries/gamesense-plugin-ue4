@@ -45,7 +45,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_FrameModifiers : public FSSGS_JsonConverta
 
     void Decorate( TSharedPtr<FJsonObject> obj ) const;
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 length_millis;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Optional" ) int32 length_millis;
 
 private:
 

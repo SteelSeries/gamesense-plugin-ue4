@@ -14,7 +14,7 @@ struct STEELSERIESGAMESENSE_API FSSGS_RateStatic {
 
     GENERATED_BODY()
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 frequency;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 repeat_limit;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 frequency;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 repeat_limit;
 
 };

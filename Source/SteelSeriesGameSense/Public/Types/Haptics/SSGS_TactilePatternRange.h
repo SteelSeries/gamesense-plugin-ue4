@@ -20,8 +20,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_TactilePatternRange : public FSSGS_JsonCon
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 low;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 high;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) TArray< FSSGS_TactilePatternStatic > pattern;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 low;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 high;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) TArray< FSSGS_TactilePatternStatic > pattern;
 
 };

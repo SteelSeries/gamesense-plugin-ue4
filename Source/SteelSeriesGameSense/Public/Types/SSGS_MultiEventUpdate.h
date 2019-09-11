@@ -26,6 +26,6 @@ struct STEELSERIESGAMESENSE_API FSSGS_MultiEventUpdate: public FSSGS_JsonConvert
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY( EditAnywhere ) FString game;
-    UPROPERTY() TArray< FSSGS_EventUpdate > _events;
+    UPROPERTY( EditAnywhere, Category="Mandatory" ) FString game;
+    UPROPERTY()                                     TArray< FSSGS_EventUpdate > _events;
 };

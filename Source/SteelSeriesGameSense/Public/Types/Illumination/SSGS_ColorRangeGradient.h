@@ -19,8 +19,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_ColorRangeGradient {
     FSSGS_ColorRangeGradient() {};
     FSSGS_ColorRangeGradient( int32 low, int32 high, const FSSGS_RGB& zero, const FSSGS_RGB& hundred );
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 low;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 high;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) FSSGS_ColorGradient color;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 low;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 high;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) FSSGS_ColorGradient color;
 
 };

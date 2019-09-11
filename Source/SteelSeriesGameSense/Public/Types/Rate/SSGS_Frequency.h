@@ -14,8 +14,8 @@ struct STEELSERIESGAMESENSE_API FSSGS_Frequency {
 
     GENERATED_BODY()
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 low;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 high;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) int32 frequency;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 low;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 high;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) int32 frequency;
 
 };
