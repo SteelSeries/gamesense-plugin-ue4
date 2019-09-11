@@ -26,6 +26,7 @@
 
 
 #include "Common/SSGS_Union.h"
+#include "Common/SSGS_JsonConvertable.h"
 #include "Types/SSGS_Enums.h"
 #include "SSGS_FrameModifiers.generated.h"
 
