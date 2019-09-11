@@ -120,7 +120,7 @@ struct FSSGS_PropertyContainer {
 
     GENERATED_BODY()
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite ) TArray< FSSGS_KeyValuePair > properties;
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" ) TArray< FSSGS_KeyValuePair > properties;
 
 };
 

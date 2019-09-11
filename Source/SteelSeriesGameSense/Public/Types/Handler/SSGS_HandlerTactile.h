@@ -24,13 +24,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerTactile : public FSSGS_JsonConverta
     const FSSGS_HandlerTactile& operator=( const FSSGS_HandlerTactile& rhs );
     ~FSSGS_HandlerTactile();
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ), Category="Mandatory" )
     FSSGS_TactileDeviceZone deviceZone;
-    UPROPERTY( EditAnywhere, BlueprintReadOnly )
+    UPROPERTY( EditAnywhere, BlueprintReadOnly, Category="Mandatory" )
     FString mode = TEXT( "vibrate" );
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Pattern Specification" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Pattern Specification" ), Category="Mandatory" )
     USSGS_TactilePatternSpecification* pattern;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ), Category="Optional" )
     USSGS_RateSpecification* rate;
 
     TSharedPtr< FJsonValue > Convert() const;

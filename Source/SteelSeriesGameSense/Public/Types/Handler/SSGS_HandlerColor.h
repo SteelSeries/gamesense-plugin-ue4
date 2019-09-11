@@ -26,13 +26,13 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerColor : public FSSGS_JsonConvertabl
     ~FSSGS_HandlerColor();
 
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ), Category="Mandatory" )
     FSSGS_IlluminationDeviceZone deviceZone;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" )
     ESSGS_IlluminationMode mode;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Color Specification" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Color Specification" ), Category="Mandatory" )
     USSGS_ColorEffectSpecification* color;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Rate Specification" ), Category="Optional" )
     USSGS_RateSpecification* rate;
 
     TSharedPtr< FJsonValue > Convert() const;

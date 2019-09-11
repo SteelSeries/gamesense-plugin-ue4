@@ -17,7 +17,7 @@ struct FSSGS_PredefinedTactilePattern
     FSSGS_PredefinedTactilePattern() : name( TEXT("*** BAD VALUE ***") ) {}
     FSSGS_PredefinedTactilePattern( const FString& name ) : name( name ) {}
 
-    UPROPERTY( BlueprintReadOnly ) FString name;
+    UPROPERTY( BlueprintReadOnly, Category="Mandatory" ) FString name;
 };
 
 UCLASS()

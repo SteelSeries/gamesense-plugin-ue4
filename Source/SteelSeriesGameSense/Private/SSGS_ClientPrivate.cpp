@@ -481,8 +481,8 @@ Client::~Client()
 */
 Client::Client() :
     _mShouldRun( true ),
-    _mClientState( Disabled ),
     _mInitialized( false ),
+    _mClientState( Disabled ),
     _mGameName(),
     _gsWorkerReturnStatus()
 {}

@@ -43,11 +43,11 @@ struct STEELSERIESGAMESENSE_API FSSGS_HandlerScreen : public FSSGS_JsonConvertab
 
     TSharedPtr< FJsonValue > Convert() const;
 
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Device - Zone" ), Category="Mandatory" )
     FSSGS_ScreenDeviceZone deviceZone;
-    UPROPERTY( EditAnywhere, BlueprintReadWrite )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Mandatory" )
     FString mode = TEXT( "screen" );
-    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Screen Data Specification" ) )
+    UPROPERTY( EditAnywhere, BlueprintReadWrite, meta = ( DisplayName = "Screen Data Specification" ), Category="Mandatory" )
     USSGS_ScreenDataSpecification* data;
 
 };
