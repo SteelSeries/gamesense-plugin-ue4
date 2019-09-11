@@ -1048,8 +1048,9 @@ FSSGS_EventBinding::FSSGS_EventBinding() :
     minValue( 0 ),
     maxValue( 0 ),
     iconId( ESSGS_EventIconId::Default ),
-    handlers( nullptr ),
-    valueOptional( false )
+    valueOptional( false ),
+    handlers( nullptr )
+    
 {
     handlers = _createUObj< USSGS_HandlerCollection >();
 }
@@ -1060,8 +1061,8 @@ FSSGS_EventBinding::FSSGS_EventBinding( const FString& gameName, const FString& 
     minValue( minValue ),
     maxValue( maxValue ),
     iconId( iconId ),
-    handlers( handlers ),
-    valueOptional( valueOptional )
+    valueOptional( valueOptional ),
+    handlers( handlers )
 {}
 
 FSSGS_EventBinding::~FSSGS_EventBinding()
