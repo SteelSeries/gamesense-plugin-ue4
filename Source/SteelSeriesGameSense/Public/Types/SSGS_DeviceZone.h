@@ -209,6 +209,9 @@ public:
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
     static const FSSGS_ScreenDeviceZone make_screened_128x36_one() { return FSSGS_ScreenDeviceZone{ 128, 36, "one" }; }
 
+	UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
+	static const FSSGS_ScreenDeviceZone make_screened_128x40_one() { return FSSGS_ScreenDeviceZone{ 128, 40, "one" }; }
+
     UFUNCTION( BlueprintCallable, BlueprintPure, meta = ( NativeMakeFunc, Category = "Gamesense|Device Zones|Screen" ) )
     static const FSSGS_ScreenDeviceZone make_screened_128x48_one() { return FSSGS_ScreenDeviceZone{ 128, 48, "one" }; }
 
